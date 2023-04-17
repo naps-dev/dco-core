@@ -23,7 +23,6 @@ env:
   REF_NAME: "${{ github.head_ref || github.ref_name }}"
   REF_TYPE: "${{ github.ref_type }}"
   ZARF_PACKAGE: zarf-package-${{ inputs.COMPONENT }}-amd64.tar.zst
-  MINIMAL_ZARF_PACKAGE: zarf-package-dco-core-minimal-amd64.tar.zst
 
 jobs:
   # Necessary workaround to get env vars passed to the real jobs
@@ -33,8 +32,6 @@ jobs:
       REF_NAME: ${{ env.REF_NAME }}
       REF_TYPE: ${{ env.REF_TYPE }}
       ZARF_PACKAGE: ${{ env.ZARF_PACKAGE }}
-      MINIMAL_ZARF_PACKAGE: ${{ env.MINIMAL_ZARF_PACKAGE }}
-      COMPONENT: ${{ inputs.COMPONENT }}
     steps:
     - run: echo "Exposing env vars"
 
@@ -46,5 +43,4 @@ jobs:
       REF_NAME: ${{ needs.propagate-env.outputs.REF_NAME }}
       REF_TYPE: ${{ needs.propagate-env.outputs.REF_TYPE }}
       ZARF_PACKAGE: ${{ needs.propagate-env.outputs.ZARF_PACKAGE }}
-      MINIMAL_ZARF_PACKAGE: ${{ needs.propagate-env.outputs.MINIMAL_ZARF_PACKAGE }}
-      COMPONENT: ${{ needs.propagate-env.outputs.COMPONENT }}
+      COMPONENT: ${{ inputs.COMPONENT }}

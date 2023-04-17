@@ -12,9 +12,6 @@ on:
       ZARF_PACKAGE:
         required: true
         type: string
-      MINIMAL_ZARF_PACKAGE:
-        required: true
-        type: string
       COMPONENT:
         required: true
         type: string
@@ -27,7 +24,6 @@ defaults:
 env:
   S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/${{ github.repository }}/${{ github.head_ref || github.ref_name }}"
   ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
-  MINIMAL_ZARF_PACKAGE: "${{ inputs.MINIMAL_ZARF_PACKAGE }}"
 jobs:
   package-component:
     runs-on: [self-hosted, onprem]
@@ -54,6 +50,9 @@ jobs:
           # cleanup and init a tmp dir
           rm -rf big-tmp
           mkdir big-tmp
+          echo "PWD is $PWD"
+          echo "ls is:"
+          ls -ltra
 
           # build the zarf package
           zarf package create \
@@ -117,92 +116,3 @@ jobs:
       - name: Save Package to S3
         run: |
           aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
-
-  package-dco-core-minimal:
-    runs-on: [self-hosted, onprem]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install Zarf
-        uses: defenseunicorns/setup-zarf@main
-        with:
-          version: v0.25.2
-          download-init-package: true
-
-      - name: Login to Registry One
-        run: |
-          zarf tools registry login \
-            -u "${{secrets.REGISTRY1_USERNAME}}" \
-            -p "${{secrets.REGISTRY1_PASSWORD}}" \
-            "registry1.dso.mil"
-
-      - name: Create Minimal Zarf Package from Branch
-        if: ${{ inputs.REF_TYPE == 'branch'}}
-        run: |
-          # cleanup and init a tmp dir
-          rm -rf minimal-tmp
-          mkdir minimal-tmp
-
-          # build the zarf package
-          zarf package create \
-            --set GIT_REF=refs/heads/${{ inputs.REF_NAME }} \
-            --confirm \
-            --tmpdir $PWD/minimal-tmp \
-            --skip-sbom \
-            kustomizations/minimal-bigbang
-
-            # cleanup tmp dir
-            rm -rf ./minimum-tmp
-
-      - name: Create Minimal Zarf Package from Tag
-        if: ${{ inputs.REF_TYPE == 'tag'}}
-        run: |
-          # cleanup and init a tmp dir
-          rm -rf minimal-tmp
-          mkdir minimal-tmp
-
-          # build the zarf package
-          zarf package create \
-            --set GIT_REF=refs/tags/${{ inputs.REF_NAME }} \
-            --confirm \
-            --tmpdir $PWD/minimal-tmp \
-            --skip-sbom \
-            kustomizations/minimal-bigbang
-
-            # cleanup tmp dir
-            rm -rf ./minimum-tmp
-
-      - name: Configure AWS S3 Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{secrets.AWS_ROLE}}
-          role-session-name: arkime-s3
-          aws-region: us-east-1
-
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: '^1.19.5'
-          cache: true
-
-      - name: Install dependencies for terratest
-        run: |
-          go get -t ./...
-
-      - name: Run component test
-        working-directory: ./test-minimal
-        run: |
-          go test -timeout 20m
-
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_ICON: https://avatars.githubusercontent.com/u/87975021?s=200&v=4
-          SLACK_USERNAME: GitHub
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-
-      - name: Save Minimal Package to S3
-        run: |
-          aws s3 cp --no-progress "${{ env.MINIMAL_ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.MINIMAL_ZARF_PACKAGE }}"

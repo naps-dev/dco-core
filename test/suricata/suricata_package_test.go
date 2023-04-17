@@ -57,13 +57,13 @@ func TestZarfPackage(t *testing.T) {
 
     zarfDeployDCOCmd := shell.Command{
         Command: "zarf",
-        Args:    []string{"package", "deploy", "../zarf-package-dco-core-minimal-amd64.tar.zst", "--confirm"},
+        Args:    []string{"package", "deploy", "../zarf-package-dco-core-amd64.tar.zst", "--confirm"},
         Env:     testEnv,
     }
 
     shell.RunCommand(t, zarfDeployDCOCmd)
 
-    // Wait for DCO elastic (Big Bang minimal deployment) to come up before deploying suricata
+    // Wait for DCO elastic to come up before deploying suricata
     // Note that k3d calls the cluster test-suricata, but actual context is called k3d-test-suricata
     opts := k8s.NewKubectlOptions("k3d-test-suricata", "/tmp/test_kubeconfig_suricata", "dataplane-ek");
     k8s.WaitUntilServiceAvailable(t, opts, "dataplane-ek-es-http", 40, 30*time.Second)

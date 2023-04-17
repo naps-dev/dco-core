@@ -69,7 +69,7 @@ func TestZarfPackage(t *testing.T) {
 
 	shell.RunCommand(t, zarfDeployDCOCmd)
 
-	// Wait for DCO elastic (Big Bang minimal deployment) to come up
+	// Wait for DCO elastic to come up
 	opts := k8s.NewKubectlOptions("k3d-test-dco-core", "/tmp/test_kubeconfig_dco_core", "dataplane-ek")
 	k8s.WaitUntilServiceAvailable(t, opts, "dataplane-ek-es-http", 40, 30*time.Second)
 
