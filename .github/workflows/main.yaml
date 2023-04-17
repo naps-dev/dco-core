@@ -8,6 +8,12 @@ on:
     tags: ["v**"]
   schedule:
     - cron: '30 5 * * *'
+  workflow_dispatch:
+    inputs:
+      component:
+        description: "The component the workflow will package, deploy, and test"
+        required: false
+        default: 'dco-core'
 
 permissions:
   id-token: write
