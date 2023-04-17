@@ -1,0 +1,36 @@
+kind: ZarfPackageConfig
+metadata:
+  name: polarity
+  description: "Deploys Polarity Platform tool"
+  architecture: amd64
+  # architecture: arm64
+
+constants:
+  - name: GIT_REF
+    description: "Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy"
+    value: "###ZARF_PKG_TMPL_GIT_REF###"
+
+variables:
+  - name: DOMAIN
+    default: "vp.bigbang.dev"
+    prompt: false
+
+components:
+  - name: polarity
+    description: "Polarity Platform"
+    required: true
+    repos:
+      - https://github.com/naps-dev/polarity.git
+    manifests:
+      - name: polarity-helm
+        namespace: polarity
+        files:
+          - manifests/namespace.yaml
+          - manifests/gitrepository.yaml
+          - manifests/helmrelease.yaml
+    images:
+      - "765814079306.dkr.ecr.us-east-1.amazonaws.com/polarity-db:13.1.0-ip4r"
+      - "765814079306.dkr.ecr.us-east-1.amazonaws.com/polarity-server:4.0.10"
+      - "765814079306.dkr.ecr.us-east-1.amazonaws.com/polarity-web:4.0.2"
+      - "docker.io/bitnami/redis:7.0.5-debian-11-r15"
+      - "busybox:1.28"

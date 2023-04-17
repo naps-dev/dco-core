@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: xsoar
+  namespace: xsoar
+spec:
+  interval: 1m
+  url: https://github.com/naps-dev/zarf-xsoar-package.git
+  ref:
+    name: "###ZARF_CONST_GIT_REF###"

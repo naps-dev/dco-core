@@ -1,0 +1,32 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: polarity
+  namespace: polarity
+spec:
+  targetNamespace: polarity
+  releaseName: polarity
+  interval: 5m
+  timeout: 10m
+  chart:
+    spec:
+      interval: 1m
+      chart: ./chart
+      sourceRef:
+        kind: GitRepository
+        name: polarity
+  test:
+    enable: false
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      retries: 5
+      remediateLastFailure: true
+    cleanupOnFail: true
+  rollback:
+    timeout: 30m
+    cleanupOnFail: false
+  values:
+    domain: "###ZARF_VAR_DOMAIN###"

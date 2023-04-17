@@ -1,0 +1,40 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: arkime
+  namespace: arkime
+spec:
+  targetNamespace: arkime
+  releaseName: arkime
+  interval: 5m
+  timeout: 10m
+  chart:
+    spec:
+      interval: 1m
+      chart: ./chart
+      sourceRef:
+        kind: GitRepository
+        name: arkime
+  test:
+    enable: false
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      retries: 5
+      remediateLastFailure: true
+    cleanupOnFail: true
+  rollback:
+    timeout: 30m
+    cleanupOnFail: false
+  dependsOn:
+    - name: istio
+      namespace: bigbang
+    - name: dataplane-ek
+      namespace: dataplane-ek
+  values:
+    viewer_url: "arkime-viewer.###ZARF_VAR_DOMAIN###"
+    version: "###ZARF_CONST_IMAGE_TAG###"
+    capture_interface: "###ZARF_VAR_CAPTURE_INTERFACE###"
+

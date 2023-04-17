@@ -1,0 +1,33 @@
+kind: ZarfPackageConfig
+metadata:
+  name: kasm
+  description: "Kasm traffic monitoring and analysis tool"
+  # Big Bang / Iron Bank are only amd64
+  architecture: amd64
+
+constants:
+  - name: GIT_REF
+    description: "Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy"
+    value: "###ZARF_PKG_TMPL_GIT_REF###"
+
+variables:
+  # Prompt user for the domain override
+  - name: DOMAIN
+    default: "vp.bigbang.dev"
+    prompt: false
+
+components:
+  - name: kasm
+    description: "Kasm traffic monitoring and analysis tool"
+    required: true
+    repos:
+      - https://github.com/naps-dev/kasm.git
+    manifests:
+      - name: kasm-helm
+        namespace: kasm
+        files:
+          - manifests/namespace.yaml
+          - manifests/gitrepository.yaml
+          - manifests/helmrelease.yaml
+    images:
+      - docker.io/kasmweb/workspaces:1.11.0

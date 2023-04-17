@@ -1,0 +1,31 @@
+kind: ZarfPackageConfig
+metadata:
+  name: mockingbird
+  description: "Mockingbird Sandbox"
+  architecture: amd64 # VM is amd64
+
+constants:
+  - name: GIT_REF
+    description: "Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy"
+    value: "###ZARF_PKG_TMPL_GIT_REF###"
+
+variables:
+  - name: DOMAIN
+    default: "vp.bigbang.dev"
+    prompt: false
+
+components:
+  - name: mockingbird
+    description: "Mockingbird Sandbox"
+    required: true
+    repos:
+      - https://github.com/naps-dev/mockingbird.git
+    manifests:
+      - name: mockingbird-helm
+        namespace: mockingbird
+        files:
+          - manifests/namespace.yaml
+          - manifests/gitrepository.yaml
+          - manifests/helmrelease.yaml
+    images:
+      - 765814079306.dkr.ecr.us-east-1.amazonaws.com/mockingbird:###ZARF_PKG_VAR_TAG###

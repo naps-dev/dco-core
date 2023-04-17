@@ -1,0 +1,17 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: arkime-viewer
+  namespace: arkime
+spec:
+  hosts:
+    - "arkime-viewer.###ZARF_VAR_DOMAIN###"
+  gateways:
+    - istio-system/dataplane
+  http:
+    - route:
+        - destination:
+            host: arkime-viewer.arkime.svc.cluster.local
+            port:
+              number: 8005
