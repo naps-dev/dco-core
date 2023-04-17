@@ -96,9 +96,9 @@ jobs:
           go-version: '^1.19.5'
           cache: true
 
-      - name: Pull DCO package needed for testing
-        run: |
-          aws s3 cp --no-progress "${{ env.DCO_MAIN_S3_PATH }}/${{ inputs.DCO_MAIN_ZARF_PACKAGE }}" "${{ inputs.DCO_MAIN_ZARF_PACKAGE }}"
+#      - name: Pull DCO package needed for testing
+#        run: |
+#          aws s3 cp --no-progress "${{ env.DCO_MAIN_S3_PATH }}/${{ inputs.DCO_MAIN_ZARF_PACKAGE }}" "${{ inputs.DCO_MAIN_ZARF_PACKAGE }}"
 
       - name: Install dependencies for terratest
         run: |
@@ -117,6 +117,6 @@ jobs:
           SLACK_USERNAME: GitHub
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
-#      - name: Save Package to S3
-#        run: |
-#          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
+      - name: Save Package to S3
+        run: |
+          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
