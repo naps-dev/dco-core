@@ -24,6 +24,8 @@ defaults:
 env:
   S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/${{ github.repository }}/${{ github.head_ref || github.ref_name }}"
   ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
+  DCO_MAIN_S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/dco-foundation/main"
+  DCO_MAIN_ZARF_PACKAGE: zarf-package-dco-foundation-amd64.tar.zst
 jobs:
   package-component:
     runs-on: [self-hosted, onprem]
@@ -50,9 +52,6 @@ jobs:
           # cleanup and init a tmp dir
           rm -rf big-tmp
           mkdir big-tmp
-          echo "PWD is $PWD"
-          echo "ls is:"
-          ls -ltra
 
           # build the zarf package
           zarf package create \
@@ -95,6 +94,10 @@ jobs:
         with:
           go-version: '^1.19.5'
           cache: true
+
+      - name: Pull DCO package needed for testing
+        run: |
+          aws s3 cp --no-progress "${{ env.DCO_MAIN_S3_PATH }}/${{ inputs.DCO_MAIN_ZARF_PACKAGE }}" "${{ inputs.DCO_MAIN_ZARF_PACKAGE }}"
 
       - name: Install dependencies for terratest
         run: |

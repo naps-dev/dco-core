@@ -6,16 +6,23 @@ import (
 	"strconv"
 	"testing"
 	"time"
+    "strings"
+    "context"
+    "net"
 
 	"github.com/gruntwork-io/terratest/modules/docker"
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/shell"
 	"github.com/stretchr/testify/require"
+    "github.com/docker/docker/api/types"
+    "github.com/docker/docker/client"
+    v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func TestZarfPackage(t *testing.T) {
 	zarfPackage := os.Getenv("ZARF_PACKAGE")
+	clusterName := "test-dco-core"
 
 	cwd, err := os.Getwd()
 
@@ -32,10 +39,12 @@ func TestZarfPackage(t *testing.T) {
 
 	clusterSetupCmd := shell.Command{
 		Command: "k3d",
-		Args: []string{"cluster", "create", "test-dco-core",
+		Args: []string{"cluster", "create", clusterName,
 			"--k3s-arg", "--disable=traefik@server:*",
-			"--port", "0:443@loadbalancer",
-			"--port", "0:80@loadbalancer"},
+			"--k3s-arg", "--disable=servicelb@server:*",
+			"--port", "443:443@loadbalancer",
+			"--port", "80:80@loadbalancer",
+			"--agents", "2"},
 		Env: testEnv,
 	}
 
@@ -53,6 +62,13 @@ func TestZarfPackage(t *testing.T) {
 
 	shell.RunCommand(t, clusterSetupCmd)
 
+	// set network ID to inspect
+	contextName := "k3d-" + clusterName
+	networkID := contextName
+
+	// Get IP range we can use for metallb load balancer
+	ipstart, ipend := DetermineIPRange(t, networkID)
+
 	zarfInitCmd := shell.Command{
 		Command: "zarf",
 		Args:    []string{"init", "--components", "git-server", "--confirm"},
@@ -63,14 +79,17 @@ func TestZarfPackage(t *testing.T) {
 
 	zarfDeployDCOCmd := shell.Command{
 		Command: "zarf",
-		Args:    []string{"package", "deploy", "../" + zarfPackage, "--confirm"},
+		Args: []string{"package", "deploy", "../" + zarfPackage, "--confirm",
+			"--components", "flux,big-bang-core,setup,kubevirt,cdi,metallb,metallb-config,dataplane-ek",
+			"--set", "METALLB_IP_ADDRESS_POOL=" + ipstart.String() + "-" + ipend.String(),
+		},
 		Env:     testEnv,
 	}
 
 	shell.RunCommand(t, zarfDeployDCOCmd)
 
 	// Wait for DCO elastic to come up
-	opts := k8s.NewKubectlOptions("k3d-test-dco-core", "/tmp/test_kubeconfig_dco_core", "dataplane-ek")
+	opts := k8s.NewKubectlOptions(contextName, "/tmp/test_kubeconfig_dco_core", "dataplane-ek")
 	k8s.WaitUntilServiceAvailable(t, opts, "dataplane-ek-es-http", 40, 30*time.Second)
 
 	// Check that Kyverno is successfully generating policy reports
@@ -82,38 +101,14 @@ func TestZarfPackage(t *testing.T) {
 
 	shell.RunCommand(t, checkAlert)
 
-	// Get the port for the curl
-	k3dInspect := docker.Inspect(t, "k3d-test-dco-core-serverlb")
-
-	httpsPort := k3dInspect.GetExposedHostPort(443)
-	httpsPortStr := strconv.Itoa(int(httpsPort))
-
 	// Wait for Neuvector UI
-	opts = k8s.NewKubectlOptions("k3d-test-dco-core", "/tmp/test_kubeconfig_dco_core", "neuvector")
+	opts = k8s.NewKubectlOptions(contextName, "/tmp/test_kubeconfig_dco_core", "neuvector")
 	k8s.WaitUntilServiceAvailable(t, opts, "neuvector-service-webui", 50, 30*time.Second)
 
-	// Attempt to force IP on public-ingressgateway service
-	dataplaneResourcePath, err := filepath.Abs("dataplane-ingressgateway.yaml")
-	require.NoError(t, err)
-
-	// Attempt to force IP on passthrough-ingressgateway service
-	passthroughResourcePath, err := filepath.Abs("passthrough-ingressgateway.yaml")
-	require.NoError(t, err)
-
-	opts = k8s.NewKubectlOptions("k3d-test-dco-core", "/tmp/test_kubeconfig_dco_core", "istio-system")
+	opts = k8s.NewKubectlOptions(contextName, "/tmp/test_kubeconfig_dco_core", "istio-system")
 	retries := 0
 
 	for retries = 0; retries < 5; retries++ {
-		// Delete dataplane-ingressgateway to free up the IP and sleep a bit
-		logger.Log(t, "Delete dataplane-ingressgateway")
-		err = k8s.KubectlDeleteE(t, opts, dataplaneResourcePath)
-		require.NoError(t, err)
-
-		// Delete passthrough-ingressgateway to free up the IP and sleep a bit
-		logger.Log(t, "Delete passthrough-ingressgateway")
-		err = k8s.KubectlDeleteE(t, opts, passthroughResourcePath)
-		require.NoError(t, err)
-
 		logger.Log(t, "Sleep 45s")
 		time.Sleep(45 * time.Second)
 
@@ -133,15 +128,15 @@ func TestZarfPackage(t *testing.T) {
 		t.FailNow()
 	}
 
+	// Determine IP used by the public ingressgateway
+	public_igw := k8s.GetService(t, k8s.NewKubectlOptions(contextName, kubeconfigPath, "istio-system"), "public-ingressgateway")
+	public_lb_ip := public_igw.Status.LoadBalancer.Ingress[0].IP
+
 	curlCmd := shell.Command{
 		Command: "curl",
-		Args: []string{
-			"-k",
-			"-L",
-			"https://neuvector.vp.bigbang.dev:" + httpsPortStr,
-			"--resolve",
-			"neuvector.vp.bigbang.dev:" + httpsPortStr + ":127.0.0.1",
-			"--fail-with-body"},
+		Args: []string{"--resolve", "neuvector.vp.bigbang.dev:443:" + public_lb_ip,
+			"--fail-with-body",
+			"https://neuvector.vp.bigbang.dev"},
 		Env: testEnv,
 	}
 
@@ -149,23 +144,9 @@ func TestZarfPackage(t *testing.T) {
 		shell.RunCommand(t, curlCmd)
 	})
 
-	// Attempt to force IP on passthrough-ingressgateway service
-	publicResourcePath, err := filepath.Abs("public-ingressgateway.yaml")
-	require.NoError(t, err)
-
 	retries = 0
 
 	for retries = 0; retries < 5; retries++ {
-		// Delete dataplane-ingressgateway to free up the IP and sleep a bit
-		logger.Log(t, "Delete dataplane-ingressgateway")
-		err = k8s.KubectlDeleteE(t, opts, dataplaneResourcePath)
-		require.NoError(t, err)
-
-		// Delete public-ingressgateway to free up the IP and sleep a bit
-		logger.Log(t, "Delete public-ingressgateway")
-		err = k8s.KubectlDeleteE(t, opts, publicResourcePath)
-		require.NoError(t, err)
-
 		logger.Log(t, "Sleep 45s")
 		time.Sleep(45 * time.Second)
 
@@ -185,19 +166,56 @@ func TestZarfPackage(t *testing.T) {
 		t.FailNow()
 	}
 
-	curlCmd = shell.Command{
+	// Determine IP used by the passthrough ingressgateway
+	passthrough_igw := k8s.GetService(t, k8s.NewKubectlOptions(contextName, kubeconfigPath, "istio-system"), "passthrough-ingressgateway")
+	passthrough_lb_ip := passthrough_igw.Status.LoadBalancer.Ingress[0].IP
+
+	curlCmd := shell.Command{
 		Command: "curl",
-		Args: []string{
-			"-k",
-			"-L",
-			"https://keycloak.vp.bigbang.dev:" + httpsPortStr + "/auth",
-			"--resolve",
-			"keycloak.vp.bigbang.dev:" + httpsPortStr + ":127.0.0.1",
-			"--fail-with-body"},
+		Args: []string{"--resolve", "keycloak.vp.bigbang.dev:443:" + passthrough_lb_ip,
+			"--fail-with-body",
+			"https://keycloak.vp.bigbang.dev"},
 		Env: testEnv,
 	}
 
 	t.Run("Keycloak UI is accessible through Istio", func(t *testing.T) {
 		shell.RunCommand(t, curlCmd)
 	})
+}
+
+// -------------------------------------------------------------------------
+// DetermineIPRange returns the first and last IP in the subnet
+// This is used to set the IP range for metallb
+// -------------------------------------------------------------------------
+func DetermineIPRange(t *testing.T, networkID string) (net.IP, net.IP) {
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		t.Error("ERROR: Unable to create docker client, exiting." + err.Error())
+	}
+
+	network, err := cli.NetworkInspect(context.Background(), networkID, types.NetworkInspectOptions{})
+	if err != nil {
+		t.Error("ERROR: Unable to inspect network, exiting." + err.Error())
+	}
+
+	subnet := network.IPAM.Config[0].Subnet
+
+	ipaddr, ipnet, err := net.ParseCIDR(subnet)
+	if err != nil {
+		t.Error("ERROR: Unable to parse CIDR, exiting." + err.Error())
+	}
+
+	octets := ipaddr.To4()
+	octets[2]++
+	octets[3] = 0
+
+	ipstart := net.IPv4(octets[0], octets[1], octets[2], octets[3])
+
+	octets[3] = 255
+	ipend := net.IPv4(octets[0], octets[1], octets[2], octets[3])
+
+	if !ipnet.Contains(ipstart) || !ipnet.Contains(ipend) {
+		t.Error("ERROR: unable to gonkulate IPs in the k3d subnet, exiting.")
+	}
+	return ipstart, ipend
 }
