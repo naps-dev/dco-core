@@ -101,7 +101,7 @@ jobs:
           go get -t ./...
 
       - name: Run component test
-        working-directory: ./test/${{ inputs.COMPONENT }}
+        working-directory: ./${{ inputs.COMPONENT }}/test/
         run: |
           go test -timeout 40m
 
