@@ -1,0 +1,12 @@
+bases:
+  - git::https://repo1.dso.mil/big-bang/bigbang.git/base?ref=tags/1.57.0
+
+configMapGenerator:
+  - name: common
+    namespace: bigbang
+    behavior: merge
+    files:
+      - values.yaml
+
+patchesStrategicMerge:
+  - environment-bb-secret.yaml

@@ -1,0 +1,48 @@
+name: Build DCO-Core Image and Zarf Package
+run-name: ${{github.actor}} is building the DCO-Core image and Zarf package
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches: [main]
+    tags: ["v**"]
+  schedule:
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+    inputs:
+      component:
+        description: "The component the workflow will package, deploy, and test"
+        required: false
+        default: 'dco-core'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  REF_NAME: "${{ github.head_ref || github.ref_name }}"
+  REF_TYPE: "${{ github.ref_type }}"
+  ZARF_PACKAGE: zarf-package-dco-core-amd64.tar.zst
+  MINIMAL_ZARF_PACKAGE: zarf-package-dco-core-minimal-amd64.tar.zst
+
+jobs:
+  # Necessary workaround to get env vars passed to the real jobs
+  propagate-env:
+    runs-on: ubuntu-22.04
+    outputs:
+      REF_NAME: ${{ env.REF_NAME }}
+      REF_TYPE: ${{ env.REF_TYPE }}
+      ZARF_PACKAGE: ${{ env.ZARF_PACKAGE }}
+      MINIMAL_ZARF_PACKAGE: ${{ env.MINIMAL_ZARF_PACKAGE }}
+    steps:
+    - run: echo "Exposing env vars"
+
+  package-create:
+    needs: [propagate-env]
+    uses: ./.github/workflows/package.yaml
+    secrets: inherit
+    with:
+      REF_NAME: ${{ needs.propagate-env.outputs.REF_NAME }}
+      REF_TYPE: ${{ needs.propagate-env.outputs.REF_TYPE }}
+      ZARF_PACKAGE: ${{ needs.propagate-env.outputs.ZARF_PACKAGE }}
+      MINIMAL_ZARF_PACKAGE: ${{ needs.propagate-env.outputs.MINIMAL_ZARF_PACKAGE }}
