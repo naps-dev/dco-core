@@ -34,6 +34,7 @@ jobs:
       REF_TYPE: ${{ env.REF_TYPE }}
       ZARF_PACKAGE: ${{ env.ZARF_PACKAGE }}
       MINIMAL_ZARF_PACKAGE: ${{ env.MINIMAL_ZARF_PACKAGE }}
+      COMPONENT: ${{ inputs.COMPONENT }}
     steps:
     - run: echo "Exposing env vars"
 
@@ -46,4 +47,4 @@ jobs:
       REF_TYPE: ${{ needs.propagate-env.outputs.REF_TYPE }}
       ZARF_PACKAGE: ${{ needs.propagate-env.outputs.ZARF_PACKAGE }}
       MINIMAL_ZARF_PACKAGE: ${{ needs.propagate-env.outputs.MINIMAL_ZARF_PACKAGE }}
-      COMPONENT: ${{ inputs.COMPONENT }}
+      COMPONENT: ${{ env.COMPONENT }}
