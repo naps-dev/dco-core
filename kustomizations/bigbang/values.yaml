@@ -1,0 +1,333 @@
+domain: "###ZARF_VAR_DOMAIN###"
+
+registryCredentials:
+  registry: "###ZARF_REGISTRY###"
+  username: "zarf-pull"
+  password: "###ZARF_REGISTRY_AUTH_PULL###"
+
+git:
+  existingSecret: "private-git-server"
+
+networkPolicies:
+  enabled: false
+  # When in prod use a real CIDR. Don't do this, it isn't secure. This is done here since it is a demo and the CIDR changes based on which Linux distro you are running on.
+  controlPlaneCidr: "0.0.0.0/0"
+  nodeCidr: "0.0.0.0/0"
+  vpcCidr: "0.0.0.0/0"
+
+kiali:
+  enabled: false
+
+istio:
+  enabled: true
+  ingressGateways:
+    public-ingressgateway:
+      type: "LoadBalancer"
+      # Leaving this as a placeholder -- not sure we want to set this for dev quite yet due to multiple deployment envs and distros
+      # loadBalancerIP: 10.1.29.122
+    dataplane-ingressgateway:
+      type: "LoadBalancer"
+      # Leaving this as a placeholder -- not sure we want to set this for dev quite yet due to multiple deployment envs and distros
+      # loadBalancerIP: 10.1.29.123
+    passthrough-ingressgateway:
+      type: "LoadBalancer"
+      # Node ports are assigned starting from nodePortBase.  The nodePortBase specifies the start of a range of 4 unused node ports.
+      # Node port will be assigned as follows: Port 15021 (Status) = nodePortBase, Port 80 = nodePortBase+1, Port 443 = nodePortBase+2, Port 15443 (SNI) = nodePortBase+3
+      # Node port base should be in the range from 30000 to 32764
+      # nodePortBase: 32000  # Alternatively, the kubernetesResourceSpec can be used to configure all port parameters
+
+  gateways:
+    public:
+      ingressGateway: public-ingressgateway
+      hosts:
+        - "*.###ZARF_VAR_DOMAIN###"
+    dataplane:
+      ingressGateway: dataplane-ingressgateway
+      hosts:
+        - "*.###ZARF_VAR_DOMAIN###"
+    passthrough:
+      ingressGateway: "passthrough-ingressgateway"
+      hosts:
+        - keycloak.vp.bigbang.dev
+      tls:
+        mode: "PASSTHROUGH"
+
+neuvector:
+  enabled: true
+  ingress:
+    gateway: "public"
+  values: 
+    k3s:
+      enabled: true
+
+clusterAuditor:
+  enabled: false
+gatekeeper:
+  enabled: false
+
+# EFK -> PLG, see https://repo1.dso.mil/platform-one/big-bang/bigbang/-/blob/1.39.0/docs/guides/using-bigbang/efk-plg-logging-migration.md
+logging:
+  enabled: true
+eckoperator:
+  enabled: true
+fluentbit:
+  enabled: true
+jaeger:
+  enabled: true
+loki:
+  enabled: false
+promtail:
+  enabled: false
+tempo:
+  enabled: false
+twistlock:
+  enabled: false
+kyverno:
+  enabled: true
+kyvernopolicies:
+  enabled: true
+  values:
+    policies:
+      # Keep policies in alphabetical order and name them the same as the .yaml file to help with configuration and troubleshooting
+      clone-configs:
+        enabled: false
+      disallow-annotations:
+        enabled: false
+      disallow-deprecated-apis:
+        enabled: false
+      disallow-host-namespaces:
+        enabled: true
+        validationFailureAction: audit
+      disallow-image-tags:
+        enabled: false
+      disallow-istio-injection-bypass:
+        enabled: false
+      disallow-labels:
+        enabled: false
+      disallow-namespaces:
+        enabled: false
+      disallow-nodeport-services:
+        enabled: true
+        validationFailureAction: audit
+      disallow-pod-exec:
+        enabled: false
+      disallow-privilege-escalation:
+        enabled: true
+        validationFailureAction: audit
+      disallow-privileged-containers:
+        enabled: true
+        validationFailureAction: audit
+      disallow-selinux-options:
+        enabled: true
+        validationFailureAction: audit
+      disallow-tolerations:
+        enabled: false
+      disallow-rbac-on-default-serviceaccounts:
+        enabled: false
+      require-annotations:
+        enabled: false
+      require-cpu-limit:
+        enabled: false
+      require-drop-all-capabilities:
+        enabled: true
+        validationFailureAction: audit
+      require-image-signature:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of images that must be signed and the public key to verify.  Use `kubectl explain clusterpolicy.spec.rules.verifyImages` for fields.
+          require:
+          - imageReferences:
+            - "registry1.dso.mil/ironbank/*"
+            attestors:
+            - count: 1
+              entries:
+              - keys:
+                  publicKeys: |-
+                    -----BEGIN PUBLIC KEY-----
+                    MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7CjMGH005DFFz6mffqTIGurBt6fL
+                    UfTZxuEDFRBS8mFJx1xw8DEVvjMibLTtqmAoJxUmzmGFgzz+LV875syVEg==
+                    -----END PUBLIC KEY-----
+            # Ironbank images are rebuilt nightly and tags are not immutable
+            mutateDigest: false
+            verifyDigest: false
+      require-istio-on-namespaces:
+        enabled: false
+      require-labels:
+        enabled: false
+      require-memory-limit:
+        enabled: false
+      require-non-root-group:
+        enabled: true
+        validationFailureAction: audit
+      require-non-root-user:
+        enabled: true
+        validationFailureAction: audit
+      require-probes:
+        enabled: false
+      require-requests-equal-limits:
+        enabled: false
+      require-ro-rootfs:
+        enabled: false
+      restrict-apparmor:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed AppArmor profiles
+          # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards/#baseline
+          allow:
+          - runtime/default
+          - localhost/*
+      restrict-external-ips:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of external IPs allowed in services.  Must be an IP address.  Use the wildcard `?*` to support subnets (e.g. `192.168.0.?*`)
+          allow: []
+      restrict-external-names:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of external names allowed in services.  Must be a lowercase RFC-1123 hostname.
+          allow: []
+      restrict-capabilities:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of capabilities that are allowed to be added
+          # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted
+          # See https://man7.org/linux/man-pages/man7/capabilities.7.html for list of capabilities.  The `CAP_` prefix is removed in Kubernetes names.
+          allow:
+          - NET_BIND_SERVICE
+      restrict-group-id:
+        enabled: false
+      restrict-host-path-mount:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed paths for hostPath volumes to mount
+          allow: []
+      restrict-host-path-mount-pv:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed paths for hostPath volumes to mount
+          allow: []
+      restrict-host-path-write:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed paths for hostPath volumes to mount as read/write
+          allow: []
+      restrict-host-ports:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed host ports
+          allow: []
+      restrict-image-registries:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed registries that images may use
+          allow:
+          - registry1.dso.mil
+      restrict-proc-mount:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed proc mount values.  Valid values are `Default` and `Unmasked`.
+          # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards
+          allow:
+          - Default
+      restrict-seccomp:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed seccomp profiles.  Valid values are `Localhost`, `RuntimeDefault`, and `Unconfined`
+          # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted
+          allow:
+          - RuntimeDefault
+          - Localhost
+      restrict-selinux-type:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed values for the `type` field
+          # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards
+          allow:
+          - container_t
+          - container_init_t
+          - container_kvm_t
+      restrict-sysctls:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed sysctls.
+          # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards
+          allow:
+          - kernel.shm_rmid_forced
+          - net.ipv4.ip_local_port_range
+          - net.ipv4.ip_unprivileged_port_start
+          - net.ipv4.tcp_syncookies
+          - net.ipv4.ping_group_range
+      restrict-user-id:
+        enabled: false
+      restrict-volume-types:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed Volume types.  Valid values are the volume types listed here: https://kubernetes.io/docs/concepts/storage/volumes/#volume-types
+          # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted
+          allow:
+          - "configMap"
+          - "csi"
+          - "downwardAPI"
+          - "emptyDir"
+          - "ephemeral"
+          - "persistentVolumeClaim"
+          - "projected"
+          - "secret"
+      update-image-pull-policy:
+        enabled: false
+      update-image-registry:
+        enabled: false
+      update-token-automount:
+        enabled: false
+
+kyvernoreporter:
+  enabled: false
+
+addons:
+  keycloak:
+    enabled: true
+    
+    ingress:
+      gateway: "passthrough"
+    
+    values:
+      replicas: 1
+
+      extraEnv: |-
+        - name: KC_HTTPS_CERTIFICATE_FILE
+          value: /opt/keycloak/conf/tls.crt
+        - name: KC_HTTPS_CERTIFICATE_KEY_FILE
+          value: /opt/keycloak/conf/tls.key
+        - name: KC_HTTPS_CLIENT_AUTH
+          value: request
+        - name: KC_HTTP_ENABLED
+          value: "true"
+        - name: KC_HTTP_RELATIVE_PATH
+          value: /auth
+        - name: KC_HOSTNAME
+          value: keycloak.vp.bigbang.dev
+        - name: KC_HOSTNAME_STRICT
+          value: "true"
+        - name: KC_HOSTNAME_STRICT_HTTPS
+          value: "true"
+        - name: KC_LOG_LEVEL
+          value: "org.keycloak.events:DEBUG,org.infinispan:INFO,org.jgroups:INFO"
+        - name: KC_CACHE
+          value: ispn
+        - name: KC_CACHE_STACK
+          value: kubernetes

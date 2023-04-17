@@ -1,4 +1,4 @@
-# Defensive Cyber Operations Foundation
+# Defensive Cyber Operations Core
 
 ## BigBang Upgrade Process
 Tentative instructions for upgrading the version of Bigbang included in the zarf package. This only addresses how to update the zarf package -- additional consideration will be needed for updating any existing deployments.

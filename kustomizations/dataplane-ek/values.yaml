@@ -1,0 +1,104 @@
+
+# hostname is deprecated and replaced with domain. But if hostname exists then use it.
+hostname: ${DOMAIN}
+domain: ${DOMAIN}
+
+istio:
+  enabled: true
+  kibana:
+    gateways:
+      - istio-system/dataplane
+    hosts:
+      - "dataplane-kibana.${DOMAIN}"
+  mtls:
+    mode: PERMISSIVE
+
+networkPolicies:
+  enabled: false
+
+kibana:
+  count: ${KIBANA_COUNT}
+  imagePullSecrets:
+    - name: private-registry
+
+monitoring:
+  enabled: false
+
+metrics:
+  enabled: false
+
+elasticsearch:
+  imagePullSecrets:
+    - name: private-registry
+  master:
+    count: ${ES_MASTER_COUNT}
+    initContainers:
+      - name: elastic-internal-init-filesystem
+        securityContext:
+          privileged: false
+          capabilities:
+            drop:
+              - ALL
+      - name: elastic-internal-suspend
+        securityContext:
+          privileged: false
+          capabilities:
+            drop:
+              - ALL
+  data:
+    count: ${ES_DATA_COUNT}
+    initContainers:
+      - name: elastic-internal-init-filesystem
+        securityContext:
+          privileged: false
+          capabilities:
+            drop:
+              - ALL
+      - name: elastic-internal-suspend
+        securityContext:
+          privileged: false
+          capabilities:
+            drop:
+              - ALL
+  ingest:
+    initContainers:
+      - name: elastic-internal-init-filesystem
+        securityContext:
+          privileged: false
+          capabilities:
+            drop:
+              - ALL
+      - name: elastic-internal-suspend
+        securityContext:
+          privileged: false
+          capabilities:
+            drop:
+              - ALL
+  ml:
+    initContainers:
+      - name: elastic-internal-init-filesystem
+        securityContext:
+          privileged: false
+          capabilities:
+            drop:
+              - ALL
+      - name: elastic-internal-suspend
+        securityContext:
+          privileged: false
+          capabilities:
+            drop:
+              - ALL
+  coord:
+    initContainers:
+      - name: elastic-internal-init-filesystem
+        securityContext:
+          privileged: false
+          capabilities:
+            drop:
+              - ALL
+      - name: elastic-internal-suspend
+        securityContext:
+          privileged: false
+          capabilities:
+            drop:
+              - ALL

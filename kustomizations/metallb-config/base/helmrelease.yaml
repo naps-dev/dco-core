@@ -1,0 +1,36 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: metallb-config
+  namespace: metallb
+spec:
+  targetNamespace: metallb
+  releaseName: metallb-config
+  interval: 5m
+  timeout: 10m
+  chart:
+    spec:
+      interval: 1m
+      chart: ./charts/metallb-config
+      sourceRef:
+        kind: GitRepository
+        name: metallb-config
+  test:
+    enable: false
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      retries: 5
+      remediateLastFailure: true
+    cleanupOnFail: true
+  rollback:
+    timeout: 30m
+    cleanupOnFail: false
+  dependsOn:
+    - name: metallb
+      namespace: metallb
+  values:
+    ipAddressPool: ${IP_ADDRESS_POOL}
+    interface: ${INTERFACE}
