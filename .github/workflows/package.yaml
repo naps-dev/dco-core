@@ -24,8 +24,9 @@ defaults:
 env:
   S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/${{ github.repository }}/${{ github.head_ref || github.ref_name }}"
   ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
-  DCO_MAIN_S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/dco-foundation/main"
-  DCO_MAIN_ZARF_PACKAGE: zarf-package-dco-foundation-amd64.tar.zst
+  COMPONENT: "${{ inputs.COMPONENT}}"
+  DCO_MAIN_S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/dco-core/main"
+  DCO_MAIN_ZARF_PACKAGE: zarf-package-dco-core-amd64.tar.zst
 jobs:
   package-component:
     runs-on: [self-hosted, onprem]
@@ -116,6 +117,6 @@ jobs:
           SLACK_USERNAME: GitHub
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
-      - name: Save Package to S3
-        run: |
-          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
+#      - name: Save Package to S3
+#        run: |
+#          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
