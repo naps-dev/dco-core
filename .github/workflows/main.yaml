@@ -1,5 +1,5 @@
-name: Build DCO-Core Image and Zarf Package
-run-name: ${{github.actor}} is building the DCO-Core image and Zarf package
+name: Build Component Image and Zarf Package
+run-name: ${{github.actor}} is building the Component image and Zarf package
 on:
   pull_request:
     types: [opened, synchronize]
@@ -22,7 +22,7 @@ permissions:
 env:
   REF_NAME: "${{ github.head_ref || github.ref_name }}"
   REF_TYPE: "${{ github.ref_type }}"
-  ZARF_PACKAGE: zarf-package-dco-core-amd64.tar.zst
+  ZARF_PACKAGE: zarf-package-${{ inputs.COMPONENT }}-amd64.tar.zst
   MINIMAL_ZARF_PACKAGE: zarf-package-dco-core-minimal-amd64.tar.zst
 
 jobs:
@@ -46,3 +46,4 @@ jobs:
       REF_TYPE: ${{ needs.propagate-env.outputs.REF_TYPE }}
       ZARF_PACKAGE: ${{ needs.propagate-env.outputs.ZARF_PACKAGE }}
       MINIMAL_ZARF_PACKAGE: ${{ needs.propagate-env.outputs.MINIMAL_ZARF_PACKAGE }}
+      COMPONENT: ${{ inputs.COMPONENT }}

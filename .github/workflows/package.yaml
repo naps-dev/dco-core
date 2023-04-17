@@ -1,5 +1,5 @@
-name: Package DCO Core
-run-name: ${{github.actor}} is building the DCO Core Zarf Package
+name: Create Package
+run-name: ${{github.actor}} is building the ${{ inputs.COMPONENT }} package
 on:
   workflow_call:
     inputs:
@@ -26,7 +26,7 @@ env:
   ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
   MINIMAL_ZARF_PACKAGE: "${{ inputs.MINIMAL_ZARF_PACKAGE }}"
 jobs:
-  package-dco-core:
+  package-component:
     runs-on: [self-hosted, onprem]
     steps:
       - name: Checkout
@@ -61,6 +61,7 @@ jobs:
 
           # cleanup tmp dir
           rm -rf ./big-tmp
+        working-directory: ${{ inputs.COMPONENT }}
 
       - name: Create Zarf Package from Tag
         if: ${{ inputs.REF_TYPE == 'tag'}}
@@ -78,6 +79,7 @@ jobs:
 
           # cleanup tmp dir
           rm -rf ./big-tmp
+        working-directory: ${{ inputs.COMPONENT }}
 
       - name: Configure AWS S3 Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -97,7 +99,7 @@ jobs:
           go get -t ./...
 
       - name: Run component test
-        working-directory: ./test
+        working-directory: ./test/${{ inputs.COMPONENT }}
         run: |
           go test -timeout 40m
 
