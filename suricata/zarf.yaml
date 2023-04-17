@@ -32,8 +32,8 @@ components:
       - name: suricata-helm
         namespace: suricata
         files:
-          - suricata/manifests/namespace.yaml
-          - suricata/manifests/gitrepository.yaml
-          - suricata/manifests/helmrelease.yaml
+          - manifests/namespace.yaml
+          - manifests/gitrepository.yaml
+          - manifests/helmrelease.yaml
     images:
       - "registry.hub.docker.com/jasonish/suricata:6.0.2"
