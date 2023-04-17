@@ -1,0 +1,39 @@
+kind: ZarfPackageConfig
+metadata:
+  name: suricata
+  description: "Deploys suricata IDS in basic configuration"
+  architecture: amd64
+
+constants:
+  - name: GIT_REF
+    description: "Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy"
+    value: "###ZARF_PKG_TMPL_GIT_REF###"
+
+variables:
+  - name: INTERFACE
+    default: "eth0"
+    prompt: false
+
+  - name: NODE_LABEL
+    default: "kubernetes.io/os"
+    prompt: false
+
+  - name: NODE_LABEL_VALUE
+    default: "linux"
+    prompt: false
+
+components:
+  - name: suricata
+    description: "Suricata IDS tool"
+    required: true
+    repos:
+      - https://github.com/naps-dev/zarf-suricata-pkg.git
+    manifests:
+      - name: suricata-helm
+        namespace: suricata
+        files:
+          - suricata/manifests/namespace.yaml
+          - suricata/manifests/gitrepository.yaml
+          - suricata/manifests/helmrelease.yaml
+    images:
+      - "registry.hub.docker.com/jasonish/suricata:6.0.2"

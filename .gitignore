@@ -1,0 +1,5 @@
+*.zst
+*.iso
+zarf-sbom/
+scratch/
+.DS_Store

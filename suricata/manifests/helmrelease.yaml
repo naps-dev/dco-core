@@ -1,0 +1,34 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: suricata
+  namespace: suricata
+spec:
+  targetNamespace: suricata
+  releaseName: suricata
+  interval: 5m
+  timeout: 10m
+  chart:
+    spec:
+      interval: 1m
+      chart: ./chart
+      sourceRef:
+        kind: GitRepository
+        name: suricata
+  test:
+    enable: false
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      retries: 5
+      remediateLastFailure: true
+    cleanupOnFail: true
+  rollback:
+    timeout: 30m
+    cleanupOnFail: false
+  values:
+    interface: ###ZARF_VAR_INTERFACE###
+    node_label: ###ZARF_VAR_NODE_LABEL###
+    node_label_value: ###ZARF_VAR_NODE_LABEL_VALUE###
