@@ -15,6 +15,9 @@ on:
       MINIMAL_ZARF_PACKAGE:
         required: true
         type: string
+      COMPONENT:
+        required: true
+        type: string
 permissions:
   id-token: write
   contents: read
