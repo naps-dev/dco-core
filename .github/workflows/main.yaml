@@ -47,4 +47,4 @@ jobs:
       REF_TYPE: ${{ needs.propagate-env.outputs.REF_TYPE }}
       ZARF_PACKAGE: ${{ needs.propagate-env.outputs.ZARF_PACKAGE }}
       MINIMAL_ZARF_PACKAGE: ${{ needs.propagate-env.outputs.MINIMAL_ZARF_PACKAGE }}
-      COMPONENT: ${{ env.COMPONENT }}
+      COMPONENT: ${{ needs.propagate-env.outputs.COMPONENT }}
