@@ -1,32 +1,31 @@
 package test
 
 import (
-    "os"
-    "testing"
-    "time"
-    "strings"
+	"os"
+	"testing"
+	"time"
+	"strings"
     "context"
     "net"
 
+	"github.com/gruntwork-io/terratest/modules/k8s"
+	"github.com/gruntwork-io/terratest/modules/logger"
+	"github.com/gruntwork-io/terratest/modules/shell"
     "github.com/docker/docker/api/types"
     "github.com/docker/docker/client"
-
-    "github.com/gruntwork-io/terratest/modules/k8s"
-    "github.com/gruntwork-io/terratest/modules/shell"
-    v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func TestZarfPackage(t *testing.T) {
 	component := os.Getenv("COMPONENT")
-	kubeconfigPath := "/tmp/" + component + "_test_kubeconfig"
 	clusterName := "test-" + component
+	kubeconfigPath := "/tmp/" + component + "_test_kubeconfig"
 
 	cwd, err := os.Getwd()
 
 	if err != nil {
 		t.Error("ERROR: Unable to determine working directory, exiting." + err.Error())
 	} else {
-		t.Log("Working directory: " + cwd)
+		logger.Log(t, "Working directory: "+cwd)
 	}
 
 	// Additional test environment vars. Use this to make sure proper kubeconfig is being referenced by k3d
@@ -39,6 +38,8 @@ func TestZarfPackage(t *testing.T) {
 		Args: []string{"cluster", "create", clusterName,
 			"--k3s-arg", "--disable=traefik@server:*",
 			"--k3s-arg", "--disable=servicelb@server:*",
+			"--port", "443:443@loadbalancer",
+			"--port", "80:80@loadbalancer",
 			"--agents", "2",
 			"--k3s-node-label", component + "-capture=true@agent:0"},
 		Env: testEnv,
@@ -77,32 +78,29 @@ func TestZarfPackage(t *testing.T) {
 
 	zarfDeployDCOCmd := shell.Command{
 		Command: "zarf",
-		Args: []string{"package", "deploy", "../zarf-package-dco-core-amd64.tar.zst",
-			"--confirm",
+		Args: []string{"package", "deploy", "../../dco-core/zarf-package-dco-core-amd64.tar.zst", "--confirm",
 			"--components", "flux,big-bang-core,setup,kubevirt,cdi,metallb,metallb-config,dataplane-ek",
 			"--set", "METALLB_IP_ADDRESS_POOL=" + ipstart.String() + "-" + ipend.String(),
-			// "--set", "METALLB_INTERFACE", ""
 		},
-		Env: testEnv,
-	}
-
-	shell.RunCommand(t, zarfDeployDCOCmd)
-    // ARKIME SPECIFIC
-
-	// Wait for DCO elastic (Big Bang deployment) to come up before deploying our component
-	// Note that k3d calls the cluster test-<component>, but actual context is called k3d-test-<component>
-	opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "dataplane-ek")
-	k8s.WaitUntilServiceAvailable(t, opts, "dataplane-ek-es-http", 40, 30*time.Second)
-
-	zarfDeployComponentCmd := shell.Command{
-		Command: "zarf",
-		Args:    []string{"package", "deploy", "../zarf-package-" + component + "-amd64.tar.zst", "--confirm"},
 		Env:     testEnv,
 	}
 
-	shell.RunCommand(t, zarfDeployComponentCmd)
+	shell.RunCommand(t, zarfDeployDCOCmd)
 
     if component == "arkime" {
+        // Wait for DCO elastic (Big Bang deployment) to come up before deploying our component
+        // Note that k3d calls the cluster test-<component>, but actual context is called k3d-test-<component>
+        opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "dataplane-ek")
+        k8s.WaitUntilServiceAvailable(t, opts, "dataplane-ek-es-http", 40, 30*time.Second)
+
+        zarfDeployComponentCmd := shell.Command{
+            Command: "zarf",
+            Args:    []string{"package", "deploy", "../zarf-package-" + component + "-amd64.tar.zst", "--confirm"},
+            Env:     testEnv,
+        }
+
+        shell.RunCommand(t, zarfDeployComponentCmd)
+
         // wait for arkime service to come up before attempting to hit it
         opts = k8s.NewKubectlOptions(contextName, kubeconfigPath, "arkime")
         k8s.WaitUntilServiceAvailable(t, opts, "arkime-viewer", 40, 30*time.Second)
@@ -164,46 +162,6 @@ func TestZarfPackage(t *testing.T) {
                 t.Log("Pod log: " + k8s.GetPodLogs(t, opts, &pod, ""))
             }
         })
-    }
-    if component == "suricata" {
-        //Test pods come up
-        opts = k8s.NewKubectlOptions("k3d-test-suricata", "/tmp/test_kubeconfig_suricata", "suricata")
-        x := 0
-        pods := k8s.ListPods(t, opts, metav1.ListOptions{})
-        for x < 30 {
-            if len(pods) > 0 {
-                break
-            } else if x == 29 {
-                t.Errorf("Could not start Suricata pod (Timeout)")
-            }
-            time.Sleep(10*time.Second)
-            pods = k8s.ListPods(t, opts, metav1.ListOptions{})
-            x += 1
-        }
-        k8s.WaitUntilPodAvailable(t, opts, pods[0].Name, 40, 30*time.Second)
-
-        //Test alert provided by suricata devs
-        createAlert := shell.Command{
-            Command: "kubectl",
-            Args:    []string{"--namespace", "suricata", "exec", "-it", pods[0].Name, "--", "/bin/bash", "-c", "curl -A BlackSun www.google.com"},
-            Env:     testEnv,
-        }
-
-        shell.RunCommand(t, createAlert)
-
-        checkAlert := shell.Command{
-            Command: "kubectl",
-            Args:    []string{"--namespace", "suricata", "exec", "-it", pods[0].Name, "--", "/bin/bash", "-c", "tail /var/log/suricata/fast.log"},
-            Env:     testEnv,
-        }
-
-        output := shell.RunCommandAndGetOutput(t, checkAlert)
-
-        got := strings.Contains(output, "Suspicious User Agent")
-
-        if got != true {
-            t.Errorf("tail /var/log/suricata/fast.log did not contain \"Suspicious User Agent\"")
-        }
     }
 }
 

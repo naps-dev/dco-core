@@ -15,6 +15,9 @@ on:
       COMPONENT:
         required: true
         type: string
+      IMAGE_TAG:
+        required: false
+        type: string
 permissions:
   id-token: write
   contents: read
@@ -40,6 +43,17 @@ jobs:
           version: v0.25.2
           download-init-package: true
 
+      - name: Configure AWS ECR Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{secrets.AWS_ECR_ROLE}}
+          role-session-name: arkime-ecr
+          aws-region: us-east-1
+
+      - name: ECR Login
+        uses: aws-actions/amazon-ecr-login@v1
+        id: login-ecr
+
       - name: Login to Registry One
         run: |
           zarf tools registry login \
@@ -54,12 +68,17 @@ jobs:
           rm -rf big-tmp
           mkdir big-tmp
 
+          args=()
+          args+=(--set GIT_REF=refs/heads/${{ inputs.REF_NAME }})
+          if [[ -z "${IMAGE_TAG}" ]]; then
+            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }})
+          fi
+          args+=(--confirm)
+          args+=(--tmpdir $PWD/big-tmp)
+          args+=(--skip-sbom)
+
           # build the zarf package
-          zarf package create \
-            --set GIT_REF=refs/heads/${{ inputs.REF_NAME }} \
-            --confirm \
-            --tmpdir $PWD/big-tmp \
-            --skip-sbom
+          zarf package create "${args[@]}"
 
           # cleanup tmp dir
           rm -rf ./big-tmp
@@ -72,12 +91,17 @@ jobs:
           rm -rf big-tmp
           mkdir big-tmp
 
+          args=()
+          args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
+          if [[ -z "${IMAGE_TAG}" ]]; then
+            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }})
+          fi
+          args+=(--confirm)
+          args+=(--tmpdir $PWD/big-tmp)
+          args+=(--skip-sbom)
+
           # build the zarf package
-          zarf package create \
-            --set GIT_REF=refs/tags/${{ inputs.REF_NAME }} \
-            --confirm \
-            --tmpdir $PWD/big-tmp \
-            --skip-sbom
+          zarf package create "${args[@]}"
 
           # cleanup tmp dir
           rm -rf ./big-tmp
@@ -106,7 +130,7 @@ jobs:
           go get -t ./...
 
       - name: Run go test
-        working-directory: ./test/
+        working-directory: ./${{ inputs.COMPONENT }}/test/
         run: |
           go test -timeout 40m
 
