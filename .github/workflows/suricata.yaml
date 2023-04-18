@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize]
     paths:
-      - 'suricata/**'
+      - 'dco-core/suricata/**'
 
 permissions:
   id-token: write
