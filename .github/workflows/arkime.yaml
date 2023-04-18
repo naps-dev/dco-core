@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize]
     paths:
-      - './arkime/**'
+      - 'arkime/**'
 
 permissions:
   id-token: write
