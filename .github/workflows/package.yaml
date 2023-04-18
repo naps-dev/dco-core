@@ -96,16 +96,17 @@ jobs:
           go-version: '^1.19.5'
           cache: true
 
-#      - name: Pull DCO package needed for testing
-#        run: |
-#          aws s3 cp --no-progress "${{ env.DCO_MAIN_S3_PATH }}/${{ inputs.DCO_MAIN_ZARF_PACKAGE }}" "${{ inputs.DCO_MAIN_ZARF_PACKAGE }}"
+      - name: Pull DCO package needed for testing
+        if: ${{ inputs.COMPONENT != 'dco-core'}}
+        run: |
+          aws s3 cp --no-progress "${{ env.DCO_MAIN_S3_PATH }}/${{ inputs.DCO_MAIN_ZARF_PACKAGE }}" "${{ inputs.DCO_MAIN_ZARF_PACKAGE }}"
 
       - name: Install dependencies for terratest
         run: |
           go get -t ./...
 
       - name: Run component test
-        working-directory: ./test/
+        working-directory: ./${{ inputs.COMPONENT }}/test/
         run: |
           go test -timeout 40m
 

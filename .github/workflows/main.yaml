@@ -3,17 +3,13 @@ run-name: ${{github.actor}} is building the ${{ inputs.COMPONENT }} image and Za
 on:
   pull_request:
     types: [opened, synchronize]
+    paths:
+      - 'dco-core/**'
   push:
     branches: [main]
     tags: ["v**"]
   schedule:
     - cron: '30 5 * * *'
-  workflow_dispatch:
-    inputs:
-      COMPONENT:
-        description: "The component the workflow will package, deploy, and test"
-        required: false
-        default: 'dco-core'
 
 permissions:
   id-token: write
@@ -26,21 +22,20 @@ env:
 
 jobs:
   # Necessary workaround to get env vars passed to the real jobs
-  propagate-env:
-    runs-on: ubuntu-22.04
-    outputs:
-      REF_NAME: ${{ env.REF_NAME }}
-      REF_TYPE: ${{ env.REF_TYPE }}
-      ZARF_PACKAGE: ${{ env.ZARF_PACKAGE }}
-    steps:
-    - run: echo "Exposing env vars"
+#  propagate-env:
+#    runs-on: ubuntu-22.04
+#    outputs:
+#      REF_NAME: ${{ env.REF_NAME }}
+#      REF_TYPE: ${{ env.REF_TYPE }}
+#      ZARF_PACKAGE: ${{ env.ZARF_PACKAGE }}
+#    steps:
+#    - run: echo "Exposing env vars"
 
   package-create:
-    needs: [propagate-env]
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: ${{ needs.propagate-env.outputs.REF_NAME }}
-      REF_TYPE: ${{ needs.propagate-env.outputs.REF_TYPE }}
-      ZARF_PACKAGE: ${{ needs.propagate-env.outputs.ZARF_PACKAGE }}
-      COMPONENT: ${{ inputs.COMPONENT }}
+      REF_NAME: ${{ env.REF_NAME }}
+      REF_TYPE: ${{ env.REF_TYPE }}
+      ZARF_PACKAGE: ${{ env.ZARF_PACKAGE }}
+      COMPONENT: "dco-core"
