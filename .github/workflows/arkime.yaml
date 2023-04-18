@@ -1,4 +1,4 @@
-name: Build Component Image and Zarf Package
+name: Build Arkime Image and Zarf Package
 run-name: ${{github.actor}} is building the Arkime image and Zarf package
 on:
   pull_request:
