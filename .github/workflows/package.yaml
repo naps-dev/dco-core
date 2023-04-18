@@ -96,7 +96,7 @@ jobs:
           go-version: '^1.19.5'
           cache: true
 
-      - name: Pull DCO package needed for testing
+      - name: Pull DCO package needed for testing individual components
         if: ${{ inputs.COMPONENT != 'dco-core'}}
         run: |
           aws s3 cp --no-progress "${{ env.DCO_MAIN_S3_PATH }}/${{ inputs.DCO_MAIN_ZARF_PACKAGE }}" "${{ inputs.DCO_MAIN_ZARF_PACKAGE }}"
@@ -121,3 +121,4 @@ jobs:
       - name: Save Package to S3
         run: |
           aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
+        working-directory: ${{ inputs.COMPONENT }}
