@@ -1,6 +1,5 @@
 package test
 
-
 import (
     "os"
     "strconv"
