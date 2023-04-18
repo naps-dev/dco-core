@@ -6,4 +6,4 @@ This repo contains a helm chart for deploying the open source network traffic an
 * Required assets (see Dockerfile) copied to `assets/` prior to `docker build`
 
 ## Deployment Assumptions
-* A pre-existing Bigbang deployment from [dco-foundation](https://github.com/naps-dev/dco-foundation)
+* A pre-existing Bigbang deployment from [dco-core](https://github.com/naps-dev/dco-core)
