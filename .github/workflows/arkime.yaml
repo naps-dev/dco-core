@@ -1,15 +1,15 @@
 name: Build Arkime Image and Zarf Package
 run-name: ${{github.actor}} is building the Arkime image and Zarf package
 on:
-  push:
-    paths:
-      - 'arkime/**'
-    branches-ignore: [main]
-    tags-ignore: ["v**"]
-#  pull_request:
+#  push:
 #    paths:
 #      - 'arkime/**'
-#    types: [opened, synchronize]
+#    branches-ignore: [main]
+#    tags-ignore: ["v**"]
+  pull_request:
+    paths:
+      - 'arkime/**'
+    types: [opened, synchronize]
 
 permissions:
   id-token: write
@@ -17,6 +17,9 @@ permissions:
 
 jobs:
   package-create:
+#    if: ${{ github.pull_request.paths == 'push' || github.event.pull_request.merged == true }}
+#    if: "contains(github.event_name, 'pull_request') || github.event_name == 'push'"
+    if: contains('arkime', github.pull_request.paths)
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
