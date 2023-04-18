@@ -15,9 +15,8 @@ import (
 )
 
 func TestZarfPackage(t *testing.T) {
-	zarfPackage := os.Getenv("ZARF_PACKAGE")
-	clusterName := "test-dco-core"
 	component := os.Getenv("COMPONENT")
+	clusterName := "test-" + component
 	kubeconfigPath := "/tmp/" + component + "_test_kubeconfig"
 
 	cwd, err := os.Getwd()
@@ -40,13 +39,14 @@ func TestZarfPackage(t *testing.T) {
 			"--k3s-arg", "--disable=servicelb@server:*",
 			"--port", "443:443@loadbalancer",
 			"--port", "80:80@loadbalancer",
-			"--agents", "2"},
+			"--agents", "2",
+			"--k3s-node-label", component + "-capture=true@agent:0"},
 		Env: testEnv,
 	}
 
 	clusterTeardownCmd := shell.Command{
 		Command: "k3d",
-		Args:    []string{"cluster", "delete", "test-dco-core"},
+		Args:    []string{"cluster", "delete", "test-" + component},
 		Env:     testEnv,
 	}
 
@@ -56,6 +56,7 @@ func TestZarfPackage(t *testing.T) {
 	// to leave cluster up for examination after this run, comment this out:
 	defer shell.RunCommand(t, clusterTeardownCmd)
 
+	// create the cluster
 	shell.RunCommand(t, clusterSetupCmd)
 
 	// set network ID to inspect
@@ -65,6 +66,7 @@ func TestZarfPackage(t *testing.T) {
 	// Get IP range we can use for metallb load balancer
 	ipstart, ipend := DetermineIPRange(t, networkID)
 
+	// Start up zarf
 	zarfInitCmd := shell.Command{
 		Command: "zarf",
 		Args:    []string{"init", "--components", "git-server", "--confirm"},
@@ -75,7 +77,7 @@ func TestZarfPackage(t *testing.T) {
 
 	zarfDeployDCOCmd := shell.Command{
 		Command: "zarf",
-		Args: []string{"package", "deploy", "../" + zarfPackage, "--confirm",
+		Args: []string{"package", "deploy", "../../dco-core/zarf-package-dco-core-amd64.tar.zst", "--confirm",
 			"--components", "flux,big-bang-core,setup,kubevirt,cdi,metallb,metallb-config,dataplane-ek",
 			"--set", "METALLB_IP_ADDRESS_POOL=" + ipstart.String() + "-" + ipend.String(),
 		},

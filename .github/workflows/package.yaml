@@ -99,7 +99,7 @@ jobs:
       - name: Pull DCO package needed for testing individual components
         if: ${{ inputs.COMPONENT != 'dco-core'}}
         run: |
-          aws s3 cp --no-progress "${{ env.DCO_MAIN_S3_PATH }}/${{ inputs.DCO_MAIN_ZARF_PACKAGE }}" "${{ inputs.DCO_MAIN_ZARF_PACKAGE }}"
+          aws s3 cp --no-progress "${{ env.DCO_MAIN_S3_PATH }}/${{ inputs.DCO_MAIN_ZARF_PACKAGE }}" "dco-core/${{ inputs.DCO_MAIN_ZARF_PACKAGE }}"
 
       - name: Install dependencies for terratest
         run: |

@@ -1,6 +1,5 @@
 package test
 
-
 import (
     "os"
     "testing"
@@ -88,6 +87,7 @@ func TestZarfPackage(t *testing.T) {
 	}
 
 	shell.RunCommand(t, zarfDeployDCOCmd)
+    // ARKIME SPECIFIC
 
 	// Wait for DCO elastic (Big Bang deployment) to come up before deploying our component
 	// Note that k3d calls the cluster test-<component>, but actual context is called k3d-test-<component>
@@ -102,7 +102,6 @@ func TestZarfPackage(t *testing.T) {
 
 	shell.RunCommand(t, zarfDeployComponentCmd)
 
-    // BWM ARKIME SPECIFIC
     if component == "arkime" {
         // wait for arkime service to come up before attempting to hit it
         opts = k8s.NewKubectlOptions(contextName, kubeconfigPath, "arkime")
