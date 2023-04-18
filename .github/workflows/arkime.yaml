@@ -1,5 +1,5 @@
 name: Build Component Image and Zarf Package
-run-name: ${{github.actor}} is building the ${{ inputs.COMPONENT }} image and Zarf package
+run-name: ${{github.actor}} is building the Arkime image and Zarf package
 on:
   pull_request:
     types: [opened, synchronize]
