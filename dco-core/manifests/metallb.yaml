@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  path: "./kustomizations/metallb"
+  path: "./dco-core/kustomizations/metallb"
   prune: true
   sourceRef:
     kind: GitRepository

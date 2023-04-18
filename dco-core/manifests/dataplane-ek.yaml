@@ -6,7 +6,7 @@ metadata:
   namespace: dataplane-ek
 spec:
   interval: 5m
-  path: "./kustomizations/dataplane-ek"
+  path: "./dco-core/kustomizations/dataplane-ek"
   prune: true
   sourceRef:
     kind: GitRepository
