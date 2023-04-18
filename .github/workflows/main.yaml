@@ -1,15 +1,20 @@
 name: Build DCO Core Image and Zarf Package
 run-name: ${{github.actor}} is building the DCO Core image and Zarf package
 on:
-  pull_request:
+#  pull_request:
+#    paths:
+#      - 'dco-core/**'
+#    types: [opened, synchronize]
+  push:
     paths:
       - 'dco-core/**'
-    types: [opened, synchronize]
-  push:
-    branches: [main]
-    tags: ["v**"]
-  schedule:
-    - cron: '30 5 * * *'
+    branches-ignore: [main]
+    tags-ignore: ["v**"]
+#  push:
+#    branches: [main]
+#    tags: ["v**"]
+#  schedule:
+#    - cron: '30 5 * * *'
 
 permissions:
   id-token: write
