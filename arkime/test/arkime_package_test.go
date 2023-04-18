@@ -1,11 +1,9 @@
 package test
 
-
 import (
 	"os"
 	"testing"
 	"time"
-	"strings"
     "context"
     "net"
 
@@ -14,6 +12,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/shell"
     "github.com/docker/docker/api/types"
     "github.com/docker/docker/client"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func TestZarfPackage(t *testing.T) {
@@ -132,17 +131,17 @@ func TestZarfPackage(t *testing.T) {
         })
 
         t.Run("Arkime undeploys cleanly", func(t *testing.T) {
-            zarfDeleteArkimeCmd := shell.Command{
+            zarfDeleteComponentCmd := shell.Command{
                 Command: "zarf",
                 Args:    []string{"package", "remove", "../zarf-package-arkime-amd64.tar.zst", "--confirm"},
                 Env:     testEnv,
             }
 
-            shell.RunCommand(t, zarfDeleteArkimeCmd)
+            shell.RunCommand(t, zarfDeleteComponentCmd)
         })
 
         t.Run("Arkime skips initial setup on re-deploy", func(t *testing.T) {
-            shell.RunCommand(t, zarfDeployArkimeCmd)
+            shell.RunCommand(t, zarfDeployComponentCmd)
         })
 
         t.Run("Arkime runs succesfully post initial setup", func(t *testing.T) {
