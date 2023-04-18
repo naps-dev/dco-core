@@ -3,8 +3,6 @@ run-name: ${{github.actor}} is building the ${{ inputs.COMPONENT }} image and Za
 on:
   pull_request:
     types: [opened, synchronize]
-    paths:
-      - 'sub-project/**'
   push:
     branches: [main]
     tags: ["v**"]
