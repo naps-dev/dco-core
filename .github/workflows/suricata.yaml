@@ -1,10 +1,15 @@
 name: Build Suricata Image and Zarf Package
 run-name: ${{github.actor}} is building the Suricata image and Zarf package
 on:
-  pull_request:
+  push:
     paths:
       - 'suricata/**'
-    types: [opened, synchronize]
+    branches-ignore: [main]
+    tags-ignore: ["v**"]
+#  pull_request:
+#    paths:
+#      - 'suricata/**'
+#    types: [opened, synchronize]
 
 permissions:
   id-token: write

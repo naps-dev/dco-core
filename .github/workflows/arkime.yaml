@@ -1,10 +1,15 @@
 name: Build Arkime Image and Zarf Package
 run-name: ${{github.actor}} is building the Arkime image and Zarf package
 on:
-  pull_request:
+  push:
     paths:
       - 'arkime/**'
-    types: [opened, synchronize]
+    branches-ignore: [main]
+    tags-ignore: ["v**"]
+#  pull_request:
+#    paths:
+#      - 'arkime/**'
+#    types: [opened, synchronize]
 
 permissions:
   id-token: write
