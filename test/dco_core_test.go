@@ -166,7 +166,7 @@ func TestZarfPackage(t *testing.T) {
 	passthrough_igw := k8s.GetService(t, k8s.NewKubectlOptions(contextName, kubeconfigPath, "istio-system"), "passthrough-ingressgateway")
 	passthrough_lb_ip := passthrough_igw.Status.LoadBalancer.Ingress[0].IP
 
-	curlCmd := shell.Command{
+	curlCmd2 := shell.Command{
 		Command: "curl",
 		Args: []string{"--resolve", "keycloak.vp.bigbang.dev:443:" + passthrough_lb_ip,
 			"--fail-with-body",
@@ -175,7 +175,7 @@ func TestZarfPackage(t *testing.T) {
 	}
 
 	t.Run("Keycloak UI is accessible through Istio", func(t *testing.T) {
-		shell.RunCommand(t, curlCmd)
+		shell.RunCommand(t, curlCmd2)
 	})
 }
 
