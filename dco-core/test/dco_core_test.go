@@ -75,7 +75,7 @@ func TestZarfPackage(t *testing.T) {
 
 	zarfDeployDCOCmd := shell.Command{
 		Command: "zarf",
-		Args: []string{"package", "deploy", "./" + zarfPackage, "--confirm",
+		Args: []string{"package", "deploy", "../" + zarfPackage, "--confirm",
 			"--components", "flux,big-bang-core,setup,kubevirt,cdi,metallb,metallb-config,dataplane-ek",
 			"--set", "METALLB_IP_ADDRESS_POOL=" + ipstart.String() + "-" + ipend.String(),
 		},
