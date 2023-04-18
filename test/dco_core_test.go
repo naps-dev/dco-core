@@ -2,27 +2,23 @@ package test
 
 import (
 	"os"
-	"path/filepath"
-	"strconv"
 	"testing"
 	"time"
-    "strings"
     "context"
     "net"
 
-	"github.com/gruntwork-io/terratest/modules/docker"
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/shell"
-	"github.com/stretchr/testify/require"
     "github.com/docker/docker/api/types"
     "github.com/docker/docker/client"
-    v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func TestZarfPackage(t *testing.T) {
 	zarfPackage := os.Getenv("ZARF_PACKAGE")
 	clusterName := "test-dco-core"
+	component := os.Getenv("COMPONENT")
+	kubeconfigPath := "/tmp/" + component + "_test_kubeconfig"
 
 	cwd, err := os.Getwd()
 
@@ -34,7 +30,7 @@ func TestZarfPackage(t *testing.T) {
 
 	// Additional test environment vars. Use this to make sure proper kubeconfig is being referenced by k3d
 	testEnv := map[string]string{
-		"KUBECONFIG": "/tmp/test_kubeconfig_dco_core",
+		"KUBECONFIG": kubeconfigPath,
 	}
 
 	clusterSetupCmd := shell.Command{
@@ -89,7 +85,7 @@ func TestZarfPackage(t *testing.T) {
 	shell.RunCommand(t, zarfDeployDCOCmd)
 
 	// Wait for DCO elastic to come up
-	opts := k8s.NewKubectlOptions(contextName, "/tmp/test_kubeconfig_dco_core", "dataplane-ek")
+	opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "dataplane-ek")
 	k8s.WaitUntilServiceAvailable(t, opts, "dataplane-ek-es-http", 40, 30*time.Second)
 
 	// Check that Kyverno is successfully generating policy reports
@@ -102,10 +98,10 @@ func TestZarfPackage(t *testing.T) {
 	shell.RunCommand(t, checkAlert)
 
 	// Wait for Neuvector UI
-	opts = k8s.NewKubectlOptions(contextName, "/tmp/test_kubeconfig_dco_core", "neuvector")
+	opts = k8s.NewKubectlOptions(contextName, kubeconfigPath, "neuvector")
 	k8s.WaitUntilServiceAvailable(t, opts, "neuvector-service-webui", 50, 30*time.Second)
 
-	opts = k8s.NewKubectlOptions(contextName, "/tmp/test_kubeconfig_dco_core", "istio-system")
+	opts = k8s.NewKubectlOptions(contextName, kubeconfigPath, "istio-system")
 	retries := 0
 
 	for retries = 0; retries < 5; retries++ {

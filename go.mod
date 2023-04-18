@@ -1,4 +1,4 @@
-module arkime
+module component
 
 		go 1.19
 
