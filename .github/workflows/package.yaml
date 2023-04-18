@@ -71,7 +71,7 @@ jobs:
           args=()
           args+=(--set GIT_REF=refs/heads/${{ inputs.REF_NAME }})
           if [[ -z "${IMAGE_TAG}" ]]; then
-            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }})
+            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
           fi
           args+=(--confirm)
           args+=(--tmpdir $PWD/big-tmp)
@@ -94,7 +94,7 @@ jobs:
           args=()
           args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
           if [[ -z "${IMAGE_TAG}" ]]; then
-            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }})
+            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
           fi
           args+=(--confirm)
           args+=(--tmpdir $PWD/big-tmp)
