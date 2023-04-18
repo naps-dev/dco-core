@@ -4,12 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize]
     paths:
-      - 'dco-core/**'
-  push:
-    branches: [main]
-    tags: ["v**"]
-  schedule:
-    - cron: '30 5 * * *'
+      - 'arkime/**'
 
 permissions:
   id-token: write
@@ -22,5 +17,5 @@ jobs:
     with:
       REF_NAME: "${{ github.head_ref || github.ref_name }}"
       REF_TYPE: "${{ github.ref_type }}"
-      ZARF_PACKAGE: zarf-package-dco-core-amd64.tar.zst
-      COMPONENT: "dco-core"
+      ZARF_PACKAGE: zarf-package-arkime-amd64.tar.zst
+      COMPONENT: "arkime"
