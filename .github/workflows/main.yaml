@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize]
     paths:
-      - 'dco-core/dco-core/**'
+      - 'dco-core/**'
   push:
     branches: [main]
     tags: ["v**"]
