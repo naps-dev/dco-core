@@ -15,11 +15,6 @@ permissions:
   id-token: write
   contents: read
 
-env:
-  REF_NAME: "${{ github.head_ref || github.ref_name }}"
-  REF_TYPE: "${{ github.ref_type }}"
-  ZARF_PACKAGE: zarf-package-${{ inputs.COMPONENT }}-amd64.tar.zst
-
 jobs:
   # Necessary workaround to get env vars passed to the real jobs
 #  propagate-env:
@@ -35,7 +30,7 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: ${{ env.REF_NAME }}
-      REF_TYPE: ${{ env.REF_TYPE }}
-      ZARF_PACKAGE: ${{ env.ZARF_PACKAGE }}
+      REF_NAME: "${{ github.head_ref || github.ref_name }}"
+      REF_TYPE: "${{ github.ref_type }}"
+      ZARF_PACKAGE: zarf-package-dco-core-amd64.tar.zst
       COMPONENT: "dco-core"
