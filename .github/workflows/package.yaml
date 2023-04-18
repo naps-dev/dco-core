@@ -28,7 +28,7 @@ env:
   S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/${{ github.repository }}/${{ github.head_ref || github.ref_name }}"
   ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
   COMPONENT: "${{ inputs.COMPONENT}}"
-  DCO_MAIN_S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/dco-core/main"
+  DCO_MAIN_S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/dco-core/prototype-monrepo"
   DCO_MAIN_ZARF_PACKAGE: zarf-package-dco-core-amd64.tar.zst
 jobs:
   package-component:
