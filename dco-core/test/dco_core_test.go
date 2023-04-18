@@ -130,9 +130,13 @@ func TestZarfPackage(t *testing.T) {
 
 	curlCmd := shell.Command{
 		Command: "curl",
-		Args: []string{"--resolve", "neuvector.vp.bigbang.dev:443:" + public_lb_ip,
-			"--fail-with-body",
-			"https://neuvector.vp.bigbang.dev"},
+		Args: []string{
+			"-k",
+			"-L",
+			"https://neuvector.vp.bigbang.dev:443",
+			"--resolve",
+			"neuvector.vp.bigbang.dev:443:" + public_lb_ip,
+			"--fail-with-body"},
 		Env: testEnv,
 	}
 
@@ -166,16 +170,22 @@ func TestZarfPackage(t *testing.T) {
 	passthrough_igw := k8s.GetService(t, k8s.NewKubectlOptions(contextName, kubeconfigPath, "istio-system"), "passthrough-ingressgateway")
 	passthrough_lb_ip := passthrough_igw.Status.LoadBalancer.Ingress[0].IP
 
-	curlCmd2 := shell.Command{
+    time.Sleep(120 * time.Second)
+
+	curlCmd = shell.Command{
 		Command: "curl",
-		Args: []string{"-k", "-L", "--resolve", "keycloak.vp.bigbang.dev:443:" + passthrough_lb_ip,
-			"--fail-with-body",
-			"https://keycloak.vp.bigbang.dev/auth"},
+		Args: []string{
+			"-k",
+			"-L",
+			"https://keycloak.vp.bigbang.dev:443/auth",
+			"--resolve",
+			"keycloak.vp.bigbang.dev:443:" + passthrough_lb_ip,
+			"--fail-with-body"},
 		Env: testEnv,
 	}
 
 	t.Run("Keycloak UI is accessible through Istio", func(t *testing.T) {
-		shell.RunCommand(t, curlCmd2)
+		shell.RunCommand(t, curlCmd)
 	})
 }
 
