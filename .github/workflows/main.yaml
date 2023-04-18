@@ -3,6 +3,8 @@ run-name: ${{github.actor}} is building the ${{ inputs.COMPONENT }} image and Za
 on:
   pull_request:
     types: [opened, synchronize]
+    paths:
+      - 'sub-project/**'
   push:
     branches: [main]
     tags: ["v**"]
@@ -10,7 +12,7 @@ on:
     - cron: '30 5 * * *'
   workflow_dispatch:
     inputs:
-      component:
+      COMPONENT:
         description: "The component the workflow will package, deploy, and test"
         required: false
         default: 'dco-core'

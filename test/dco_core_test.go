@@ -170,7 +170,7 @@ func TestZarfPackage(t *testing.T) {
 		Command: "curl",
 		Args: []string{"--resolve", "keycloak.vp.bigbang.dev:443:" + passthrough_lb_ip,
 			"--fail-with-body",
-			"https://keycloak.vp.bigbang.dev"},
+			"https://keycloak.vp.bigbang.dev/auth"},
 		Env: testEnv,
 	}
 
