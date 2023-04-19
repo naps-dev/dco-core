@@ -4,12 +4,9 @@ on:
   push:
     paths:
       - 'suricata/**'
+      - '.github/workflows/suricata.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
-#  pull_request:
-#    paths:
-#      - 'suricata/**'
-#    types: [opened, synchronize]
 
 permissions:
   id-token: write

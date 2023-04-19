@@ -4,12 +4,9 @@ on:
   push:
     paths:
       - 'arkime/**'
+      - '.github/workflows/arkime.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
-#  pull_request:
-#    paths:
-#      - 'arkime/**'
-#    types: [opened, synchronize]
 
 permissions:
   id-token: write

@@ -4,17 +4,9 @@ on:
   push:
     paths:
       - 'dco-core/**'
+      - '.github/workflows/main.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
-#  pull_request:
-#    paths:
-#      - 'dco-core/**'
-#    types: [opened, synchronize]
-#  push:
-#    branches: [main]
-#    tags: ["v**"]
-#  schedule:
-#    - cron: '30 5 * * *'
 
 permissions:
   id-token: write
