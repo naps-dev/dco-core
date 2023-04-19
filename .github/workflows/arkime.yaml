@@ -20,8 +20,8 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "v4.2.0"
-      REF_TYPE: "tag"
+      REF_NAME: "main"
+      REF_TYPE: "branch"
       ZARF_PACKAGE: zarf-package-arkime-amd64.tar.zst
       IMAGE_TAG: "v4.2.0"
       COMPONENT: "arkime"

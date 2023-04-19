@@ -20,7 +20,7 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "${{ github.head_ref || github.ref_name }}"
-      REF_TYPE: "${{ github.ref_type }}"
+      REF_NAME: "main"
+      REF_TYPE: "branch"
       ZARF_PACKAGE: zarf-package-suricata-amd64.tar.zst
       COMPONENT: "suricata"
