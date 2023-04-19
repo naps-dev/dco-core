@@ -130,7 +130,7 @@ jobs:
           go get -t ./...
 
       - name: Run go test
-        working-directory: ./${{ inputs.COMPONENT }}/test/
+        working-directory: ./dco-core/test/
         run: |
           go test -timeout 40m
 

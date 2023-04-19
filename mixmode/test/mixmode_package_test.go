@@ -5,5 +5,5 @@ import (
 )
 
 func TestZarfPackage(t *testing.T) {
-    logger.Log(t, "Mockingbird test to be implemented")
+    logger.Log(t, "Mixmode test to be implemented")
 }

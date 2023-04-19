@@ -13,6 +13,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/shell"
     "github.com/docker/docker/api/types"
     "github.com/docker/docker/client"
+    arkime "arkime/test"
 )
 
 func TestZarfPackage(t *testing.T) {
@@ -190,6 +191,10 @@ func TestZarfPackage(t *testing.T) {
 	t.Run("Keycloak UI is accessible through Istio", func(t *testing.T) {
 		shell.RunCommand(t, curlCmd)
 	})
+
+	if component == "arkime" {
+	    arkime.Test
+	}
 }
 
 // -------------------------------------------------------------------------
