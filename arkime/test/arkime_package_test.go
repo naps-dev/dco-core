@@ -1,5 +1,4 @@
-package test
-
+package arkime
 
 import (
 	"os"
