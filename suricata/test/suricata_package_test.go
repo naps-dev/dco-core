@@ -141,7 +141,7 @@ func TestZarfPackage(t *testing.T) {
             t.Errorf("tail /var/log/suricata/fast.log did not contain \"Suspicious User Agent\"")
         }
     }
-
+}
 // -------------------------------------------------------------------------
 // DetermineIPRange returns the first and last IP in the subnet
 // This is used to set the IP range for metallb
