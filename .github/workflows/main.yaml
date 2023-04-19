@@ -1,4 +1,4 @@
-name: Build DCO Core Image and Zarf Package
+name: Build and Deploy DCO Core Zarf Package
 run-name: ${{github.actor}} is building the DCO Core image and Zarf package
 on:
   push:

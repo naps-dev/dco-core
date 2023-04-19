@@ -1,4 +1,4 @@
-name: Build Suricata Image and Zarf Package
+name: Build and Deploy Suricata Zarf Package
 run-name: ${{github.actor}} is building the Suricata image and Zarf package
 on:
   push:

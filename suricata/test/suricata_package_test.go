@@ -103,7 +103,7 @@ func TestZarfPackage(t *testing.T) {
         shell.RunCommand(t, zarfDeployComponentCmd)
 
         //Test pods come up
-        opts = k8s.NewKubectlOptions("k3d-test-suricata", "/tmp/test_kubeconfig_suricata", "suricata")
+        opts = k8s.NewKubectlOptions("k3d-" + clusterName, kubeconfigPath, component)
         x := 0
         pods := k8s.ListPods(t, opts, metav1.ListOptions{})
         for x < 30 {
@@ -121,7 +121,7 @@ func TestZarfPackage(t *testing.T) {
         //Test alert provided by suricata devs
         createAlert := shell.Command{
             Command: "kubectl",
-            Args:    []string{"--namespace", "suricata", "exec", "-it", pods[0].Name, "--", "/bin/bash", "-c", "curl -A BlackSun www.google.com"},
+            Args:    []string{"--namespace", component, "exec", "-it", pods[0].Name, "--", "/bin/bash", "-c", "curl -A BlackSun www.google.com"},
             Env:     testEnv,
         }
 
@@ -129,7 +129,7 @@ func TestZarfPackage(t *testing.T) {
 
         checkAlert := shell.Command{
             Command: "kubectl",
-            Args:    []string{"--namespace", "suricata", "exec", "-it", pods[0].Name, "--", "/bin/bash", "-c", "tail /var/log/suricata/fast.log"},
+            Args:    []string{"--namespace", component, "exec", "-it", pods[0].Name, "--", "/bin/bash", "-c", "tail /var/log/suricata/fast.log"},
             Env:     testEnv,
         }
 
