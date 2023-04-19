@@ -1,10 +1,10 @@
-name: Build and Deploy Arkime Zarf Package
-run-name: ${{github.actor}} is building the Arkime Zarf package
+name: Build and Deploy Mockingbird Zarf Package
+run-name: ${{github.actor}} is building the Mockingbird Zarf package
 on:
   push:
     paths:
-      - 'arkime/**'
-      - '.github/workflows/arkime.yaml'
+      - 'mockingbird/**'
+      - '.github/workflows/mockingbird.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
 
@@ -19,6 +19,6 @@ jobs:
     with:
       REF_NAME: "main"
       REF_TYPE: "branch"
-      ZARF_PACKAGE: zarf-package-arkime-amd64.tar.zst
+      ZARF_PACKAGE: zarf-package-mockingbird-amd64.tar.zst
       IMAGE_TAG: "main"
-      COMPONENT: "arkime"
+      COMPONENT: "mockingbird"

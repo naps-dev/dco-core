@@ -1,10 +1,10 @@
-name: Build and Deploy Suricata Zarf Package
-run-name: ${{github.actor}} is building the Suricata package
+name: Build and Deploy Kasm Zarf Package
+run-name: ${{github.actor}} is building the Kasm Zarf package
 on:
   push:
     paths:
-      - 'suricata/**'
-      - '.github/workflows/suricata.yaml'
+      - 'kasm/**'
+      - '.github/workflows/kasm.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
 
@@ -19,5 +19,5 @@ jobs:
     with:
       REF_NAME: "main"
       REF_TYPE: "branch"
-      ZARF_PACKAGE: zarf-package-suricata-amd64.tar.zst
-      COMPONENT: "suricata"
+      ZARF_PACKAGE: zarf-package-kasm-amd64.tar.zst
+      COMPONENT: "kasm"
