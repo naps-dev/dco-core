@@ -5,6 +5,7 @@ on:
     paths:
       - 'mockingbird/**'
       - '.github/workflows/mockingbird.yaml'
+      - '.github/workflows/package.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
 

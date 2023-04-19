@@ -1,10 +1,11 @@
 name: Build and Deploy DCO Core Zarf Package
-run-name: ${{github.actor}} is building the DCO CoreZarf package
+run-name: ${{github.actor}} is building the DCO Core Zarf package
 on:
   push:
     paths:
       - 'dco-core/**'
       - '.github/workflows/dco-core.yaml'
+      - '.github/workflows/package.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
 

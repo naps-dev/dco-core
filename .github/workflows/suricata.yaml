@@ -5,6 +5,7 @@ on:
     paths:
       - 'suricata/**'
       - '.github/workflows/suricata.yaml'
+      - '.github/workflows/package.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
 

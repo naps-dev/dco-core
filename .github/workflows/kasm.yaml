@@ -5,6 +5,7 @@ on:
     paths:
       - 'kasm/**'
       - '.github/workflows/kasm.yaml'
+      - '.github/workflows/package.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
 

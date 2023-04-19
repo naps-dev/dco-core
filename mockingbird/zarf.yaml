@@ -9,6 +9,9 @@ constants:
     description: "Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy"
     value: "###ZARF_PKG_TMPL_GIT_REF###"
 
+  - name: IMAGE_TAG
+    value: '###ZARF_PKG_VAR_IMAGE_TAG###'
+
 variables:
   - name: DOMAIN
     default: "vp.bigbang.dev"
@@ -28,4 +31,4 @@ components:
           - manifests/gitrepository.yaml
           - manifests/helmrelease.yaml
     images:
-      - 765814079306.dkr.ecr.us-east-1.amazonaws.com/mockingbird:###ZARF_PKG_VAR_TAG###
+      - 765814079306.dkr.ecr.us-east-1.amazonaws.com/mockingbird:###ZARF_PKG_VAR_IMAGE_TAG###

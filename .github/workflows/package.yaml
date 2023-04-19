@@ -1,5 +1,5 @@
 name: Create Package
-run-name: ${{github.actor}} is building the ${{ inputs.COMPONENT }} package
+run-name: ${{github.actor}} is building the ${{ inputs.COMPONENT }} Zarf Package
 on:
   workflow_call:
     inputs:

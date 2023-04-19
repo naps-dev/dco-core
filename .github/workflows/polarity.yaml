@@ -5,6 +5,7 @@ on:
     paths:
       - 'polarity/**'
       - '.github/workflows/polarity.yaml'
+      - '.github/workflows/package.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
 

@@ -5,6 +5,7 @@ on:
     paths:
       - 'arkime/**'
       - '.github/workflows/arkime.yaml'
+      - '.github/workflows/package.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
 

@@ -36,4 +36,4 @@ spec:
   values:
     domain: "###ZARF_VAR_DOMAIN###"
     image:
-      tag: "###ZARF_VAR_BRANCH###"
+      tag: "###ZARF_PKG_VAR_IMAGE_TAG###"

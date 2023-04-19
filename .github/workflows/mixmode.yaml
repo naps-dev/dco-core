@@ -5,6 +5,7 @@ on:
     paths:
       - 'mixmode/**'
       - '.github/workflows/mixmode.yaml'
+      - '.github/workflows/package.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
 
