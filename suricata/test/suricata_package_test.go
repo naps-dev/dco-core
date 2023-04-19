@@ -14,6 +14,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/shell"
     "github.com/docker/docker/api/types"
     "github.com/docker/docker/client"
+    metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func TestZarfPackage(t *testing.T) {
