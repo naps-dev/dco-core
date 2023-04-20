@@ -1,6 +1,5 @@
 package test
 
-
 import (
 	"os"
 	"testing"
@@ -13,7 +12,6 @@ import (
 	"github.com/gruntwork-io/terratest/modules/shell"
     "github.com/docker/docker/api/types"
     "github.com/docker/docker/client"
-    arkime "../../arkime/test"
 )
 
 func TestZarfPackage(t *testing.T) {
@@ -193,7 +191,7 @@ func TestZarfPackage(t *testing.T) {
 	})
 
 	if component == "arkime" {
-	    arkime.TestArkimeZarfPackage(t, contextName, kubeconfigPath)
+	    ComponentTestArkimeZarfPackage(t, contextName, kubeconfigPath)
 	}
 }
 
