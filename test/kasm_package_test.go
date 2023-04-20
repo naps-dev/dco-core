@@ -11,7 +11,7 @@ package test
 // 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 // )
 //
-// func TestZarfPackage(t *testing.T) {
+// func KasmTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string) {
 // 	cwd, err := os.Getwd()
 //
 // 	if err != nil {

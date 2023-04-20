@@ -9,18 +9,18 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func ComponentTestArkimeZarfPackage(t *testing.T, contextName string, kubeconfigPath string) {
+func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string) {
 	testEnv := map[string]string{
 		"KUBECONFIG": kubeconfigPath,
 	}
 
-    zarfDeployComponentCmd := shell.Command{
+    zarfDeployArkimeCmd := shell.Command{
         Command: "zarf",
         Args:    []string{"package", "deploy", "../arkime/zarf-package-arkime-amd64.tar.zst", "--confirm"},
         Env:     testEnv,
     }
 
-    shell.RunCommand(t, zarfDeployComponentCmd)
+    shell.RunCommand(t, zarfDeployArkimeCmd)
 
     // wait for arkime service to come up before attempting to hit it
     opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "arkime")
@@ -52,17 +52,17 @@ func ComponentTestArkimeZarfPackage(t *testing.T, contextName string, kubeconfig
     })
 
     t.Run("Arkime undeploys cleanly", func(t *testing.T) {
-        zarfDeleteComponentCmd := shell.Command{
+        zarfDeleteArkimeCmd := shell.Command{
             Command: "zarf",
             Args:    []string{"package", "remove", "../zarf-package-arkime-amd64.tar.zst", "--confirm"},
             Env:     testEnv,
         }
 
-        shell.RunCommand(t, zarfDeleteComponentCmd)
+        shell.RunCommand(t, zarfDeleteArkimeCmd)
     })
 
     t.Run("Arkime skips initial setup on re-deploy", func(t *testing.T) {
-        shell.RunCommand(t, zarfDeployComponentCmd)
+        shell.RunCommand(t, zarfDeployArkimeCmd)
     })
 
     t.Run("Arkime runs succesfully post initial setup", func(t *testing.T) {

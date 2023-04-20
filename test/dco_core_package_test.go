@@ -191,7 +191,25 @@ func TestZarfPackage(t *testing.T) {
 	})
 
 	if component == "arkime" {
-	    ComponentTestArkimeZarfPackage(t, contextName, kubeconfigPath)
+	    ArkimeTestZarfPackage(t, contextName, kubeconfigPath)
+	}
+// 	if component == "kasm" {
+// 	    KasmTestZarfPackage(t, contextName, kubeconfigPath)
+// 	}
+	if component == "mixmode" {
+	    MixmodeTestZarfPackage(t, contextName, kubeconfigPath)
+	}
+	if component == "mockingbird" {
+	    MockingbirdTestZarfPackage(t, contextName, kubeconfigPath)
+	}
+// 	if component == "polarity" {
+// 	    PolarityTestZarfPackage(t, contextName, kubeconfigPath)
+// 	}
+	if component == "suricata" {
+	    SuricataTestZarfPackage(t, contextName, kubeconfigPath)
+	}
+	if component == "xsoar" {
+	    XsoarTestZarfPackage(t, contextName, kubeconfigPath)
 	}
 }
 

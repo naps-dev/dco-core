@@ -2,7 +2,11 @@ module test
 
 go 1.19
 
-require github.com/docker/docker v23.0.3+incompatible
+require (
+	github.com/docker/docker v23.0.3+incompatible
+	github.com/gruntwork-io/terratest v0.41.18
+	k8s.io/apimachinery v0.20.6
+)
 
 require (
 	cloud.google.com/go v0.105.0 // indirect
@@ -27,7 +31,6 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/gnostic v0.4.1 // indirect
 	github.com/gruntwork-io/go-commons v0.8.0 // indirect
-	github.com/gruntwork-io/terratest v0.41.18 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.0 // indirect
 	github.com/imdario/mergo v0.3.11 // indirect
@@ -62,7 +65,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gotest.tools/v3 v3.0.3 // indirect
 	k8s.io/api v0.20.6 // indirect
-	k8s.io/apimachinery v0.20.6 // indirect
 	k8s.io/client-go v0.20.6 // indirect
 	k8s.io/klog/v2 v2.4.0 // indirect
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920 // indirect

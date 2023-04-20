@@ -15,6 +15,21 @@ permissions:
   contents: read
 
 jobs:
+  prepare-xsoar:
+    runs-on: [self-hosted, onprem]
+
+    steps:
+      - name: Login to XSOAR registry
+        run: |
+          zarf tools registry login \
+            -u "${{secrets.XSOAR_USERNAME}}" \
+            -p "${{secrets.XSOAR_PASSWORD}}" \
+            "xsoar-registry.pan.dev"
+
+      - name: Set up license file
+        run:
+          echo "${{ secrets.LICENSE }}" >> /tmp/demisto.lic
+
   package-create:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
@@ -24,3 +39,12 @@ jobs:
       ZARF_PACKAGE: zarf-package-xsoar-amd64.tar.zst
       IMAGE_TAG: "main"
       COMPONENT: "xsoar"
+
+  cleanup-xsoar:
+    runs-on: [self-hosted, onprem]
+
+    steps:
+      - name: Remove license file
+        if: always()
+        run:
+          rm /tmp/demisto.lic
