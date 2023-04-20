@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'arkime/**'
+      - 'test/arkime_package_test.go'
       - '.github/workflows/arkime.yaml'
       - '.github/workflows/package.yaml'
     branches-ignore: [main]
