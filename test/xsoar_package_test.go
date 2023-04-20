@@ -56,7 +56,7 @@ func XsoarTestZarfPackage(t *testing.T, contextName string, kubeconfigPath strin
         Command: "curl",
         Args: []string{"--resolve", "xsoar.vp.bigbang.dev:443:" + loadbalancer_ip,
             "--fail-with-body",
-            "https://arkime-viewer.vp.bigbang.dev"},
+            "https://xsoar.vp.bigbang.dev"},
         Env: testEnv,
     }
 
