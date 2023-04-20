@@ -6,7 +6,6 @@ on:
       - 'polarity/**'
       - 'test/polarity_package_test.go'
       - '.github/workflows/polarity.yaml'
-      - '.github/workflows/package.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
 

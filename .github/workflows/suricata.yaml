@@ -6,7 +6,6 @@ on:
       - 'suricata/**'
       - 'test/suricata_package_test.go'
       - '.github/workflows/suricata.yaml'
-      - '.github/workflows/package.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
 
