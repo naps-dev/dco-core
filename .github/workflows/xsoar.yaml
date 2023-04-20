@@ -31,6 +31,7 @@ jobs:
           echo "${{ secrets.XSOAR_LICENSE }}" >> /tmp/demisto.lic
 
   package-create:
+    needs: [prepare-xsoar]
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
@@ -41,6 +42,7 @@ jobs:
       COMPONENT: "xsoar"
 
   cleanup-xsoar:
+    needs: [package-create]
     runs-on: [self-hosted, onprem]
 
     steps:
