@@ -28,7 +28,7 @@ jobs:
 
       - name: Set up license file
         run:
-          echo "${{ secrets.LICENSE }}" >> /tmp/demisto.lic
+          echo "${{ secrets.XSOAR_LICENSE }}" >> /tmp/demisto.lic
 
   package-create:
     uses: ./.github/workflows/package.yaml
