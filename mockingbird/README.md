@@ -1,4 +1,4 @@
-# mockingbird
+# Mockingbird
 
 ## VM OCI Image Creation
 
