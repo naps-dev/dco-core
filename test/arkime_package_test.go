@@ -54,7 +54,7 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
     t.Run("Arkime undeploys cleanly", func(t *testing.T) {
         zarfDeleteArkimeCmd := shell.Command{
             Command: "zarf",
-            Args:    []string{"package", "remove", "../zarf-package-arkime-amd64.tar.zst", "--confirm"},
+            Args:    []string{"package", "remove", "../arkime/zarf-package-arkime-amd64.tar.zst", "--confirm"},
             Env:     testEnv,
         }
 
