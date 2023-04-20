@@ -22,7 +22,7 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 
     shell.RunCommand(t, zarfDeployArkimeCmd)
 
-    // wait for arkime service to come up before attempting to hit it
+    // Wait for arkime service to come up before attempting to hit it
     opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "arkime")
     k8s.WaitUntilServiceAvailable(t, opts, "arkime-viewer", 40, 30*time.Second)
 
