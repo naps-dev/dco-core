@@ -16,7 +16,7 @@ func ComponentTestArkimeZarfPackage(t *testing.T, contextName string, kubeconfig
 
     zarfDeployComponentCmd := shell.Command{
         Command: "zarf",
-        Args:    []string{"package", "deploy", "../../arkime/zarf-package-arkime-amd64.tar.zst", "--confirm"},
+        Args:    []string{"package", "deploy", "../arkime/zarf-package-arkime-amd64.tar.zst", "--confirm"},
         Env:     testEnv,
     }
 
