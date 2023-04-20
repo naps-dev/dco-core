@@ -1,11 +1,11 @@
-name: Build and Deploy Polarity Zarf Package
-run-name: ${{github.actor}} is building the Polarity Zarf package
+name: Build and Deploy XSoar Zarf Package
+run-name: ${{github.actor}} is building the XSoar Zarf package
 on:
   push:
     paths:
-      - 'polarity/**'
-      - 'test/polarity_package_test.go'
-      - '.github/workflows/polarity.yaml'
+      - 'xsoar/**'
+      - 'test/xsoar_package_test.go'
+      - '.github/workflows/xsoar.yaml'
       - '.github/workflows/package.yaml'
     branches-ignore: [main]
     tags-ignore: ["v**"]
@@ -21,5 +21,6 @@ jobs:
     with:
       REF_NAME: "main"
       REF_TYPE: "branch"
-      ZARF_PACKAGE: zarf-package-polarity-amd64.tar.zst
-      COMPONENT: "polarity"
+      ZARF_PACKAGE: zarf-package-xsoar-amd64.tar.zst
+      IMAGE_TAG: "main"
+      COMPONENT: "xsoar"

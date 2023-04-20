@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'kasm/**'
+      - 'test/kasm_package_test.go'
       - '.github/workflows/kasm.yaml'
       - '.github/workflows/package.yaml'
     branches-ignore: [main]

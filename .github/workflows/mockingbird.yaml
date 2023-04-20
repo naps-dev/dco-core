@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'mockingbird/**'
+      - 'test/mockingbird_package_test.go'
       - '.github/workflows/mockingbird.yaml'
       - '.github/workflows/package.yaml'
     branches-ignore: [main]
