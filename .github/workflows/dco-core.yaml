@@ -7,8 +7,6 @@ on:
       - 'test/dco_core_package_test.go'
       - '.github/workflows/dco-core.yaml'
       - '.github/workflows/package.yaml'
-    branches-ignore: [main]
-    tags-ignore: ["v**"]
 
 permissions:
   id-token: write

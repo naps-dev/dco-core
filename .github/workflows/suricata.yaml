@@ -6,8 +6,6 @@ on:
       - 'suricata/**'
       - 'test/suricata_package_test.go'
       - '.github/workflows/suricata.yaml'
-    branches-ignore: [main]
-    tags-ignore: ["v**"]
 
 permissions:
   id-token: write

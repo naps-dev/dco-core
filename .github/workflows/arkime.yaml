@@ -6,8 +6,6 @@ on:
       - 'arkime/**'
       - 'test/arkime_package_test.go'
       - '.github/workflows/arkime.yaml'
-    branches-ignore: [main]
-    tags-ignore: ["v**"]
 
 permissions:
   id-token: write
