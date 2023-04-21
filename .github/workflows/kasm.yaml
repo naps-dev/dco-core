@@ -1,0 +1,24 @@
+name: Build and Deploy Kasm Zarf Package
+run-name: ${{github.actor}} is building the Kasm Zarf package
+on:
+  push:
+    paths:
+      - 'kasm/**'
+      - 'test/kasm_package_test.go'
+      - '.github/workflows/kasm.yaml'
+    branches-ignore: [main]
+    tags-ignore: ["v**"]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  package-create:
+    uses: ./.github/workflows/package.yaml
+    secrets: inherit
+    with:
+      REF_NAME: "main"
+      REF_TYPE: "branch"
+      ZARF_PACKAGE: zarf-package-kasm-amd64.tar.zst
+      COMPONENT: "kasm"

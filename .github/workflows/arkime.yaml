@@ -1,0 +1,25 @@
+name: Build and Deploy Arkime Zarf Package
+run-name: ${{github.actor}} is building the Arkime Zarf package
+on:
+  push:
+    paths:
+      - 'arkime/**'
+      - 'test/arkime_package_test.go'
+      - '.github/workflows/arkime.yaml'
+    branches-ignore: [main]
+    tags-ignore: ["v**"]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  package-create:
+    uses: ./.github/workflows/package.yaml
+    secrets: inherit
+    with:
+      REF_NAME: "main"
+      REF_TYPE: "branch"
+      ZARF_PACKAGE: zarf-package-arkime-amd64.tar.zst
+      IMAGE_TAG: "main"
+      COMPONENT: "arkime"

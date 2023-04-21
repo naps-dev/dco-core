@@ -1,20 +1,20 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: metallb-config
-  namespace: metallb
+  name: kasm
+  namespace: kasm
 spec:
-  targetNamespace: metallb
-  releaseName: metallb-config
+  targetNamespace: kasm
+  releaseName: kasm
   interval: 5m
   timeout: 10m
   chart:
     spec:
       interval: 1m
-      chart: ./dco-core/charts/metallb-config
+      chart: ./chart
       sourceRef:
         kind: GitRepository
-        name: metallb-config
+        name: kasm
   test:
     enable: false
   install:
@@ -29,8 +29,7 @@ spec:
     timeout: 30m
     cleanupOnFail: false
   dependsOn:
-    - name: metallb
-      namespace: metallb
+    - name: istio
+      namespace: bigbang
   values:
-    ipAddressPool: ${IP_ADDRESS_POOL}
-    interface: ${INTERFACE}
+    domain: ###ZARF_VAR_DOMAIN###

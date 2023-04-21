@@ -1,0 +1,41 @@
+kind: ZarfPackageConfig
+metadata:
+  name: arkime
+  description: "Arkime traffic monitoring and analysis tool"
+  # Big Bang / Iron Bank are only amd64
+  architecture: amd64
+
+constants:
+  - name: GIT_REF
+    description: "Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy"
+    value: "###ZARF_PKG_TMPL_GIT_REF###"
+
+  - name: IMAGE_TAG
+    value: '###ZARF_PKG_VAR_IMAGE_TAG###'
+
+variables:
+  # Prompt user for the domain override
+  - name: DOMAIN
+    default: "vp.bigbang.dev"
+    prompt: false
+
+  - name: CAPTURE_INTERFACE
+    default: "cni0"
+    prompt: false
+
+components:
+  - name: arkime
+    description: "Arkime traffic monitoring and analysis tool"
+    required: true
+    repos:
+      - https://github.com/naps-dev/arkime.git
+    manifests:
+      - name: arkime-helm
+        namespace: arkime
+        files:
+          - manifests/namespace.yaml
+          - manifests/gitrepository.yaml
+          - manifests/helmrelease.yaml
+          - manifests/virtualservice.yaml
+    images:
+      - '765814079306.dkr.ecr.us-east-1.amazonaws.com/arkime4:###ZARF_PKG_VAR_IMAGE_TAG###'

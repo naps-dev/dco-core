@@ -1,0 +1,25 @@
+name: Build and Deploy Mixmode Zarf Package
+run-name: ${{github.actor}} is building the Mixmode Zarf package
+on:
+  push:
+    paths:
+      - 'mixmode/**'
+      - 'test/mixmode_package_test.go'
+      - '.github/workflows/mixmode.yaml'
+    branches-ignore: [main]
+    tags-ignore: ["v**"]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  package-create:
+    uses: ./.github/workflows/package.yaml
+    secrets: inherit
+    with:
+      REF_NAME: "main"
+      REF_TYPE: "branch"
+      ZARF_PACKAGE: zarf-package-mixmode-amd64.tar.zst
+      IMAGE_TAG: "main"
+      COMPONENT: "mixmode"

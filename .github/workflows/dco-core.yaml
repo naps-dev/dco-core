@@ -1,0 +1,25 @@
+name: Build and Deploy DCO Core Zarf Package
+run-name: ${{github.actor}} is building the DCO Core Zarf package
+on:
+  push:
+    paths:
+      - 'dco-core/**'
+      - 'test/dco_core_package_test.go'
+      - '.github/workflows/dco-core.yaml'
+      - '.github/workflows/package.yaml'
+    branches-ignore: [main]
+    tags-ignore: ["v**"]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  package-create:
+    uses: ./.github/workflows/package.yaml
+    secrets: inherit
+    with:
+      REF_NAME: "${{ github.head_ref || github.ref_name }}"
+      REF_TYPE: "${{ github.ref_type }}"
+      ZARF_PACKAGE: zarf-package-dco-core-amd64.tar.zst
+      COMPONENT: "dco-core"

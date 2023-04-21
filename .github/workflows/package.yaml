@@ -1,5 +1,5 @@
-name: Package DCO Core
-run-name: ${{github.actor}} is building the DCO Core Zarf Package
+name: Create Package
+run-name: ${{github.actor}} is building the ${{ inputs.COMPONENT }} Zarf Package
 on:
   workflow_call:
     inputs:
@@ -12,8 +12,11 @@ on:
       ZARF_PACKAGE:
         required: true
         type: string
-      MINIMAL_ZARF_PACKAGE:
+      COMPONENT:
         required: true
+        type: string
+      IMAGE_TAG:
+        required: false
         type: string
 permissions:
   id-token: write
@@ -22,11 +25,13 @@ defaults:
   run:
     shell: bash
 env:
-  S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/${{ github.repository }}/${{ github.head_ref || github.ref_name }}"
+  S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/${{ github.repository }}/${{ inputs.COMPONENT}}/${{ github.head_ref || github.ref_name }}"
   ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
-  MINIMAL_ZARF_PACKAGE: "${{ inputs.MINIMAL_ZARF_PACKAGE }}"
+  COMPONENT: "${{ inputs.COMPONENT}}"
+  DCO_MAIN_S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/dco-core/prototype-monrepo"
+  DCO_MAIN_ZARF_PACKAGE: zarf-package-dco-core-amd64.tar.zst
 jobs:
-  package-dco-core:
+  package-component:
     runs-on: [self-hosted, onprem]
     steps:
       - name: Checkout
@@ -37,6 +42,17 @@ jobs:
         with:
           version: v0.25.2
           download-init-package: true
+
+      - name: Configure AWS ECR Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{secrets.AWS_ECR_ROLE}}
+          role-session-name: arkime-ecr
+          aws-region: us-east-1
+
+      - name: ECR Login
+        uses: aws-actions/amazon-ecr-login@v1
+        id: login-ecr
 
       - name: Login to Registry One
         run: |
@@ -52,15 +68,21 @@ jobs:
           rm -rf big-tmp
           mkdir big-tmp
 
+          args=()
+          args+=(--set GIT_REF=refs/heads/${{ inputs.REF_NAME }})
+          if [[ -z "${IMAGE_TAG}" ]]; then
+            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
+          fi
+          args+=(--confirm)
+          args+=(--tmpdir $PWD/big-tmp)
+          args+=(--skip-sbom)
+
           # build the zarf package
-          zarf package create \
-            --set GIT_REF=refs/heads/${{ inputs.REF_NAME }} \
-            --confirm \
-            --tmpdir $PWD/big-tmp \
-            --skip-sbom
+          zarf package create "${args[@]}"
 
           # cleanup tmp dir
           rm -rf ./big-tmp
+        working-directory: ${{ inputs.COMPONENT }}
 
       - name: Create Zarf Package from Tag
         if: ${{ inputs.REF_TYPE == 'tag'}}
@@ -69,15 +91,21 @@ jobs:
           rm -rf big-tmp
           mkdir big-tmp
 
+          args=()
+          args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
+          if [[ -z "${IMAGE_TAG}" ]]; then
+            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
+          fi
+          args+=(--confirm)
+          args+=(--tmpdir $PWD/big-tmp)
+          args+=(--skip-sbom)
+
           # build the zarf package
-          zarf package create \
-            --set GIT_REF=refs/tags/${{ inputs.REF_NAME }} \
-            --confirm \
-            --tmpdir $PWD/big-tmp \
-            --skip-sbom
+          zarf package create "${args[@]}"
 
           # cleanup tmp dir
           rm -rf ./big-tmp
+        working-directory: ${{ inputs.COMPONENT }}
 
       - name: Configure AWS S3 Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -92,12 +120,17 @@ jobs:
           go-version: '^1.19.5'
           cache: true
 
+      - name: Pull DCO package needed for testing individual component
+        if: ${{ inputs.COMPONENT != 'dco-core'}}
+        run: |
+          aws s3 cp --no-progress "${{ env.DCO_MAIN_S3_PATH }}/${{ env.DCO_MAIN_ZARF_PACKAGE }}" "dco-core/${{ env.DCO_MAIN_ZARF_PACKAGE }}"
+
       - name: Install dependencies for terratest
         run: |
           go get -t ./...
 
-      - name: Run component test
-        working-directory: ./test
+      - name: Run go test
+        working-directory: ./test/
         run: |
           go test -timeout 40m
 
@@ -112,92 +145,4 @@ jobs:
       - name: Save Package to S3
         run: |
           aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
-
-  package-dco-core-minimal:
-    runs-on: [self-hosted, onprem]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install Zarf
-        uses: defenseunicorns/setup-zarf@main
-        with:
-          version: v0.25.2
-          download-init-package: true
-
-      - name: Login to Registry One
-        run: |
-          zarf tools registry login \
-            -u "${{secrets.REGISTRY1_USERNAME}}" \
-            -p "${{secrets.REGISTRY1_PASSWORD}}" \
-            "registry1.dso.mil"
-
-      - name: Create Minimal Zarf Package from Branch
-        if: ${{ inputs.REF_TYPE == 'branch'}}
-        run: |
-          # cleanup and init a tmp dir
-          rm -rf minimal-tmp
-          mkdir minimal-tmp
-
-          # build the zarf package
-          zarf package create \
-            --set GIT_REF=refs/heads/${{ inputs.REF_NAME }} \
-            --confirm \
-            --tmpdir $PWD/minimal-tmp \
-            --skip-sbom \
-            kustomizations/minimal-bigbang
-
-            # cleanup tmp dir
-            rm -rf ./minimum-tmp
-
-      - name: Create Minimal Zarf Package from Tag
-        if: ${{ inputs.REF_TYPE == 'tag'}}
-        run: |
-          # cleanup and init a tmp dir
-          rm -rf minimal-tmp
-          mkdir minimal-tmp
-
-          # build the zarf package
-          zarf package create \
-            --set GIT_REF=refs/tags/${{ inputs.REF_NAME }} \
-            --confirm \
-            --tmpdir $PWD/minimal-tmp \
-            --skip-sbom \
-            kustomizations/minimal-bigbang
-
-            # cleanup tmp dir
-            rm -rf ./minimum-tmp
-
-      - name: Configure AWS S3 Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{secrets.AWS_ROLE}}
-          role-session-name: arkime-s3
-          aws-region: us-east-1
-
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: '^1.19.5'
-          cache: true
-
-      - name: Install dependencies for terratest
-        run: |
-          go get -t ./...
-
-      - name: Run component test
-        working-directory: ./test-minimal
-        run: |
-          go test -timeout 20m
-
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_ICON: https://avatars.githubusercontent.com/u/87975021?s=200&v=4
-          SLACK_USERNAME: GitHub
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-
-      - name: Save Minimal Package to S3
-        run: |
-          aws s3 cp --no-progress "${{ env.MINIMAL_ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.MINIMAL_ZARF_PACKAGE }}"
+        working-directory: ${{ inputs.COMPONENT }}

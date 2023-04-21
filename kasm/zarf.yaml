@@ -1,7 +1,8 @@
 kind: ZarfPackageConfig
 metadata:
-  name: suricata
-  description: "Deploys suricata IDS in basic configuration"
+  name: kasm
+  description: "Kasm traffic monitoring and analysis tool"
+  # Big Bang / Iron Bank are only amd64
   architecture: amd64
 
 constants:
@@ -10,30 +11,23 @@ constants:
     value: "###ZARF_PKG_TMPL_GIT_REF###"
 
 variables:
-  - name: INTERFACE
-    default: "eth0"
-    prompt: false
-
-  - name: NODE_LABEL
-    default: "kubernetes.io/os"
-    prompt: false
-
-  - name: NODE_LABEL_VALUE
-    default: "linux"
+  # Prompt user for the domain override
+  - name: DOMAIN
+    default: "vp.bigbang.dev"
     prompt: false
 
 components:
-  - name: suricata
-    description: "Suricata IDS tool"
+  - name: kasm
+    description: "Kasm traffic monitoring and analysis tool"
     required: true
     repos:
-      - https://github.com/naps-dev/zarf-suricata-pkg.git
+      - https://github.com/naps-dev/kasm.git
     manifests:
-      - name: suricata-helm
-        namespace: suricata
+      - name: kasm-helm
+        namespace: kasm
         files:
           - manifests/namespace.yaml
           - manifests/gitrepository.yaml
           - manifests/helmrelease.yaml
     images:
-      - "registry.hub.docker.com/jasonish/suricata:6.0.2"
+      - docker.io/kasmweb/workspaces:1.11.0
