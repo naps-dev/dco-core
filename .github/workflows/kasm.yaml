@@ -6,8 +6,6 @@ on:
       - 'kasm/**'
       - 'test/kasm_package_test.go'
       - '.github/workflows/kasm.yaml'
-    branches-ignore: [main]
-    tags-ignore: ["v**"]
 
 permissions:
   id-token: write
