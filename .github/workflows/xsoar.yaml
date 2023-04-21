@@ -46,4 +46,4 @@ jobs:
     steps:
       - name: Remove license file
         run:
-          rm /tmp/demisto.lic
+          rm -f /tmp/demisto.lic

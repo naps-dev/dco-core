@@ -32,10 +32,10 @@ jobs:
 
   cleanup-xsoar:
     needs: [package-create]
+    if: always()
     runs-on: [self-hosted, onprem]
 
     steps:
       - name: Remove license file
-        if: always()
         run:
-          rm /tmp/polarity.lic
+          rm -f /tmp/polarity.lic
