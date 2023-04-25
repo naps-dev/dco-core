@@ -16,8 +16,9 @@ import (
 
 func TestZarfPackage(t *testing.T) {
 	component := os.Getenv("COMPONENT")
-	clusterName := component + "-test"
-	kubeconfigPath := "/tmp/" + component + "_test_kubeconfig"
+	refName := os.Getenv("REF_NAME")
+	clusterName := component + "-test-" + refName
+	kubeconfigPath := "/tmp/" + component + "_test_kubeconfig_" + refName
 
 	cwd, err := os.Getwd()
 
@@ -46,7 +47,7 @@ func TestZarfPackage(t *testing.T) {
 
 	clusterTeardownCmd := shell.Command{
 		Command: "k3d",
-		Args:    []string{"cluster", "delete", component + "-test"},
+		Args:    []string{"cluster", "delete", component + "-test-" + refName},
 		Env:     testEnv,
 	}
 

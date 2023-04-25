@@ -30,6 +30,7 @@ env:
   COMPONENT: "${{ inputs.COMPONENT}}"
   DCO_MAIN_S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/dco-core/prototype-monrepo"
   DCO_MAIN_ZARF_PACKAGE: zarf-package-dco-core-amd64.tar.zst
+  REF_NAME: "${{ inputs.REF_NAME}}"
 jobs:
   package-component:
     runs-on: [self-hosted, onprem]
