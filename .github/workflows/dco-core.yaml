@@ -7,6 +7,8 @@ on:
       - 'test/dco_core_package_test.go'
       - '.github/workflows/dco-core.yaml'
       - '.github/workflows/package.yaml'
+  schedule:
+    - cron: '30 5 * * *'
 
 permissions:
   id-token: write

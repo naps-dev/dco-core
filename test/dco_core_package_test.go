@@ -1,23 +1,24 @@
 package test
 
 import (
+	"context"
+	"net"
 	"os"
 	"testing"
 	"time"
-    "context"
-    "net"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/shell"
-    "github.com/docker/docker/api/types"
-    "github.com/docker/docker/client"
 )
 
 func TestZarfPackage(t *testing.T) {
 	component := os.Getenv("COMPONENT")
-	clusterName := component + "-test"
-	kubeconfigPath := "/tmp/" + component + "_test_kubeconfig"
+	refName := os.Getenv("REF_NAME")
+	clusterName := component + "-test-" + refName
+	kubeconfigPath := "/tmp/" + component + "_test_kubeconfig_" + refName
 
 	cwd, err := os.Getwd()
 
@@ -46,7 +47,7 @@ func TestZarfPackage(t *testing.T) {
 
 	clusterTeardownCmd := shell.Command{
 		Command: "k3d",
-		Args:    []string{"cluster", "delete", component + "-test"},
+		Args:    []string{"cluster", "delete", component + "-test-" + refName},
 		Env:     testEnv,
 	}
 
@@ -81,7 +82,7 @@ func TestZarfPackage(t *testing.T) {
 			"--components", "flux,big-bang-core,setup,kubevirt,cdi,metallb,metallb-config,dataplane-ek",
 			"--set", "METALLB_IP_ADDRESS_POOL=" + ipstart.String() + "-" + ipend.String(),
 		},
-		Env:     testEnv,
+		Env: testEnv,
 	}
 
 	shell.RunCommand(t, zarfDeployDCOCmd)
@@ -172,7 +173,7 @@ func TestZarfPackage(t *testing.T) {
 	passthrough_igw := k8s.GetService(t, k8s.NewKubectlOptions(contextName, kubeconfigPath, "istio-system"), "passthrough-ingressgateway")
 	passthrough_lb_ip := passthrough_igw.Status.LoadBalancer.Ingress[0].IP
 
-    time.Sleep(120 * time.Second)
+	time.Sleep(120 * time.Second)
 
 	curlCmd = shell.Command{
 		Command: "curl",
@@ -191,25 +192,25 @@ func TestZarfPackage(t *testing.T) {
 	})
 
 	if component == "arkime" {
-	    ArkimeTestZarfPackage(t, contextName, kubeconfigPath)
+		ArkimeTestZarfPackage(t, contextName, kubeconfigPath)
 	}
 	if component == "kasm" {
-	    KasmTestZarfPackage(t, contextName, kubeconfigPath)
+		KasmTestZarfPackage(t, contextName, kubeconfigPath)
 	}
 	if component == "mixmode" {
-	    MixmodeTestZarfPackage(t, contextName, kubeconfigPath)
+		MixmodeTestZarfPackage(t, contextName, kubeconfigPath)
 	}
 	if component == "mockingbird" {
-	    MockingbirdTestZarfPackage(t, contextName, kubeconfigPath)
+		MockingbirdTestZarfPackage(t, contextName, kubeconfigPath)
 	}
 	if component == "polarity" {
-	    PolarityTestZarfPackage(t, contextName, kubeconfigPath)
+		PolarityTestZarfPackage(t, contextName, kubeconfigPath)
 	}
 	if component == "suricata" {
-	    SuricataTestZarfPackage(t, contextName, kubeconfigPath)
+		SuricataTestZarfPackage(t, contextName, kubeconfigPath)
 	}
 	if component == "xsoar" {
-	    XsoarTestZarfPackage(t, contextName, kubeconfigPath)
+		XsoarTestZarfPackage(t, contextName, kubeconfigPath)
 	}
 }
 

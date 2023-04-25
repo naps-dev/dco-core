@@ -16,8 +16,8 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "main"
+      REF_NAME: "monorepo-updates"
       REF_TYPE: "branch"
       ZARF_PACKAGE: zarf-package-mixmode-amd64.tar.zst
-      IMAGE_TAG: "main"
+      IMAGE_TAG: "monorepo-updates"
       COMPONENT: "mixmode"

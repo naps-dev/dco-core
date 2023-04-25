@@ -7,5 +7,5 @@ import (
 )
 
 func MockingbirdTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string) {
-    logger.Log(t, "Mockingbird test to be implemented")
+	logger.Log(t, "Mockingbird test to be implemented")
 }

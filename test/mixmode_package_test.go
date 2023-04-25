@@ -7,5 +7,5 @@ import (
 )
 
 func MixmodeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string) {
-    logger.Log(t, "Mixmode test to be implemented")
+	logger.Log(t, "Mixmode test to be implemented")
 }
