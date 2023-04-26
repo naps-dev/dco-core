@@ -6,6 +6,7 @@ on:
       - 'xsoar/**'
       - 'test/xsoar_package_test.go'
       - '.github/workflows/xsoar.yaml'
+    tags-ignore: ["v**"]
 
 permissions:
   id-token: write

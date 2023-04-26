@@ -6,6 +6,7 @@ on:
       - 'mixmode/**'
       - 'test/mixmode_package_test.go'
       - '.github/workflows/mixmode.yaml'
+    tags-ignore: ["v**"]
 
 permissions:
   id-token: write

@@ -6,6 +6,7 @@ on:
       - 'mockingbird/**'
       - 'test/mockingbird_package_test.go'
       - '.github/workflows/mockingbird.yaml'
+    tags-ignore: ["v**"]
 
 permissions:
   id-token: write
