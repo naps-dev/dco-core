@@ -25,8 +25,8 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "monorepo-updates"
-      REF_TYPE: "branch"
+      REF_NAME: "v4.0.10-4"
+      REF_TYPE: "tag"
       ZARF_PACKAGE: zarf-package-polarity-amd64.tar.zst
       COMPONENT: "polarity"
 

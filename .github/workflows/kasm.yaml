@@ -16,7 +16,7 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "monorepo-updates"
-      REF_TYPE: "branch"
+      REF_NAME: "v1.11.0-5"
+      REF_TYPE: "tag"
       ZARF_PACKAGE: zarf-package-kasm-amd64.tar.zst
       COMPONENT: "kasm"
