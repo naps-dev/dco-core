@@ -6,6 +6,7 @@ on:
       - 'xsoar/**'
       - 'test/xsoar_package_test.go'
       - '.github/workflows/xsoar.yaml'
+    tags-ignore: ["v**"]
 
 permissions:
   id-token: write
@@ -32,8 +33,8 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "monorepo-updates"
-      REF_TYPE: "branch"
+      REF_NAME: "v6.5.0-5"
+      REF_TYPE: "tag"
       ZARF_PACKAGE: zarf-package-xsoar-amd64.tar.zst
       COMPONENT: "xsoar"
 

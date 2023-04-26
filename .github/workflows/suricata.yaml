@@ -6,6 +6,7 @@ on:
       - 'suricata/**'
       - 'test/suricata_package_test.go'
       - '.github/workflows/suricata.yaml'
+    tags-ignore: ["v**"]
 
 permissions:
   id-token: write
@@ -16,7 +17,7 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "monorepo-updates"
-      REF_TYPE: "branch"
+      REF_NAME: "v6.0.2-4"
+      REF_TYPE: "tag"
       ZARF_PACKAGE: zarf-package-suricata-amd64.tar.zst
       COMPONENT: "suricata"
