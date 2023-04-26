@@ -18,8 +18,12 @@ func TestZarfPackage(t *testing.T) {
 	component := os.Getenv("COMPONENT")
 	refName := os.Getenv("REF_NAME")
 	clusterName := component + "-test-" + refName
-	kubeconfigPath := "/tmp/" + component + "_test_kubeconfig_" + refName
+	kubeconfigPath := "/tmp/" + component + "_test_+" + refName + "_kubeconfig"
 
+    // Truncate string if too long (k3d not happy with strings over 32 chars)
+    if len(clusterName) > 32 {
+        clusterName = clusterName[:32]
+    }
 	cwd, err := os.Getwd()
 
 	if err != nil {
@@ -47,7 +51,7 @@ func TestZarfPackage(t *testing.T) {
 
 	clusterTeardownCmd := shell.Command{
 		Command: "k3d",
-		Args:    []string{"cluster", "delete", component + "-test-" + refName},
+		Args:    []string{"cluster", "delete", clusterName},
 		Env:     testEnv,
 	}
 
