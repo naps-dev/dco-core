@@ -139,7 +139,7 @@ jobs:
           rm -rf ./big-tmp
         working-directory: dco-core
 
-      - name: Create DCO package (from Branch) needed for testing individual component
+      - name: Create DCO package (from Tag) needed for testing individual component
         if: ${{ env.DCO_REF_TYPE == 'tag' && inputs.COMPONENT != 'dco-core' }}
         run: |
           # cleanup and init a tmp dir

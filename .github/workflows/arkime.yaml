@@ -23,4 +23,3 @@ jobs:
       ZARF_PACKAGE: zarf-package-arkime-amd64.tar.zst
       IMAGE_TAG: "monorepo-updates"
       COMPONENT: "arkime"
- 
