@@ -28,8 +28,6 @@ env:
   S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/${{ inputs.COMPONENT}}/${{ inputs.REF_NAME}}"
   ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
   COMPONENT: "${{ inputs.COMPONENT}}"
-  DCO_MAIN_S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/dco-core/prototype-monrepo"
-  DCO_MAIN_ZARF_PACKAGE: zarf-package-dco-core-amd64.tar.zst
   REF_NAME: "${{ inputs.REF_NAME}}"
 jobs:
   package-component:
@@ -121,10 +119,51 @@ jobs:
           go-version: '^1.19.5'
           cache: true
 
-      - name: Pull DCO package needed for testing individual component
-        if: ${{ inputs.COMPONENT != 'dco-core'}}
+      - name: Create DCO package (from Branch) needed for testing individual component
+        if: ${{ inputs.REF_TYPE == 'branch'}} && ${{ inputs.COMPONENT != 'dco-core'}}
         run: |
-          aws s3 cp --no-progress "${{ env.DCO_MAIN_S3_PATH }}/${{ env.DCO_MAIN_ZARF_PACKAGE }}" "dco-core/${{ env.DCO_MAIN_ZARF_PACKAGE }}"
+          # cleanup and init a tmp dir
+          rm -rf big-tmp
+          mkdir big-tmp
+
+          args=()
+          args+=(--set GIT_REF=refs/heads/${{ inputs.REF_NAME }})
+          if [[ -z "${IMAGE_TAG}" ]]; then
+            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
+          fi
+          args+=(--confirm)
+          args+=(--tmpdir $PWD/big-tmp)
+          args+=(--skip-sbom)
+
+          # build the zarf package
+          zarf package create "${args[@]}"
+
+          # cleanup tmp dir
+          rm -rf ./big-tmp
+        working-directory: dco-core
+
+      - name: Create DCO package (from Branch) needed for testing individual component
+        if: ${{ inputs.REF_TYPE == 'tag'}} && ${{ inputs.COMPONENT != 'dco-core'}}
+        run: |
+          # cleanup and init a tmp dir
+          rm -rf big-tmp
+          mkdir big-tmp
+
+          args=()
+          args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
+          if [[ -z "${IMAGE_TAG}" ]]; then
+            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
+          fi
+          args+=(--confirm)
+          args+=(--tmpdir $PWD/big-tmp)
+          args+=(--skip-sbom)
+
+          # build the zarf package
+          zarf package create "${args[@]}"
+
+          # cleanup tmp dir
+          rm -rf ./big-tmp
+        working-directory: dco-core
 
       - name: Install dependencies for terratest
         run: |
