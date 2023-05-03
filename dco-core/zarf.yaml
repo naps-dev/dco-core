@@ -43,19 +43,19 @@ components:
       - name: flux-installer
         # This will be built on the package create side and deployed as a regular manifest on package deploy
         kustomizations:
-          - https://repo1.dso.mil/big-bang/bigbang.git//base/flux?ref=1.57.0
+          - https://repo1.dso.mil/big-bang/bigbang.git//base/flux?ref=2.0.0
     images:
-      - registry1.dso.mil/ironbank/fluxcd/helm-controller:v0.30.0
-      - registry1.dso.mil/ironbank/fluxcd/kustomize-controller:v0.34.0
-      - registry1.dso.mil/ironbank/fluxcd/notification-controller:v0.32.1
-      - registry1.dso.mil/ironbank/fluxcd/source-controller:v0.35.2
+      - registry1.dso.mil/ironbank/fluxcd/helm-controller:v0.32.1
+      - registry1.dso.mil/ironbank/fluxcd/kustomize-controller:v0.35.1
+      - registry1.dso.mil/ironbank/fluxcd/notification-controller:v0.33.0
+      - registry1.dso.mil/ironbank/fluxcd/source-controller:v0.36.1
 
   - name: big-bang-core
     description: "Opinionated deployment of Big Bang Core"
     required: true
     repos:
       # Big Bang
-      - https://repo1.dso.mil/big-bang/bigbang.git@1.57.0
+      - https://repo1.dso.mil/big-bang/bigbang.git@2.0.0
       # Istio
       - https://repo1.dso.mil/platform-one/big-bang/apps/core/istio-controlplane.git@1.17.2-bb.0
       - https://repo1.dso.mil/platform-one/big-bang/apps/core/istio-operator.git@1.17.2-bb.0
