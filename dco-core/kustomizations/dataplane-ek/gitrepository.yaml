@@ -5,7 +5,7 @@ metadata:
   namespace: dataplane-ek
 spec:
   interval: 5m
-  url: https://repo1.dso.mil/platform-one/big-bang/apps/core/elasticsearch-kibana.git
+  url: https://repo1.dso.mil/big-bang/product/packages/elasticsearch-kibana.git
   ref:
     tag: "1.2.0-bb.0"
   secretRef:

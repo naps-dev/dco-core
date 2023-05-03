@@ -57,25 +57,25 @@ components:
       # Big Bang
       - https://repo1.dso.mil/big-bang/bigbang.git@2.0.0
       # Istio
-      - https://repo1.dso.mil/platform-one/big-bang/apps/core/istio-controlplane.git@1.17.2-bb.0
-      - https://repo1.dso.mil/platform-one/big-bang/apps/core/istio-operator.git@1.17.2-bb.0
+      - https://repo1.dso.mil/big-bang/product/packages/istio-controlplane.git@1.17.2-bb.0
+      - https://repo1.dso.mil/big-bang/product/packages/istio-operator.git@1.17.2-bb.0
       # Jaeger
-      - https://repo1.dso.mil/platform-one/big-bang/apps/core/jaeger.git@2.42.0-bb.0
+      - https://repo1.dso.mil/big-bang/product/packages/jaeger.git@2.42.0-bb.0
       # Kyverno
-      - https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/kyverno.git@2.6.5-bb.3
-      - https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/kyverno-policies.git@1.1.0-bb.5
+      - https://repo1.dso.mil/big-bang/product/packages/kyverno.git@2.6.5-bb.3
+      - https://repo1.dso.mil/big-bang/product/packages/kyverno-policies.git@1.1.0-bb.5
       # Logging
-      - https://repo1.dso.mil/platform-one/big-bang/apps/core/elasticsearch-kibana.git@1.2.0-bb.0
-      - https://repo1.dso.mil/platform-one/big-bang/apps/core/eck-operator.git@2.7.0-bb.0
-      - https://repo1.dso.mil/platform-one/big-bang/apps/core/fluentbit.git@0.27.0-bb.0
+      - https://repo1.dso.mil/big-bang/product/packages/elasticsearch-kibana.git@1.2.0-bb.0
+      - https://repo1.dso.mil/big-bang/product/packages/eck-operator.git@2.7.0-bb.0
+      - https://repo1.dso.mil/big-bang/product/packages/fluentbit.git@0.27.0-bb.0
       # Neuvector
-      - https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/neuvector.git@2.4.3-bb.0
+      - https://repo1.dso.mil/big-bang/product/packages/neuvector.git@2.4.3-bb.0
       # Monitoring
-      - https://repo1.dso.mil/platform-one/big-bang/apps/core/monitoring.git@43.1.2-bb.4
+      - https://repo1.dso.mil/big-bang/product/packages/monitoring.git@43.1.2-bb.4
       # # Twistlock
-      # - https://repo1.dso.mil/platform-one/big-bang/apps/security-tools/twistlock.git@0.12.0-bb.0
+      # - https://repo1.dso.mil/big-bang/product/packages/twistlock.git@0.12.0-bb.0
       #Keycloak
-      - https://repo1.dso.mil/platform-one/big-bang/apps/security-tools/keycloak.git@18.4.0-bb.2
+      - https://repo1.dso.mil/big-bang/product/packages/keycloak.git@18.4.0-bb.2
 
     images:
       # Big Bang
@@ -157,7 +157,7 @@ components:
     description: "KubeVirt"
     required: true
     repos:
-      - https://repo1.dso.mil/platform-one/big-bang/apps/third-party/kubevirt.git@0.58.0-bb.2
+      - https://repo1.dso.mil/big-bang/apps/third-party/kubevirt.git@0.58.0-bb.2
     images:
       - quay.io/kubevirt/virt-api:v0.58.0
       - quay.io/kubevirt/virt-controller:v0.58.0
@@ -173,7 +173,7 @@ components:
     description: "CDI for KubeVirt"
     required: true
     repos:
-      - https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/cdi.git@1.55.2-bb.1
+      - https://repo1.dso.mil/big-bang/apps/sandbox/cdi.git@1.55.2-bb.1
     images:
       - quay.io/kubevirt/cdi-operator:v1.55.2
       - quay.io/kubevirt/cdi-controller:v1.55.2
