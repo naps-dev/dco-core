@@ -95,7 +95,7 @@ jobs:
           args=()
           args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
           if [[ -z "${IMAGE_TAG}" ]]; then
-            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}"
+            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
           fi
           args+=(--confirm)
           args+=(--tmpdir $PWD/big-tmp)
@@ -148,7 +148,7 @@ jobs:
 
           # build the zarf package
           zarf package create \
-            --set GIT_REF=refs/tags/${{ env.DCO_REF_NAME }}) \
+            --set GIT_REF=refs/tags/${{ env.DCO_REF_NAME }} \
             --confirm \
             --tmpdir $PWD/big-tmp \
             --skip-sbom
