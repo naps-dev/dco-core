@@ -29,6 +29,8 @@ env:
   ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
   COMPONENT: "${{ inputs.COMPONENT}}"
   REF_NAME: "${{ inputs.REF_NAME}}"
+  DCO_REF_NAME: "${{ github.head_ref || github.ref_name }}"
+  DCO_REF_TYPE: "${{ github.ref_type }}"
 jobs:
   package-component:
     runs-on: [self-hosted, onprem]
@@ -120,46 +122,36 @@ jobs:
           cache: true
 
       - name: Create DCO package (from Branch) needed for testing individual component
-        if: ${{ inputs.REF_TYPE == 'branch'}} && ${{ inputs.COMPONENT != 'dco-core'}}
+        if: ${{ env.DCO_REF_TYPE == 'branch' && inputs.COMPONENT != 'dco-core'}}
         run: |
           # cleanup and init a tmp dir
           rm -rf big-tmp
           mkdir big-tmp
 
-          args=()
-          args+=(--set GIT_REF=refs/heads/${{ inputs.REF_NAME }})
-          if [[ -z "${IMAGE_TAG}" ]]; then
-            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
-          fi
-          args+=(--confirm)
-          args+=(--tmpdir $PWD/big-tmp)
-          args+=(--skip-sbom)
-
           # build the zarf package
-          zarf package create "${args[@]}"
+          zarf package create \
+            --set GIT_REF=refs/heads/${{ env.DCO_REF_NAME }}) \
+            --confirm \
+            --tmpdir $PWD/big-tmp \
+            --skip-sbom
 
           # cleanup tmp dir
           rm -rf ./big-tmp
         working-directory: dco-core
 
       - name: Create DCO package (from Branch) needed for testing individual component
-        if: ${{ inputs.REF_TYPE == 'tag'}} && ${{ inputs.COMPONENT != 'dco-core'}}
+        if: ${{ env.DCO_REF_TYPE == 'tag' && inputs.COMPONENT != 'dco-core'}}
         run: |
           # cleanup and init a tmp dir
           rm -rf big-tmp
           mkdir big-tmp
 
-          args=()
-          args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
-          if [[ -z "${IMAGE_TAG}" ]]; then
-            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
-          fi
-          args+=(--confirm)
-          args+=(--tmpdir $PWD/big-tmp)
-          args+=(--skip-sbom)
-
           # build the zarf package
-          zarf package create "${args[@]}"
+          zarf package create \
+            --set GIT_REF=refs/tags/${{ env.DCO_REF_NAME }}) \
+            --confirm \
+            --tmpdir $PWD/big-tmp \
+            --skip-sbom
 
           # cleanup tmp dir
           rm -rf ./big-tmp
