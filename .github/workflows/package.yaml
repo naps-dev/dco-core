@@ -41,7 +41,7 @@ jobs:
       - name: Install Zarf
         uses: defenseunicorns/setup-zarf@main
         with:
-          version: v0.26.1
+          version: v0.26.2
           download-init-package: true
 
       - name: Configure AWS ECR Credentials
