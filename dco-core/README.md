@@ -7,7 +7,7 @@ Instructions:
 * Update Bigbang repository URL reference tags in:
   * `./kustomizations/bigbang/kustomization.yaml`
   * `./zarf.yaml`
-* View the [Bigbang release notes](https://repo1.dso.mil/platform-one/big-bang/bigbang/-/releases) for the target version ([example -- 1.46.0](https://repo1.dso.mil/platform-one/big-bang/bigbang/-/releases/1.46.0))
+* View the [Bigbang release notes](https://repo1.dso.mil/big-bang/bigbang/-/releases) for the target version ([example -- 1.46.0](https://repo1.dso.mil/big-bang/bigbang/-/releases/1.46.0))
 * Adjust the version tags in `components.big-bang-core-standard-assets.repos`  according to the version shown in the `BB Version` column of the "Packages" table in the release notes
 * Download the `package-images.yaml` from the release notes
 * Remove unused packages from the yaml

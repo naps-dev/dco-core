@@ -65,10 +65,10 @@ clusterAuditor:
 gatekeeper:
   enabled: false
 
-# EFK -> PLG, see https://repo1.dso.mil/platform-one/big-bang/bigbang/-/blob/1.39.0/docs/guides/using-bigbang/efk-plg-logging-migration.md
-logging:
+# EFK -> PLG, see https://repo1.dso.mil/big-bang/bigbang/-/blob/1.39.0/docs/guides/using-bigbang/efk-plg-logging-migration.md
+elasticsearchKibana:
   enabled: true
-eckoperator:
+eckOperator:
   enabled: true
 fluentbit:
   enabled: true
@@ -84,7 +84,7 @@ twistlock:
   enabled: false
 kyverno:
   enabled: true
-kyvernopolicies:
+kyvernoPolicies:
   enabled: true
   values:
     policies:
@@ -295,7 +295,7 @@ kyvernopolicies:
       update-token-automount:
         enabled: false
 
-kyvernoreporter:
+kyvernoReporter:
   enabled: false
 
 addons:
