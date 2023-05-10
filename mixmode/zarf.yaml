@@ -18,6 +18,7 @@ variables:
     default: "vp.bigbang.dev"
     prompt: false
 
+
 components:
   - name: mixmode
     description: "MixMode"
