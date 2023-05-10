@@ -70,8 +70,6 @@ elasticsearchKibana:
   enabled: true
 eckOperator:
   enabled: true
-fluentbit:
-  enabled: true
 jaeger:
   enabled: true
 loki:
