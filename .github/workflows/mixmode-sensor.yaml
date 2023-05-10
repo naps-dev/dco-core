@@ -1,0 +1,25 @@
+name: Build and Deploy Mixmode-Sensor Zarf Package
+run-name: ${{github.actor}} is building the Mixmode-Sensor Zarf package
+on:
+  push:
+    paths:
+      - 'mixmode-sensor/**'
+      - 'test/mixmode_sensor_package_test.go'
+      - '.github/workflows/mixmode-sensor.yaml'
+    tags-ignore: ["v**"]
+    branches: ['**']
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  package-create:
+    uses: ./.github/workflows/package.yaml
+    secrets: inherit
+    with:
+      REF_NAME: "v8.14.0-4"
+      REF_TYPE: "tag"
+      ZARF_PACKAGE: zarf-package-mixmode-sensor-amd64.tar.zst
+      IMAGE_TAG: "monorepo-updates"
+      COMPONENT: "mixmode-sensor"
