@@ -15,7 +15,7 @@ constants:
 
 variables:
   - name: DOMAIN
-    default: "vp-stg.bigbang.dev"
+    default: "vp.bigbang.dev"
     prompt: false
 
 components:
