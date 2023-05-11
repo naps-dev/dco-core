@@ -18,8 +18,8 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "up-pvc-size"
-      REF_TYPE: "branch"
+      REF_NAME: "v1.2.0-5"
+      REF_TYPE: "tag"
       ZARF_PACKAGE: zarf-package-mockingbird-amd64.tar.zst
-      IMAGE_TAG: "up-pvc-size"
+      IMAGE_TAG: "v1.2.0-5"
       COMPONENT: "mockingbird"
