@@ -18,7 +18,7 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "v6.0.2-4"
-      REF_TYPE: "tag"
+      REF_NAME: "log-rotation"
+      REF_TYPE: "branch"
       ZARF_PACKAGE: zarf-package-suricata-amd64.tar.zst
       COMPONENT: "suricata"
