@@ -1,0 +1,47 @@
+kind: ZarfPackageConfig
+metadata:
+  name: mixmode-sensor
+  description: "Mixmode Sensor"
+  # Big Bang / Iron Bank are only amd64
+  architecture: amd64
+
+constants:
+  - name: GIT_REF
+    description: "Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy"
+    value: "###ZARF_PKG_TMPL_GIT_REF###"
+
+  - name: RB_IMAGE_TAG
+    value: '###RB_PKG_VAR_RB_IMAGE_TAG###'
+
+  - name: STENO_IMAGE_TAG
+    value: '###ZARF_PKG_VAR_STENO_IMAGE_TAG###'
+
+  - name: ZEEK_IMAGE_TAG
+    value: '###ZARF_PKG_VAR_ZEEK_IMAGE_TAG###'
+
+variables:
+  # Prompt user for the domain override
+  - name: DOMAIN
+    default: "vp.bigbang.dev"
+    prompt: false
+
+  - name: CAPTURE_INTERFACE
+    default: "cni0"
+    prompt: false
+
+components:
+  - name: mixmode-sensor
+    description: "Mixmode sensor"
+    required: true
+    repos:
+      - https://github.com/naps-dev/mixmode-sensor.git
+    manifests:
+      - name: mixmode-sensor-helm
+        namespace: mixmode
+        files:
+          - manifests/gitrepository.yaml
+          - manifests/helmrelease.yaml
+    images:
+      - '765814079306.dkr.ecr.us-east-1.amazonaws.com/reachback:###ZARF_PKG_VAR_RB_IMAGE_TAG###'
+      - '765814079306.dkr.ecr.us-east-1.amazonaws.com/stenographer:###ZARF_PKG_VAR_STENO_IMAGE_TAG###'
+      - '765814079306.dkr.ecr.us-east-1.amazonaws.com/zeek:###ZARF_PKG_VAR_ZEEK_IMAGE_TAG###'
