@@ -23,8 +23,7 @@ are passed down to the actual k8s objects via the following chain:
 2. The `metallb` Zarf package gets those variables from the parent package and
    updates the `###ZARF_VAR_METALLB_IP_ADDRESS_POOL###` and `###ZARF_VAR_METALLB_INTERFACE###`
    sections in [manifests/metallb-config.yaml](manifests/metallb-config.yaml). This is
-   used by Kustomize to populate the fields in [kustomizations/metallb-config/base/helmrelease.yaml]
-   (kustomizations/metallb-config/base/helmrelease.yaml).
+   used by Kustomize to populate the fields in [kustomizations/metallb-config/base/helmrelease.yaml](kustomizations/metallb-config/base/helmrelease.yaml).
 3. Kustomize populates the values from this into the Helm chart values at
    [charts/metallb-config/values.yaml](charts/metallb-config/values.yaml).
 4. Helm uses the values there and renders them into the templates at
