@@ -188,27 +188,14 @@ components:
           - manifests/cdi.yaml
 
   - name: metallb
-    description: "Load balancer for balancing loads"
-    required: false
-    repos:
-      - https://github.com/metallb/metallb.git@v0.13.7
-    images:
-      - quay.io/metallb/speaker:v0.13.7
-      - quay.io/metallb/controller:v0.13.7
-    manifests:
-      - name: metallb
-        files:
-          - manifests/metallb.yaml
+    required: true
+    import:
+      path: '../metallb/'
 
   - name: metallb-config
-    description: "Load balancer config for actually balancing loads"
-    required: false
-    repos:
-      - https://github.com/naps-dev/dco-core.git
-    manifests:
-      - name: metallb-config
-        files:
-          - manifests/metallb-config.yaml
+    required: true
+    import:
+      path: '../metallb/'
 
   - name: dataplane-ek
     description: "EK Chart Deployment for the DataPlane"
