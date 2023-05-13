@@ -1,0 +1,44 @@
+kind: ZarfPackageConfig
+metadata:
+  name: metallb
+  description: "metallb"
+  architecture: amd64
+
+constants:
+  - name: GIT_REF
+    description: "Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy"
+    value: "###ZARF_PKG_TMPL_GIT_REF###"
+
+variables:
+  - name: METALLB_IP_ADDRESS_POOL
+    default: "192.168.1.1-192.168.1.2"
+    prompt: false
+
+  - name: METALLB_INTERFACE
+    default: "eth0"
+    prompt: false
+
+components:
+
+  - name: metallb
+    description: "Load balancer for balancing loads"
+    required: true
+    repos:
+      - https://github.com/metallb/metallb.git@v0.13.7
+    images:
+      - quay.io/metallb/speaker:v0.13.7
+      - quay.io/metallb/controller:v0.13.7
+    manifests:
+      - name: metallb
+        files:
+          - manifests/metallb.yaml
+
+  - name: metallb-config
+    description: "Load balancer config for actually balancing loads"
+    required: true
+    repos:
+      - https://github.com/naps-dev/dco-core.git
+    manifests:
+      - name: metallb-config
+        files:
+          - manifests/metallb-config.yaml
