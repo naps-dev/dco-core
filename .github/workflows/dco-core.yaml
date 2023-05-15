@@ -3,6 +3,7 @@ run-name: ${{github.actor}} is building the DCO Core Zarf package
 on:
   push:
     paths:
+      - 'bigbang/**'
       - 'dco-core/**'
       - 'metallb/**'
       - 'test/dco_core_package_test.go'
