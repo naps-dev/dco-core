@@ -2,9 +2,8 @@ name: Build and Deploy DCO Core Zarf Package
 run-name: ${{github.actor}} is building the DCO Core Zarf package
 on:
   push:
-    paths-ignore:
-      - '**.md'
     paths:
+      - '!**.md'
       - 'bigbang/**'
       - 'dco-core/**'
       - 'metallb/**'
