@@ -115,64 +115,64 @@ jobs:
           role-session-name: arkime-s3
           aws-region: us-east-1
 
-#      - name: Set up Go
-#        uses: actions/setup-go@v3
-#        with:
-#          go-version: '^1.19.5'
-#          cache: true
-#
-#      - name: Create DCO package (from Branch) needed for testing individual component
-#        if: ${{ env.DCO_REF_TYPE == 'branch' && inputs.COMPONENT != 'dco-core' }}
-#        run: |
-#          # cleanup and init a tmp dir
-#          rm -rf big-tmp
-#          mkdir big-tmp
-#
-#          # build the zarf package
-#          zarf package create \
-#            --set GIT_REF=refs/heads/${{ env.DCO_REF_NAME }} \
-#            --confirm \
-#            --tmpdir $PWD/big-tmp \
-#            --skip-sbom
-#
-#          # cleanup tmp dir
-#          rm -rf ./big-tmp
-#        working-directory: dco-core
-#
-#      - name: Create DCO package (from Tag) needed for testing individual component
-#        if: ${{ env.DCO_REF_TYPE == 'tag' && inputs.COMPONENT != 'dco-core' }}
-#        run: |
-#          # cleanup and init a tmp dir
-#          rm -rf big-tmp
-#          mkdir big-tmp
-#
-#          # build the zarf package
-#          zarf package create \
-#            --set GIT_REF=refs/tags/${{ env.DCO_REF_NAME }} \
-#            --confirm \
-#            --tmpdir $PWD/big-tmp \
-#            --skip-sbom
-#
-#          # cleanup tmp dir
-#          rm -rf ./big-tmp
-#        working-directory: dco-core
-#
-#      - name: Install dependencies for terratest
-#        run: |
-#          go get -t ./...
-#
-#      - name: Run go test
-#        working-directory: ./test/
-#        run: |
-#          go test -timeout 40m
-#
-#      - name: Slack Notification
-#        uses: rtCamp/action-slack-notify@v2
-#        env:
-#          SLACK_COLOR: ${{ job.status }}
-#          SLACK_ICON: https://avatars.githubusercontent.com/u/87975021?s=200&v=4
-#          SLACK_USERNAME: GitHub
-#          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '^1.19.5'
+          cache: true
+
+      - name: Create DCO package (from Branch) needed for testing individual component
+        if: ${{ env.DCO_REF_TYPE == 'branch' && inputs.COMPONENT != 'dco-core' }}
+        run: |
+          # cleanup and init a tmp dir
+          rm -rf big-tmp
+          mkdir big-tmp
+
+          # build the zarf package
+          zarf package create \
+            --set GIT_REF=refs/heads/${{ env.DCO_REF_NAME }} \
+            --confirm \
+            --tmpdir $PWD/big-tmp \
+            --skip-sbom
+
+          # cleanup tmp dir
+          rm -rf ./big-tmp
+        working-directory: dco-core
+
+      - name: Create DCO package (from Tag) needed for testing individual component
+        if: ${{ env.DCO_REF_TYPE == 'tag' && inputs.COMPONENT != 'dco-core' }}
+        run: |
+          # cleanup and init a tmp dir
+          rm -rf big-tmp
+          mkdir big-tmp
+
+          # build the zarf package
+          zarf package create \
+            --set GIT_REF=refs/tags/${{ env.DCO_REF_NAME }} \
+            --confirm \
+            --tmpdir $PWD/big-tmp \
+            --skip-sbom
+
+          # cleanup tmp dir
+          rm -rf ./big-tmp
+        working-directory: dco-core
+
+      - name: Install dependencies for terratest
+        run: |
+          go get -t ./...
+
+      - name: Run go test
+        working-directory: ./test/
+        run: |
+          go test -timeout 40m
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_ICON: https://avatars.githubusercontent.com/u/87975021?s=200&v=4
+          SLACK_USERNAME: GitHub
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
       - name: Save Package to S3
         run: |
