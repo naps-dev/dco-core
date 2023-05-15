@@ -18,8 +18,8 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "mixmode-new-license"
-      REF_TYPE: "branch"
+      REF_NAME: "vben_test"
+      REF_TYPE: "tag"
       ZARF_PACKAGE: zarf-package-mixmode-amd64.tar.zst
-      IMAGE_TAG: "mixmode-new-license"
+      IMAGE_TAG: "vben_test"
       COMPONENT: "mixmode"
