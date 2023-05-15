@@ -370,10 +370,6 @@ fluentbit:
       - name: suricatalogs
         hostPath:
           path: /opt/suricata
-      - name: etcmachineid
-        hostPath:
-          path: /etc/machine-id
-          type: File
     daemonSetVolumeMounts:
       - name: varlog
         mountPath: /var/log
@@ -383,7 +379,4 @@ fluentbit:
         readOnly: true
       - name: suricatalogs
         mountPath: /data/suricata
-        readOnly: true
-      - name: etcmachineid
-        mountPath: /etc/machine-id
         readOnly: true
