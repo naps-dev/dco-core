@@ -11,7 +11,7 @@ constants:
     value: "###ZARF_PKG_TMPL_GIT_REF###"
 
   - name: RB_IMAGE_TAG
-    value: '###RB_PKG_VAR_RB_IMAGE_TAG###'
+    value: '###ZARF_PKG_VAR_RB_IMAGE_TAG###'
 
   - name: STENO_IMAGE_TAG
     value: '###ZARF_PKG_VAR_STENO_IMAGE_TAG###'
@@ -24,6 +24,21 @@ variables:
   - name: DOMAIN
     default: "vp.bigbang.dev"
     prompt: false
+
+  - name: PLATFORM_HOSTNAME
+    description: "the hostname of the mixmode platform, ex. sd-12.mixmode.ai"
+
+  - name: PROVIDER_ID
+    description: "Customer Provider ID"
+  
+  - name: SENSOR_ID
+    description: "ID of this sensor, can be retrieved in the MixMode UI"
+  
+  - name: TENANT_ID
+    description: "ID of this tenant, can be retrieved in the MixMode UI"
+
+  - name: INITIAL_API_TOKEN
+    description: "This token rotates every ~12 hours in the MixMode platform and is required for the sensor to be able to pull down it's dynamic configurations"
 
   - name: CAPTURE_INTERFACE
     default: "cni0"

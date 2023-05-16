@@ -36,7 +36,12 @@ spec:
     - name: mixmode
       namespace: mixmode
   values:
-    viewer_url: "arkime-viewer.###ZARF_VAR_DOMAIN###"
-    version: "###ZARF_CONST_IMAGE_TAG###"
-    capture_interface: "###ZARF_VAR_CAPTURE_INTERFACE###"
+    mixmodeGlobals: 
+      platformHostname: "###ZARF_VAR_PLATFORM_HOSTNAME"
+      providerId: "###ZARF_VAR_PROVIDER_ID"
+      sensorId: "###ZARF_VAR_SENSOR_ID"
+      tenantId: "###ZARF_VAR_TENANT_ID"
+      initialApiToken: "###ZARF_VAR_INITIAL_API_TOKEN"
+    stenographer.interface: "###ZARF_VAR_CAPTURE_INTERFACE###"
+    zeek.interface: "###ZARF_VAR_CAPTURE_INTERFACE###"
 
