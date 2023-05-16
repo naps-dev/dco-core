@@ -42,6 +42,7 @@ spec:
       sensorId: "###ZARF_VAR_SENSOR_ID"
       tenantId: "###ZARF_VAR_TENANT_ID"
       initialApiToken: "###ZARF_VAR_INITIAL_API_TOKEN"
-    stenographer.interface: "###ZARF_VAR_CAPTURE_INTERFACE###"
-    zeek.interface: "###ZARF_VAR_CAPTURE_INTERFACE###"
-
+    stenographer:
+      interface: "###ZARF_VAR_CAPTURE_INTERFACE###"
+    zeek:
+      interface: "###ZARF_VAR_CAPTURE_INTERFACE###"
