@@ -42,7 +42,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	//Test alert provided by suricata devs
 	createAlert := shell.Command{
 		Command: "kubectl",
-		Args:    []string{"--namespace", "suricata", "exec", "-it", pods[0].Name, "--", "/bin/bash", "-c", "curl -A BlackSun www.google.com"},
+		Args:    []string{"--namespace", "suricata", "exec", "-i", pods[0].Name, "--", "/bin/bash", "-c", "curl -A BlackSun www.google.com"},
 		Env:     testEnv,
 	}
 
@@ -50,7 +50,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 
 	checkAlert := shell.Command{
 		Command: "kubectl",
-		Args:    []string{"--namespace", "suricata", "exec", "-it", pods[0].Name, "--", "/bin/bash", "-c", "tail /var/log/suricata/fast.log"},
+		Args:    []string{"--namespace", "suricata", "exec", "-i", pods[0].Name, "--", "/bin/bash", "-c", "tail /var/log/suricata/fast.log"},
 		Env:     testEnv,
 	}
 
