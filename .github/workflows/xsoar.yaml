@@ -36,7 +36,7 @@ jobs:
     with:
       REF_NAME: "v6.5.0-5"
       REF_TYPE: "tag"
-      ZARF_PACKAGE: zarf-package-xsoar-amd64.tar.zst
+      ZARF_PACKAGE: zarf-package-xsoar-amd64-${{ github.head_ref || github.ref_name }}.tar.zst
       COMPONENT: "xsoar"
 
   cleanup-xsoar:

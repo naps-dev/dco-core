@@ -4,6 +4,7 @@ metadata:
   description: "Defensive Cyber Ops (DCO) Suite Core"
   # Big Bang / Iron Bank are only amd64
   architecture: amd64
+  version: "###ZARF_PKG_TMPL_VERSION###"
 
 constants:
   - name: GIT_REF
