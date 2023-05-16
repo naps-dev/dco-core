@@ -20,10 +20,10 @@ func TestZarfPackage(t *testing.T) {
 	clusterName := component + "-test-" + refName
 	kubeconfigPath := "/tmp/" + component + "_test_+" + refName + "_kubeconfig"
 
-    // Truncate string if too long (k3d not happy with strings over 32 chars)
-    if len(clusterName) > 32 {
-        clusterName = clusterName[:32]
-    }
+	// Truncate string if too long (k3d not happy with strings over 32 chars)
+	if len(clusterName) > 32 {
+		clusterName = clusterName[:32]
+	}
 	cwd, err := os.Getwd()
 
 	if err != nil {
@@ -83,7 +83,7 @@ func TestZarfPackage(t *testing.T) {
 	zarfDeployDCOCmd := shell.Command{
 		Command: "zarf",
 		Args: []string{"package", "deploy", "../dco-core/zarf-package-dco-core-amd64.tar.zst", "--confirm",
-			"--components", "flux,big-bang-core,setup,kubevirt,cdi,metallb,metallb-config,dataplane-ek",
+			"--components", "flux,bigbang,setup,kubevirt,cdi,metallb,metallb-config,dataplane-ek",
 			"--set", "METALLB_IP_ADDRESS_POOL=" + ipstart.String() + "-" + ipend.String(),
 		},
 		Env: testEnv,

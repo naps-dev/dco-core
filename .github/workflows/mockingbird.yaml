@@ -18,8 +18,8 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "v1.2.0-4"
+      REF_NAME: "v1.2.0-5"
       REF_TYPE: "tag"
       ZARF_PACKAGE: zarf-package-mockingbird-amd64.tar.zst
-      IMAGE_TAG: "monorepo-updates"
+      IMAGE_TAG: "v1.2.0-5"
       COMPONENT: "mockingbird"

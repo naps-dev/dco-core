@@ -11,7 +11,7 @@ spec:
   chart:
     spec:
       interval: 1m
-      chart: ./dco-core/charts/metallb-config
+      chart: ./metallb/charts/metallb-config
       sourceRef:
         kind: GitRepository
         name: metallb-config
