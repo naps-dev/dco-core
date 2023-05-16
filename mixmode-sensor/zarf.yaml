@@ -8,7 +8,7 @@ metadata:
 constants:
   - name: GIT_REF
     description: "Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy"
-    value: "###ZARF_PKG_TMPL_GIT_REF###"
+    value: '###ZARF_PKG_TMPL_GIT_REF###'
 
   - name: RB_IMAGE_TAG
     value: '###ZARF_PKG_VAR_RB_IMAGE_TAG###'
