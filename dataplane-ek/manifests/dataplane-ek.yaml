@@ -1,3 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dataplane-ek
+  labels:
+    istio-injection: enabled
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
@@ -6,7 +12,7 @@ metadata:
   namespace: dataplane-ek
 spec:
   interval: 5m
-  path: "./dco-core/kustomizations/dataplane-ek"
+  path: "./dataplane-ek/kustomizations/dataplane-ek"
   prune: true
   sourceRef:
     kind: GitRepository
