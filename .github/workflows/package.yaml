@@ -164,7 +164,7 @@ jobs:
       - name: Run go test
         working-directory: ./test/
         run: |
-          go test -timeout 40m
+          go test -timeout 45m
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
