@@ -6,6 +6,7 @@ on:
       - '!**.md'
       - 'bigbang/**'
       - 'dco-core/**'
+      - 'kubevirt/**'
       - 'metallb/**'
       - 'test/dco_core_package_test.go'
       - '.github/workflows/dco-core.yaml'

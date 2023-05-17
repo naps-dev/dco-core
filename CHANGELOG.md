@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - this changelog
+- KubeVirt and CDI sub-packages in the `kubevirt/` directory
 
 
 ## [v2.0.1-1] - 2023-05-05
