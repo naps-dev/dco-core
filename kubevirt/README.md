@@ -7,4 +7,3 @@ This folder and associated Zarf package contains two Zarf components:
 * `cdi`
 
 These components are intended to be used as sub-components to the `dco-core` parent package.
-
