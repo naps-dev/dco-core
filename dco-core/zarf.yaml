@@ -87,9 +87,6 @@ components:
       path: '../metallb/'
 
   - name: dataplane-ek
-    description: "EK Chart Deployment for the DataPlane"
     required: true
-    manifests:
-      - name: dataplane-ek
-        files:
-          - manifests/dataplane-ek.yaml
+    import:
+      path: '../dataplane-ek/'
