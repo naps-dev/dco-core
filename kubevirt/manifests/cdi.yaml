@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  path: "./dco-core/kustomizations/cdi"
+  path: "./kubevirt/kustomizations/cdi"
   prune: true
   sourceRef:
     kind: GitRepository
