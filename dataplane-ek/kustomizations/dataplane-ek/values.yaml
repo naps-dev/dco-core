@@ -21,7 +21,7 @@ kibana:
   imagePullSecrets:
     - name: private-registry
   nodeSelector:
-      hardware-tier: Tier1
+    hardware-tier: Tier1
 
 monitoring:
   enabled: false
@@ -32,9 +32,9 @@ metrics:
 elasticsearch:
   imagePullSecrets:
     - name: private-registry
-  nodeSelector:
-      hardware-tier: Tier1
   master:
+    nodeSelector:
+      hardware-tier: Tier1
     count: ${ES_MASTER_COUNT}
     initContainers:
       - name: elastic-internal-init-filesystem
@@ -50,6 +50,8 @@ elasticsearch:
             drop:
               - ALL
   data:
+    nodeSelector:
+      hardware-tier: Tier1
     count: ${ES_DATA_COUNT}
     initContainers:
       - name: elastic-internal-init-filesystem
@@ -65,6 +67,8 @@ elasticsearch:
             drop:
               - ALL
   ingest:
+    nodeSelector:
+      hardware-tier: Tier1
     initContainers:
       - name: elastic-internal-init-filesystem
         securityContext:
@@ -79,6 +83,8 @@ elasticsearch:
             drop:
               - ALL
   ml:
+    nodeSelector:
+        hardware-tier: Tier1
     initContainers:
       - name: elastic-internal-init-filesystem
         securityContext:
