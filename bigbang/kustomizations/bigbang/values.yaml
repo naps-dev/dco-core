@@ -79,6 +79,11 @@ elasticsearchKibana:
     kibana:
       nodeSelector:
         hardware-tier: Tier1
+metricsServer:
+  enabled: auto
+  values:
+    nodeSelector:
+      hardware-tier: Tier1
 eckOperator:
   enabled: true
 jaeger:

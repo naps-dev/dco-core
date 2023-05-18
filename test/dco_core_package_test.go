@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net"
 	"os"
 	"testing"
@@ -18,6 +19,7 @@ func TestZarfPackage(t *testing.T) {
 	component := os.Getenv("COMPONENT")
 	refName := os.Getenv("REF_NAME")
 	clusterName := component + "-test-" + refName
+	tier1AgentName := "k3d" + clusterName + "-agent-1"
 	kubeconfigPath := "/tmp/" + component + "_test_+" + refName + "_kubeconfig"
 
 	// Truncate string if too long (k3d not happy with strings over 32 chars)
@@ -101,6 +103,16 @@ func TestZarfPackage(t *testing.T) {
 		Command: "kubectl",
 		Args:    []string{"get", "policyreport", "-A"},
 		Env:     testEnv,
+	}
+
+	pods := k8s.ListPods(t, opts, v1.ListOptions{})
+
+	for _, pod := range pods {
+		nodeName := pod.Spec.NodeName
+		if nodeName != tier1AgentName {
+			logger.Log(t, "Elasticsearch pod [%s] is not running on Tier1 node, failing test.", pod.Name)
+			t.FailNow()
+		}
 	}
 
 	shell.RunCommand(t, checkAlert)
