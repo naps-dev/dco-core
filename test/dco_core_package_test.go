@@ -44,9 +44,9 @@ func TestZarfPackage(t *testing.T) {
 			"--k3s-arg", "--disable=servicelb@server:*",
 			"--port", "0:443@loadbalancer",
 			"--port", "0:80@loadbalancer",
-			"--agents", "2",
-			"--k3s-node-label", component + "-capture=true@agent:0"},
-		//"--k3s-node-label", "hardware-tier=Tier1@agent:*"},
+			"--agents", "3",
+			"--k3s-node-label", component + "-capture=true@agent:0",
+			"--k3s-node-label", "hardware-tier=Tier1@agent:1"},
 		Env: testEnv,
 	}
 
