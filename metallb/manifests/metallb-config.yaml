@@ -14,7 +14,7 @@ spec:
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta1
       kind: HelmRelease
-      namespace: metallb
+      namespace: metallb-system
       name: metallb-config
   timeout: 5m
   postBuild:
