@@ -68,6 +68,17 @@ gatekeeper:
 # EFK -> PLG, see https://repo1.dso.mil/big-bang/bigbang/-/blob/1.39.0/docs/guides/using-bigbang/efk-plg-logging-migration.md
 elasticsearchKibana:
   enabled: true
+  values:
+    elasticsearch:
+      master:
+        nodeSelector:
+          hardware-tier: Tier1
+      data:
+        nodeSelector:
+          hardware-tier: Tier1
+    kibana:
+      nodeSelector:
+        hardware-tier: Tier1
 eckOperator:
   enabled: true
 jaeger:
@@ -329,18 +340,6 @@ addons:
           value: ispn
         - name: KC_CACHE_STACK
           value: kubernetes
-
-elasticsearch:
-  master:
-    nodeSelector:
-      hardware-tier: Tier1
-  data:
-    nodeSelector:
-      hardware-tier: Tier1
-
-kibana:
-  nodeSelector:
-    hardware-tier: Tier1
 
 fluentbit:
   enabled: true
