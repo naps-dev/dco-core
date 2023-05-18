@@ -330,13 +330,17 @@ addons:
         - name: KC_CACHE_STACK
           value: kubernetes
 
-#elasticsearch:
-#  nodeSelector:
-#    hardware-tier: Tier1
-#
-#kibana:
-#  nodeSelector:
-#    hardware-tier: Tier1
+elasticsearch:
+  master:
+    nodeSelector:
+      hardware-tier: Tier1
+  data:
+    nodeSelector:
+      hardware-tier: Tier1
+
+kibana:
+  nodeSelector:
+    hardware-tier: Tier1
 
 fluentbit:
   enabled: true
