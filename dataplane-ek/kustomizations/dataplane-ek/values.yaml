@@ -20,8 +20,8 @@ kibana:
   count: ${KIBANA_COUNT}
   imagePullSecrets:
     - name: private-registry
-  nodeSelector:
-      hardware-tier: Tier1
+#  nodeSelector:
+#      hardware-tier: Tier1
 
 monitoring:
   enabled: false
@@ -32,8 +32,8 @@ metrics:
 elasticsearch:
   imagePullSecrets:
     - name: private-registry
-  nodeSelector:
-      hardware-tier: Tier1
+#  nodeSelector:
+#      hardware-tier: Tier1
   master:
     count: ${ES_MASTER_COUNT}
     initContainers:
