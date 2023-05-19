@@ -105,7 +105,8 @@ func TestZarfPackage(t *testing.T) {
 		Env:     testEnv,
 	}
 	shell.RunCommand(t, checkAlert)
-
+	k8s.WaitUntilPodAvailable(t, opts, "dataplane-ek-es-master-0", 40, 30*time.Second)
+	k8s.WaitUntilPodAvailable(t, opts, "dataplane-ek-es-data-0", 40, 30*time.Second)
 	pods := k8s.ListPods(t, opts, metav1.ListOptions{})
 	logger.Log(t, "dataplane-ek pods: ", pods)
 
