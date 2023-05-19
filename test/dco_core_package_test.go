@@ -112,6 +112,8 @@ func TestZarfPackage(t *testing.T) {
 		if nodeName != tier1AgentName {
 			logger.Log(t, "Elasticsearch pod [%s] is not running on Tier1 node, failing test.", pod.Name)
 			t.FailNow()
+		} else {
+			logger.Log(t, "Elasticsearch pod [%s] is running on Tier1 node, continuing test.", pod.Name)
 		}
 	}
 
