@@ -20,7 +20,7 @@ func TestZarfPackage(t *testing.T) {
 	component := os.Getenv("COMPONENT")
 	refName := os.Getenv("REF_NAME")
 	clusterName := component + "-test-" + refName
-	tier1AgentName := "k3d" + clusterName + "-agent-1"
+	tier1AgentName := "k3d-" + clusterName + "-agent-1"
 	kubeconfigPath := "/tmp/" + component + "_test_+" + refName + "_kubeconfig"
 
 	// Truncate string if too long (k3d not happy with strings over 32 chars)
