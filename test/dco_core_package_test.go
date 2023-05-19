@@ -112,11 +112,26 @@ func TestZarfPackage(t *testing.T) {
 
 	for _, pod := range pods {
 		nodeName := pod.Spec.NodeName
-		logger.Log(t, fmt.Sprintf("pod node name [%s] tier1AgentName [%s]", nodeName, tier1AgentName))
 		if nodeName == tier1AgentName {
 			logger.Log(t, fmt.Sprintf("dataplane-ek Elasticsearch pod [%s] is running on Tier1 node", pod.Name))
 		} else {
 			logger.Log(t, fmt.Sprintf("dataplane-ek Elasticsearch pod [%s] node [%s] is not running on Tier1 node, failing test.", pod.Name, nodeName))
+			t.FailNow()
+		}
+	}
+	// Wait for DCO elastic to come up
+	opts = k8s.NewKubectlOptions(contextName, kubeconfigPath, "logging")
+
+	k8s.WaitUntilPodAvailable(t, opts, "logging-ek-es-master-0", 40, 30*time.Second)
+	k8s.WaitUntilPodAvailable(t, opts, "logging-ek-es-data-0", 40, 30*time.Second)
+	pods = k8s.ListPods(t, opts, metav1.ListOptions{})
+
+	for _, pod := range pods {
+		nodeName := pod.Spec.NodeName
+		if nodeName == tier1AgentName {
+			logger.Log(t, fmt.Sprintf("logging Elasticsearch pod [%s] is running on Tier1 node", pod.Name))
+		} else {
+			logger.Log(t, fmt.Sprintf("logging Elasticsearch pod [%s] node [%s] is not running on Tier1 node, failing test.", pod.Name, nodeName))
 			t.FailNow()
 		}
 	}
