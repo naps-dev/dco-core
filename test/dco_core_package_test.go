@@ -113,11 +113,11 @@ func TestZarfPackage(t *testing.T) {
 
 	for _, pod := range pods {
 		nodeName := pod.Spec.NodeName
-		if nodeName != tier1AgentName {
-			logger.Log(t, fmt.Sprintf("dataplane-ek Elasticsearch pod [%s] is not running on Tier1 node, failing test.", pod.Name))
-			t.FailNow()
+		if nodeName == tier1AgentName {
+			logger.Log(t, fmt.Sprintf("dataplane-ek Elasticsearch pod [%s] is running on Tier1 node", pod.Name))
 		} else {
-			logger.Log(t, fmt.Sprintf("dataplane-ek Elasticsearch pod [%s] is not running on Tier1 node, failing test.", pod.Name))
+			logger.Log(t, fmt.Sprintf("dataplane-ek Elasticsearch pod [%s] node [%s] is not running on Tier1 node, failing test.", pod.Name, nodeName))
+			t.FailNow()
 		}
 	}
 
