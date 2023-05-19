@@ -106,14 +106,15 @@ func TestZarfPackage(t *testing.T) {
 	}
 
 	pods := k8s.ListPods(t, opts, v1.ListOptions{})
+	logger.Log(t, "dataplane-ek pods: ", pods)
 
 	for _, pod := range pods {
 		nodeName := pod.Spec.NodeName
 		if nodeName != tier1AgentName {
-			logger.Log(t, "Elasticsearch pod [%s] is not running on Tier1 node, failing test.", pod.Name)
+			logger.Log(t, "dataplane-ek Elasticsearch pod [%s] is not running on Tier1 node, failing test.", pod.Name)
 			t.FailNow()
 		} else {
-			logger.Log(t, "Elasticsearch pod [%s] is running on Tier1 node, continuing test.", pod.Name)
+			logger.Log(t, "dataplane-ek Elasticsearch pod [%s] is running on Tier1 node, continuing test.", pod.Name)
 		}
 	}
 
