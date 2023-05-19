@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"fmt"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net"
 	"os"
@@ -105,18 +106,18 @@ func TestZarfPackage(t *testing.T) {
 		Env:     testEnv,
 	}
 	shell.RunCommand(t, checkAlert)
+
 	k8s.WaitUntilPodAvailable(t, opts, "dataplane-ek-es-master-0", 40, 30*time.Second)
 	k8s.WaitUntilPodAvailable(t, opts, "dataplane-ek-es-data-0", 40, 30*time.Second)
 	pods := k8s.ListPods(t, opts, metav1.ListOptions{})
-	logger.Log(t, "dataplane-ek pods: ", pods)
 
 	for _, pod := range pods {
 		nodeName := pod.Spec.NodeName
 		if nodeName != tier1AgentName {
-			logger.Log(t, "dataplane-ek Elasticsearch pod [%s] is not running on Tier1 node, failing test.", pod.Name)
+			logger.Log(t, fmt.Sprintf("dataplane-ek Elasticsearch pod [%s] is not running on Tier1 node, failing test.", pod.Name))
 			t.FailNow()
 		} else {
-			logger.Log(t, "dataplane-ek Elasticsearch pod [%s] is running on Tier1 node, continuing test.", pod.Name)
+			logger.Log(t, fmt.Sprintf("dataplane-ek Elasticsearch pod [%s] is not running on Tier1 node, failing test.", pod.Name))
 		}
 	}
 
