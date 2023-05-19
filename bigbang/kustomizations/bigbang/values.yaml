@@ -79,6 +79,9 @@ elasticsearchKibana:
     kibana:
       nodeSelector:
         hardware-tier: Tier1
+    metrics:
+      nodeSelector:
+        hardware-tier: Tier1
 eckOperator:
   enabled: true
 jaeger:
@@ -308,11 +311,6 @@ kyvernoReporter:
   enabled: false
 
 addons:
-  metricsServer:
-    enabled: auto
-    values:
-      nodeSelector:
-        hardware-tier: Tier1
   keycloak:
     enabled: true
     
