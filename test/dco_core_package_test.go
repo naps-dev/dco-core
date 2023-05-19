@@ -2,7 +2,7 @@ package test
 
 import (
 	"context"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net"
 	"os"
 	"testing"
@@ -104,8 +104,9 @@ func TestZarfPackage(t *testing.T) {
 		Args:    []string{"get", "policyreport", "-A"},
 		Env:     testEnv,
 	}
+	shell.RunCommand(t, checkAlert)
 
-	pods := k8s.ListPods(t, opts, v1.ListOptions{})
+	pods := k8s.ListPods(t, opts, metav1.ListOptions{})
 	logger.Log(t, "dataplane-ek pods: ", pods)
 
 	for _, pod := range pods {
@@ -117,8 +118,6 @@ func TestZarfPackage(t *testing.T) {
 			logger.Log(t, "dataplane-ek Elasticsearch pod [%s] is running on Tier1 node, continuing test.", pod.Name)
 		}
 	}
-
-	shell.RunCommand(t, checkAlert)
 
 	// Wait for Neuvector UI
 	opts = k8s.NewKubectlOptions(contextName, kubeconfigPath, "neuvector")
