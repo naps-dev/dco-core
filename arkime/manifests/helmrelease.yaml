@@ -35,6 +35,6 @@ spec:
       namespace: dataplane-ek
   values:
     viewer_url: "arkime-viewer.###ZARF_VAR_DOMAIN###"
-    version: "###ZARF_CONST_IMAGE_TAG###"
+    version: "###ZARF_CONST_ARKIME_IMAGE_TAG###"
     capture_interface: "###ZARF_VAR_CAPTURE_INTERFACE###"
 

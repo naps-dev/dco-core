@@ -21,5 +21,4 @@ jobs:
       REF_NAME: "v8.17.0-2"
       REF_TYPE: "tag"
       ZARF_PACKAGE: zarf-package-mixmode-amd64-${{ github.head_ref || github.ref_name }}.tar.zst
-      IMAGE_TAG: "v8.17.0-2"
       COMPONENT: "mixmode"

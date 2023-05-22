@@ -1,0 +1,110 @@
+kind: ZarfPackageConfig
+metadata:
+  name: dco-everything
+  description: "Defensive Cyber Ops (DCO) Suite"
+  architecture: amd64
+  version: "###ZARF_PKG_TMPL_GIT_REF###"
+
+constants:
+  - name: GIT_REF
+    description: "Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy"
+    value: "###ZARF_PKG_TMPL_GIT_REF###"
+
+variables:
+
+  #############################################################################
+  # Global vars / prompt user for the domain override
+  #############################################################################
+
+  - name: DOMAIN
+    default: "vp.bigbang.dev"
+    prompt: false
+
+  #############################################################################
+  # Elastic Search / Kibana Vars
+  #############################################################################
+
+  - name: KIBANA_COUNT
+    default: "1"
+    prompt: false
+
+  - name: ES_MASTER_COUNT
+    default: "1"
+    prompt: false
+
+  - name: ES_DATA_COUNT
+    default: "1"
+    prompt: false
+
+  #############################################################################
+  # Metal LB vars
+  #############################################################################
+
+  - name: METALLB_IP_ADDRESS_POOL
+    default: "192.168.1.1-192.168.1.2"
+    prompt: false
+
+  - name: METALLB_INTERFACE
+    default: "eth0"
+    prompt: false
+
+  #############################################################################
+  # Traffic capture interface (used by Arkime and Suricata)
+  #############################################################################
+
+  - name: CAPTURE_INTERFACE
+    default: "cni0"
+    prompt: false
+
+  #############################################################################
+  # Suricata vars
+  #############################################################################
+
+  - name: SURICATA_NODE_LABEL
+    default: "kubernetes.io/os"
+    prompt: false
+  
+  - name: SURICATA_NODE_LABEL_VALUE
+    default: "linux"
+    prompt: false
+
+components:
+  - name: dco-core
+    required: true
+    import:
+      path: '../dco-core/'
+  
+  - name: arkime
+    required: false
+    import:
+      path: '../arkime/'
+  
+  - name: kasm
+    required: false
+    import:
+      path: '../kasm/'
+  
+  - name: mixmode
+    required: false
+    import:
+      path: '../mixmode/'
+  
+  - name: mockingbird
+    required: false
+    import:
+      path: '../mockingbird/'
+  
+  - name: polarity
+    required: false
+    import:
+      path: '../polarity/'
+  
+  - name: suricata
+    required: false
+    import:
+      path: '../suricata/'
+  
+  - name: xsoar
+    required: false
+    import:
+      path: '../xsoar/'
