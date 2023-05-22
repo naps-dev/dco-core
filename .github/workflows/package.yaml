@@ -138,7 +138,7 @@ jobs:
 
           # cleanup tmp dir
           rm -rf ./big-tmp
-        working-directory: dco-core
+        working-directory: dco-everything
 
       - name: Create DCO package (from Tag) needed for testing individual component
         if: ${{ env.DCO_REF_TYPE == 'tag' && inputs.COMPONENT != 'dco-core' }}
@@ -157,7 +157,7 @@ jobs:
 
           # cleanup tmp dir
           rm -rf ./big-tmp
-        working-directory: dco-core
+        working-directory: dco-everything
 
       - name: Install dependencies for terratest
         run: |
@@ -180,4 +180,4 @@ jobs:
         if: ${{ inputs.COMPONENT == 'dco-everything' }}
         run: |
           zarf package publish "${{ env.ZARF_PACKAGE }}" "${{ env.OCI_PATH }}"
-        working-directory: dco-core
+        working-directory: dco-everything
