@@ -27,7 +27,7 @@ defaults:
     shell: bash
 env:
   # S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/${{ inputs.COMPONENT }}/${{ inputs.REF_NAME }}"
-  # OCI_PATH: "oci://765814079306.dkr.ecr.us-east-1.amazonaws.com"
+  OCI_PATH: "oci://ghcr.io/naps-dev/packages"
   REGISTRY: ghcr.io
   ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE }}"
   COMPONENT: "${{ inputs.COMPONENT }}"
