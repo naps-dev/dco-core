@@ -68,12 +68,64 @@ variables:
     default: "linux"
     prompt: false
 
-components:
-  - name: dco-core
+components: 
+  # Required dco-core sub-components
+
+  - name: flux
+    required: true
+    manifests:
+      - name: flux-installer
+        # This will be built on the package create side and deployed as a regular manifest on package deploy
+        kustomizations:
+          - https://repo1.dso.mil/big-bang/bigbang.git//base/flux?ref=2.0.1
+    images:
+      - registry1.dso.mil/ironbank/fluxcd/helm-controller:v0.32.1
+      - registry1.dso.mil/ironbank/fluxcd/kustomize-controller:v0.35.1
+      - registry1.dso.mil/ironbank/fluxcd/notification-controller:v0.33.0
+      - registry1.dso.mil/ironbank/fluxcd/source-controller:v0.36.1
+  
+  - name: bigbang
     required: true
     import:
-      path: '../dco-core/'
+      path: '../dco-core/bigbang'
   
+  - name: setup
+    description: "Required setup for the Zarf DCO package"
+    required: true
+    repos:
+      - https://github.com/naps-dev/dco-core.git
+    manifests:
+      - name: setup
+        files:
+          - manifests/setup.yaml
+  
+  - name: kubevirt
+    required: true
+    import:
+      path: '../dco-core/kubevirt'
+  
+  - name: cdi
+    required: true
+    import:
+      path: '../dco-core/cdi'
+  
+  - name: metallb
+    required: true
+    import:
+      path: '../metallb/'
+  
+  - name: metallb-config
+    required: true
+    import:
+      path: '../metallb-config/'
+  
+  - name: dataplane-ek
+    required: true
+    import: 
+      path: '../dataplane-ek/'
+
+  # Other standalone components
+
   - name: arkime
     required: false
     import:
