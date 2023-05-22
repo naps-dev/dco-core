@@ -1,11 +1,12 @@
 package test
 
 import (
+	"testing"
+	"time"
+
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/gruntwork-io/terratest/modules/shell"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"testing"
-	"time"
 )
 
 func KasmTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string) {
