@@ -87,7 +87,7 @@ components:
   - name: bigbang
     required: true
     import:
-      path: '../dco-core/bigbang'
+      path: '../bigbang/'
   
   - name: setup
     description: "Required setup for the Zarf DCO package"
@@ -102,12 +102,12 @@ components:
   - name: kubevirt
     required: true
     import:
-      path: '../dco-core/kubevirt'
+      path: '../kubevirt/'
   
   - name: cdi
     required: true
     import:
-      path: '../dco-core/cdi'
+      path: '../kubevirt/'
   
   - name: metallb
     required: true
