@@ -117,7 +117,7 @@ components:
   - name: metallb-config
     required: true
     import:
-      path: '../metallb-config/'
+      path: '../metallb/'
   
   - name: dataplane-ek
     required: true
