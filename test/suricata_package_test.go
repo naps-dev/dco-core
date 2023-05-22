@@ -39,6 +39,9 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	}
 	k8s.WaitUntilPodAvailable(t, opts, pods[0].Name, 40, 30*time.Second)
 
+	//Respect 30 second wait baked into suricata container
+	time.Sleep(30 * time.Second)
+
 	//Test alert provided by suricata devs
 	createAlert := shell.Command{
 		Command: "kubectl",
