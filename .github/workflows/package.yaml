@@ -122,7 +122,7 @@ jobs:
           cache: true
 
       - name: Create DCO package (from Branch) needed for testing individual component
-        if: ${{ env.DCO_REF_TYPE == 'branch' && inputs.COMPONENT != 'dco-core' }}
+        if: ${{ env.DCO_REF_TYPE == 'branch' && inputs.COMPONENT != 'dco-everything' }}
         run: |
           # cleanup and init a tmp dir
           rm -rf big-tmp
@@ -141,7 +141,7 @@ jobs:
         working-directory: dco-everything
 
       - name: Create DCO package (from Tag) needed for testing individual component
-        if: ${{ env.DCO_REF_TYPE == 'tag' && inputs.COMPONENT != 'dco-core' }}
+        if: ${{ env.DCO_REF_TYPE == 'tag' && inputs.COMPONENT != 'dco-everything' }}
         run: |
           # cleanup and init a tmp dir
           rm -rf big-tmp
