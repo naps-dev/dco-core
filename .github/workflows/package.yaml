@@ -21,12 +21,14 @@ on:
 permissions:
   id-token: write
   contents: read
+  packages: write
 defaults:
   run:
     shell: bash
 env:
   # S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/${{ inputs.COMPONENT }}/${{ inputs.REF_NAME }}"
-  OCI_PATH: "oci://765814079306.dkr.ecr.us-east-1.amazonaws.com"
+  # OCI_PATH: "oci://765814079306.dkr.ecr.us-east-1.amazonaws.com"
+  REGISTRY: ghcr.io
   ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE }}"
   COMPONENT: "${{ inputs.COMPONENT }}"
   REF_NAME: "${{ inputs.REF_NAME }}"
@@ -45,16 +47,23 @@ jobs:
           version: v0.26.4
           download-init-package: true
 
-      - name: Configure AWS ECR Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{secrets.AWS_ECR_ROLE}}
-          role-session-name: arkime-ecr
-          aws-region: us-east-1
+      # - name: Configure AWS ECR Credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     role-to-assume: ${{secrets.AWS_ECR_ROLE}}
+      #     role-session-name: arkime-ecr
+      #     aws-region: us-east-1
 
-      - name: ECR Login
-        uses: aws-actions/amazon-ecr-login@v1
-        id: login-ecr
+      # - name: ECR Login
+      #   uses: aws-actions/amazon-ecr-login@v1
+      #   id: login-ecr
+
+      - name: GHCR Login
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to Registry One
         run: |
