@@ -97,7 +97,7 @@ components:
     manifests:
       - name: setup
         files:
-          - manifests/setup.yaml
+          - '../dco-core/manifests/setup.yaml
   
   - name: kubevirt
     required: true
