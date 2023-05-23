@@ -1,0 +1,32 @@
+kind: ZarfPackageConfig
+metadata:
+  name: dataplane-ek
+  description: "dataplane-ek"
+  architecture: amd64
+
+variables:
+  - name: DOMAIN
+    default: "vp.bigbang.dev"
+    prompt: false
+
+  - name: KIBANA_COUNT
+    default: "1"
+    prompt: false
+
+  - name: ES_MASTER_COUNT
+    default: "1"
+    prompt: false
+
+  - name: ES_DATA_COUNT
+    default: "1"
+    prompt: false
+
+components:
+
+  - name: dataplane-ek
+    description: "EK Chart Deployment for the DataPlane"
+    required: true
+    manifests:
+      - name: dataplane-ek
+        files:
+          - manifests/dataplane-ek.yaml
