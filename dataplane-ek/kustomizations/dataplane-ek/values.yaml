@@ -20,7 +20,7 @@ kibana:
   count: ${KIBANA_COUNT}
   imagePullSecrets:
     - name: private-registry
-  
+
 monitoring:
   enabled: false
 
