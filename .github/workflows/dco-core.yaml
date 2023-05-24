@@ -52,7 +52,7 @@ jobs:
     uses: ./.github/workflows/rebuild-everything.yaml
     secrets: inherit
 
-  test-arkime:
+  test-dco-core:
     needs : [rebuild-everything]
     uses: ./.github/workflows/component-test.yaml
     secrets: inherit

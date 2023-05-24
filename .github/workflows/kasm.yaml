@@ -25,7 +25,7 @@ jobs:
     uses: ./.github/workflows/rebuild-everything.yaml
     secrets: inherit
 
-  test-arkime:
+  test-kasm:
     needs: [rebuild-everything]
     uses: ./.github/workflows/component-test.yaml
     secrets: inherit

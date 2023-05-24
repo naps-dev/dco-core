@@ -3,7 +3,7 @@ run-name: ${{github.actor}} is testing the ${{ inputs.COMPONENT }} DCO component
 on:
   workflow_call:
     inputs:
-      COMPONENT:
+      component:
         required: true
         type: string
 
@@ -18,9 +18,8 @@ defaults:
 
 env:
   OCI_PATH: "oci://ghcr.io/naps-dev/packages"
-  DCO_REF_NAME: "${{ github.head_ref || github.ref_name }}"
-  DCO_REF_TYPE: "${{ github.ref_type }}"
-  COMPONENT: "${{ inputs.COMPONENT }}"
+  REF_NAME: "${{ github.head_ref || github.ref_name }}"
+  COMPONENT: "${{ inputs.component }}"
 
 jobs:
   test-component:

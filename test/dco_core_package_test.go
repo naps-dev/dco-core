@@ -17,6 +17,8 @@ import (
 func TestZarfPackage(t *testing.T) {
 	component := os.Getenv("COMPONENT")
 	refName := os.Getenv("REF_NAME")
+	ociPath := os.Getenv("OCI_PATH")
+
 	clusterName := component + "-test-" + refName
 	kubeconfigPath := "/tmp/" + component + "_test_+" + refName + "_kubeconfig"
 
@@ -80,7 +82,7 @@ func TestZarfPackage(t *testing.T) {
 
 	shell.RunCommand(t, zarfInitCmd)
 
-	packagePath := "oci://ghcr.io/naps-dev/packages/dco-everything:" + refName + "-amd64"
+	packagePath := ociPath + "/dco-everything:" + refName + "-amd64"
 
 	zarfDeployDCOCmd := shell.Command{
 		Command: "zarf",
