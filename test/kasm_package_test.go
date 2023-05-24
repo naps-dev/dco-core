@@ -9,15 +9,18 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func KasmTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string) {
+func KasmTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string, packagePath string) {
 	testEnv := map[string]string{
 		"KUBECONFIG": kubeconfigPath,
 	}
 
 	zarfDeployKasmCmd := shell.Command{
 		Command: "zarf",
-		Args:    []string{"package", "deploy", "../kasm/zarf-package-kasm-amd64.tar.zst", "--confirm"},
-		Env:     testEnv,
+		Args: []string{"package", "deploy", packagePath, "--confirm",
+			"--components", "kasm",
+			"--oci-concurrency", "16",
+		},
+		Env: testEnv,
 	}
 
 	shell.RunCommand(t, zarfDeployKasmCmd)

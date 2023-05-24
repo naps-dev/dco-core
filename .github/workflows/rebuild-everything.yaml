@@ -1,0 +1,111 @@
+name: Build DCO Everything Zarf Package
+run-name: ${{github.actor}} is building the DCO Everything Zarf package
+on:
+  workflow_call:
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+defaults:
+  run:
+    shell: bash
+    working-directory: dco-everything
+
+env:
+  OCI_PATH: "oci://ghcr.io/naps-dev/packages"
+  REGISTRY: ghcr.io
+  ZARF_PACKAGE: zarf-package-dco-everything-amd64-${{ github.head_ref || github.ref_name }}.tar.zst
+  REF_NAME: "${{ github.head_ref || github.ref_name }}"
+  DCO_REF_TYPE: "${{ github.ref_type }}"
+
+jobs:
+  create-package:
+    runs-on: [self-hosted, onprem]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Zarf
+        uses: defenseunicorns/setup-zarf@main
+        with:
+          version: v0.27.0
+          download-init-package: true
+
+      # Needed for image pulls only - remove when component images are in GHCR
+      - name: Configure AWS ECR Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{secrets.AWS_ECR_ROLE}}
+          role-session-name: arkime-ecr
+          aws-region: us-east-1
+
+      - name: ECR Login
+        uses: aws-actions/amazon-ecr-login@v1
+        id: login-ecr
+
+      # For pushing Zarf OCI packages
+      - name: GHCR Login
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Registry One
+        run: |
+          zarf tools registry login \
+            -u "${{secrets.REGISTRY1_USERNAME}}" \
+            -p "${{secrets.REGISTRY1_PASSWORD}}" \
+            "registry1.dso.mil"
+
+      - name: Create Zarf Package from Branch or Tag
+        run: |
+          # cleanup and init a tmp dir
+          rm -rf big-tmp
+          mkdir big-tmp
+
+          VAR_GIT_REF=""
+
+          if [[ ${{ env.DCO_REF_TYPE }} == 'branch']] then
+            VAR_GIT_REF="refs/heads/${{ env.REF_NAME }}"
+          elif [[ ${{ env.DCO_REF_TYPE }} == 'tag' ]] then
+            VAR_GIT_REF="refs/tags/${{ env.REF_NAME }}"
+          else
+            echo "ERROR: Unknown ref type: ${{ env.DCO_REF_TYPE }}"
+            exit 1
+          fi
+            
+          zarf package create --set GIT_REF=${VAR_GIT_REF} \
+            --set VERSION=${{ env.REF_NAME }} \
+            --tmpdir $PWD/big-tmp \
+            --skip-sbom \
+            --confirm 
+
+          # cleanup tmp dir
+          rm -rf ./big-tmp
+        working-directory: dco-everything
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_ICON: https://avatars.githubusercontent.com/u/87975021?s=200&v=4
+          SLACK_USERNAME: GitHub
+          SLACK_TITLE: DCO Everything Zarf Package Built Successfully
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Save Zarf Package to OCI Repo
+        run: |
+          zarf package publish "${{ env.ZARF_PACKAGE }}" "${{ env.OCI_PATH }}"
+        working-directory: dco-everything
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_ICON: https://avatars.githubusercontent.com/u/87975021?s=200&v=4
+          SLACK_USERNAME: GitHub
+          SLACK_TITLE: DCO Everything Zarf Package Published to ${{ env.REGISTRY }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

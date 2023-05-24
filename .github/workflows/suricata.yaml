@@ -1,5 +1,5 @@
-name: Build and Deploy Suricata Zarf Package
-run-name: ${{github.actor}} is building the Suricata package
+name: Build and Test Suricata
+run-name: ${{github.actor}} updated Suricata
 on:
   push:
     paths:
@@ -14,11 +14,19 @@ permissions:
   contents: read
 
 jobs:
-  package-create:
-    uses: ./.github/workflows/package.yaml
+  lint:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "suricata"
+  
+  rebuild-everything:
+    needs: [lint]
+    uses: ./.github/workflows/rebuild-everything.yaml
+    secrets: inherit
+
+  test-arkime:
+    needs: [rebuild-everything]
+    uses: ./.github/workflows/component-test.yaml
     secrets: inherit
     with:
-      REF_NAME: "v6.0.2-5"
-      REF_TYPE: "tag"
-      ZARF_PACKAGE: zarf-package-suricata-amd64-${{ github.head_ref || github.ref_name }}.tar.zst
-      COMPONENT: "suricata"
+      component: "suricata"

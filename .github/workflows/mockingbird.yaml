@@ -1,5 +1,5 @@
-name: Build and Deploy Mockingbird Zarf Package
-run-name: ${{github.actor}} is building the Mockingbird Zarf package
+name: Build and Test Mockingbird
+run-name: ${{github.actor}} updated Mockingbird
 on:
   push:
     paths:
@@ -14,11 +14,19 @@ permissions:
   contents: read
 
 jobs:
-  package-create:
-    uses: ./.github/workflows/package.yaml
+  lint:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "mockingbird"
+  
+  rebuild-everything:
+    needs: [lint]
+    uses: ./.github/workflows/rebuild-everything.yaml
+    secrets: inherit
+
+  test-arkime:
+    needs: [rebuild-everything]
+    uses: ./.github/workflows/component-test.yaml
     secrets: inherit
     with:
-      REF_NAME: "v1.2.0-5"
-      REF_TYPE: "tag"
-      ZARF_PACKAGE: zarf-package-mockingbird-amd64-${{ github.head_ref || github.ref_name }}.tar.zst
-      COMPONENT: "mockingbird"
+      component: "mockingbird"

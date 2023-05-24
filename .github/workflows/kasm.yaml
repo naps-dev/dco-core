@@ -1,5 +1,5 @@
-name: Build and Deploy Kasm Zarf Package
-run-name: ${{github.actor}} is building the Kasm Zarf package
+name: Build and Test Kasm
+run-name: ${{github.actor}} updated Kasm
 on:
   push:
     paths:
@@ -14,11 +14,19 @@ permissions:
   contents: read
 
 jobs:
-  package-create:
-    uses: ./.github/workflows/package.yaml
+  lint:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "kasm"
+  
+  rebuild-everything:
+    needs: [lint]
+    uses: ./.github/workflows/rebuild-everything.yaml
+    secrets: inherit
+
+  test-arkime:
+    needs: [rebuild-everything]
+    uses: ./.github/workflows/component-test.yaml
     secrets: inherit
     with:
-      REF_NAME: "v1.11.0-5"
-      REF_TYPE: "tag"
-      ZARF_PACKAGE: zarf-package-kasm-amd64-${{ github.head_ref || github.ref_name }}.tar.zst
-      COMPONENT: "kasm"
+      component: "kasm"

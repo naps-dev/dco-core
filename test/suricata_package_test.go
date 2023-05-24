@@ -10,15 +10,18 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string) {
+func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string, packagePath string) {
 	testEnv := map[string]string{
 		"KUBECONFIG": kubeconfigPath,
 	}
 
 	zarfDeploySuricataCmd := shell.Command{
 		Command: "zarf",
-		Args:    []string{"package", "deploy", "../suricata/zarf-package-suricata-amd64.tar.zst", "--confirm"},
-		Env:     testEnv,
+		Args: []string{"package", "deploy", packagePath, "--confirm",
+			"--components", "suricata",
+			"--oci-concurrency", "16",
+		},
+		Env: testEnv,
 	}
 
 	shell.RunCommand(t, zarfDeploySuricataCmd)

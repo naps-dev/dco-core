@@ -1,5 +1,5 @@
-name: Build and Deploy Mixmode Zarf Package
-run-name: ${{github.actor}} is building the Mixmode Zarf package
+name: Build and Test MixMode
+run-name: ${{github.actor}} updated MixMode
 on:
   push:
     paths:
@@ -14,11 +14,19 @@ permissions:
   contents: read
 
 jobs:
-  package-create:
-    uses: ./.github/workflows/package.yaml
+  lint:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "mixmode"
+  
+  rebuild-everything:
+    needs: [lint]
+    uses: ./.github/workflows/rebuild-everything.yaml
+    secrets: inherit
+
+  test-arkime:
+    needs: [rebuild-everything]
+    uses: ./.github/workflows/component-test.yaml
     secrets: inherit
     with:
-      REF_NAME: "v8.17.0-2"
-      REF_TYPE: "tag"
-      ZARF_PACKAGE: zarf-package-mixmode-amd64-${{ github.head_ref || github.ref_name }}.tar.zst
-      COMPONENT: "mixmode"
+      component: "mixmode"
