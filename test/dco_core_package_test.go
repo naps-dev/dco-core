@@ -80,7 +80,7 @@ func TestZarfPackage(t *testing.T) {
 
 	shell.RunCommand(t, zarfInitCmd)
 
-	packagePath := "oci://dco-everything/zarf-package-dco-everything:" + refName + "-amd64"
+	packagePath := "oci://ghcr.io/naps-dev/packages/dco-everything:" + refName + "-amd64"
 
 	zarfDeployDCOCmd := shell.Command{
 		Command: "zarf",
