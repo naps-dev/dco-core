@@ -1,5 +1,5 @@
-name: Build and Deploy Polarity Zarf Package
-run-name: ${{github.actor}} is building the Polarity Zarf package
+name: Build and Test Polarity
+run-name: ${{github.actor}} updated Polarity
 on:
   push:
     paths:
@@ -12,6 +12,7 @@ on:
 permissions:
   id-token: write
   contents: read
+  packages: write
 
 env:
   component: "polarity"

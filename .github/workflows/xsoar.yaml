@@ -1,5 +1,5 @@
-name: Build and Deploy XSoar Zarf Package
-run-name: ${{github.actor}} is building the XSoar Zarf package
+name: Build and Test XSoar
+run-name: ${{github.actor}} updated XSoar
 on:
   push:
     paths:
@@ -12,6 +12,7 @@ on:
 permissions:
   id-token: write
   contents: read
+  packages: write
 
 env:
   component: "xsoar"
