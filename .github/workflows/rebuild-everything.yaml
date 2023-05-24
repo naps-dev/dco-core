@@ -11,7 +11,6 @@ permissions:
 defaults:
   run:
     shell: bash
-    working-directory: dco-everything
 
 env:
   OCI_PATH: "oci://ghcr.io/naps-dev/packages"
