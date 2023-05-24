@@ -71,7 +71,7 @@ components:
     required: true
     import:
       path: '../kubevirt/'
-  
+
   - name: cdi
     required: true
     import:
