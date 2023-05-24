@@ -48,7 +48,11 @@ func TestZarfPackage(t *testing.T) {
 			"--port", "0:80@loadbalancer",
 			"--agents", "3",
 			"--k3s-node-label", component + "-capture=true@agent:0",
-			"--k3s-node-label", "hardware-tier=Tier1@agent:1"},
+			"--k3s-node-label", "cnaps.io/node-type=Tier-1@agent:0",
+			"--k3s-node-label", "cnaps.io/node-type=Tier-2@agent:1",
+			"--k3s-node-label", "cnaps.io/node-type=Tier-3@agent:2",
+			"--k3s-server-arg", "--node-taint", "-cnaps.io/node-class=noncore:NoSchedule@agent:2",
+			"--k3s-server-arg", "--node-taint", "-cnaps.io/node-class=noncore:NoExecute@agent:2"},
 		Env: testEnv,
 	}
 
@@ -62,7 +66,7 @@ func TestZarfPackage(t *testing.T) {
 	shell.RunCommand(t, clusterTeardownCmd)
 
 	// to leave cluster up for examination after this run, comment this out:
-	defer shell.RunCommand(t, clusterTeardownCmd)
+	//defer shell.RunCommand(t, clusterTeardownCmd)
 
 	// create the cluster
 	shell.RunCommand(t, clusterSetupCmd)
