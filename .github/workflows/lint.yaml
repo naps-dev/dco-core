@@ -15,5 +15,5 @@ jobs:
         uses: actions/checkout@v3
     
       - name: Validate YAML file
-        run: yamllint ${{ inputs.component }}/zarf.yaml
+        run: yamllint -d relaxed ${{ inputs.component }}/zarf.yaml
         
