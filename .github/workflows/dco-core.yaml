@@ -3,6 +3,10 @@ run-name: ${{github.actor}} updated DCO Core
 on:
   push:
     paths:
+      - '.github/workflows/component-test.yaml'
+      - '.github/workflows/dco-core.yaml'
+      - '.github/workflows/lint.yaml'
+      - '.github/workflows/rebuild-everything.yaml'
       - 'bigbang/**'
       - 'dataplane-ek/**'
       - 'dco-core/**'
