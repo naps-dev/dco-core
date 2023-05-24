@@ -79,6 +79,7 @@ jobs:
             
           zarf package create --set GIT_REF=${VAR_GIT_REF} \
             --set VERSION=${{ env.REF_NAME }} \
+            --set SOURCE=${{ github.sha }} \
             --tmpdir $PWD/big-tmp \
             --skip-sbom \
             --confirm 

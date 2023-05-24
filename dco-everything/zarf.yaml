@@ -4,6 +4,7 @@ metadata:
   description: "Defensive Cyber Ops (DCO) Suite"
   architecture: amd64
   version: "###ZARF_PKG_TMPL_VERSION###"
+  source: "###ZARF_PKG_TMPL_SOURCE###"
 
 constants:
   - name: GIT_REF
