@@ -19,9 +19,33 @@ env:
   ZARF_PACKAGE: zarf-package-dco-everything-amd64-${{ github.head_ref || github.ref_name }}.tar.zst
   REF_NAME: "${{ github.head_ref || github.ref_name }}"
   DCO_REF_TYPE: "${{ github.ref_type }}"
+  SKIP_BUILD: false
 
 jobs:
+  check-commit-hash:
+    runs-on: ubuntu-latest
+    outputs:
+      skip-build: ${{ steps.check-dco-everything-commit-hash.outputs.SKIP_BUILD }}
+    steps:
+      # Check commit hash of image in GHCR to see if it has already been built by
+      # another workflow as a result of this commit.
+      - name: Check DCO Everything commit hash
+        id: check-dco-everything-commit-hash
+        run: |
+          COMMIT_HASH_RAW=`curl -L \
+            -H "Accept: application/vnd.oci.image.manifest.v1+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://ghcr.io/v2/naps-dev/packages/dco-everything/manifests/${{ env.REF_NAME }}" \
+            | jq -r '.annotations."org.opencontainers.image.source"'`
+          echo "Current commit hash of OCI w/ this tag: $COMMIT_HASH_RAW"
+          if [[ ${COMMIT_HASH_RAW} == ${{ github.sha}} ]]; then
+            echo "Commit hash matches current commit, skipping build"
+            echo "SKIP_BUILD=true" >> $GITHUB_OUTPUT
+          fi
+
   create-package:
+    needs: check-commit-hash
+    if: needs.check-commit-hash.outputs.skip-build != 'true'
     runs-on: [self-hosted, onprem]
     steps:
       # For pushing Zarf OCI packages
@@ -31,12 +55,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
-      # Check commit hash of image in GHCR to see if it has already been built by
-      # another workflow as a result of this commit.
-      - name: Check DCO Everything commit hash
-        run: |
-          
 
       - name: Checkout
         uses: actions/checkout@v3

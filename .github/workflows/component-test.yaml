@@ -25,6 +25,12 @@ jobs:
   test-component:
     runs-on: [self-hosted, onprem]
     steps:
+      - name: Install Zarf
+        uses: defenseunicorns/setup-zarf@main
+        with:
+          version: v0.27.0
+          download-init-package: true
+
       - name: GHCR Login
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
