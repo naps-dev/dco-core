@@ -68,9 +68,9 @@ jobs:
 
           VAR_GIT_REF=""
 
-          if [[ ${{ env.DCO_REF_TYPE }} == 'branch']] then
+          if [[ "${{ env.DCO_REF_TYPE }}" == "branch"]] then
             VAR_GIT_REF="refs/heads/${{ env.REF_NAME }}"
-          elif [[ ${{ env.DCO_REF_TYPE }} == 'tag' ]] then
+          elif [[ "${{ env.DCO_REF_TYPE }}" == "tag"]] then
             VAR_GIT_REF="refs/tags/${{ env.REF_NAME }}"
           else
             echo "ERROR: Unknown ref type: ${{ env.DCO_REF_TYPE }}"
