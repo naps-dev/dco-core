@@ -34,7 +34,7 @@ jobs:
           COMMIT_HASH_RAW=`curl -L \
             -H "Accept: application/vnd.oci.image.manifest.v1+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://ghcr.io/v2/naps-dev/packages/dco-everything/manifests/${{ env.REF_NAME }}" \
+            "https://ghcr.io/v2/naps-dev/packages/dco-everything/manifests/${{ env.REF_NAME }}-amd64" \
             | jq -r '.annotations."org.opencontainers.image.source"'`
           echo "Current commit hash of OCI w/ this tag: $COMMIT_HASH_RAW"
           if [[ ${COMMIT_HASH_RAW} == ${{ github.sha}} ]]; then
