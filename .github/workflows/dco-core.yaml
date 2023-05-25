@@ -12,6 +12,7 @@ on:
       - 'dco-core/**'
       - 'kubevirt/**'
       - 'metallb/**'
+      - 'dataplane-ek/**'
       - 'test/dco_core_package_test.go'
     tags-ignore: ["v**"]
     branches: ['**']
