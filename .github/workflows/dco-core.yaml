@@ -48,8 +48,13 @@ jobs:
     with:
       component: "metallb"
 
+  lint-6:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "dco-everything"
+
   rebuild-everything:
-    needs: [lint-1, lint-2, lint-3, lint-4, lint-5]
+    needs: [lint-1, lint-2, lint-3, lint-4, lint-5, lint-6]
     uses: ./.github/workflows/rebuild-everything.yaml
     secrets: inherit
 

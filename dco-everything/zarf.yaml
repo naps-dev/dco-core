@@ -64,7 +64,7 @@ variables:
   - name: SURICATA_NODE_LABEL
     default: "kubernetes.io/os"
     prompt: false
-  
+
   - name: SURICATA_NODE_LABEL_VALUE
     default: "linux"
     prompt: false
@@ -84,12 +84,12 @@ components:
       - registry1.dso.mil/ironbank/fluxcd/kustomize-controller:v0.35.1
       - registry1.dso.mil/ironbank/fluxcd/notification-controller:v0.33.0
       - registry1.dso.mil/ironbank/fluxcd/source-controller:v0.36.1
-  
+
   - name: bigbang
     required: true
     import:
       path: '../bigbang/'
-  
+
   - name: setup
     description: "Required setup for the Zarf DCO package"
     required: true
@@ -99,27 +99,27 @@ components:
       - name: setup
         files:
           - '../dco-core/manifests/setup.yaml'
-  
+
   - name: kubevirt
     required: true
     import:
       path: '../kubevirt/'
-  
+
   - name: cdi
     required: true
     import:
       path: '../kubevirt/'
-  
+
   - name: metallb
     required: true
     import:
       path: '../metallb/'
-  
+
   - name: metallb-config
     required: true
     import:
       path: '../metallb/'
-  
+
   - name: dataplane-ek
     required: true
     import: 
@@ -131,32 +131,32 @@ components:
     required: false
     import:
       path: '../arkime/'
-  
+
   - name: kasm
     required: false
     import:
       path: '../kasm/'
-  
+
   - name: mixmode
     required: false
     import:
       path: '../mixmode/'
-  
+
   - name: mockingbird
     required: false
     import:
       path: '../mockingbird/'
-  
+
   - name: polarity
     required: false
     import:
       path: '../polarity/'
-  
+
   - name: suricata
     required: false
     import:
       path: '../suricata/'
-  
+
   - name: xsoar
     required: false
     import:
