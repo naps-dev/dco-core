@@ -8,11 +8,6 @@ only certain Big Bang applications.
 
 ### Zarf variables
 
-This package defines these Zarf variables: `DOMAIN`, `KIBANA_COUNT`, `ES_MASTER_COUNT` and
-`ES_DATA_COUNT`. `KIBANA_COUNT`, `ES_MASTER_COUNT` and `ES_DATA_COUNT` are for specifying the
-number of replicas for the Kibana, Elastic Search Master and Elastic Search Data nodes,
-respectively.
-
 ### Additional Customization
 
 Big Bang defines cascading Helm chart
