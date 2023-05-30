@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   prepare-polarity:
-    runs-on: [self-hosted, on-prem-arc]
+    runs-on: [on-prem-arc]
 
     steps:
       - name: Set up license file
@@ -35,7 +35,7 @@ jobs:
   cleanup-polarity:
     needs: [package-create]
     if: always()
-    runs-on: [self-hosted, on-prem-arc]
+    runs-on: [on-prem-arc]
 
     steps:
       - name: Remove license file

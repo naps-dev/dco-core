@@ -33,7 +33,7 @@ env:
   DCO_REF_TYPE: "${{ github.ref_type }}"
 jobs:
   package-component:
-    runs-on: [self-hosted, on-prem-arc]
+    runs-on: [on-prem-arc]
     steps:
       - name: Checkout
         uses: actions/checkout@v3

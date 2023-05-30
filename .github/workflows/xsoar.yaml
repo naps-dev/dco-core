@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   prepare-xsoar:
-    runs-on: [self-hosted, on-prem-arc]
+    runs-on: [on-prem-arc]
 
     steps:
       - name: Login to XSOAR registry
@@ -42,7 +42,7 @@ jobs:
   cleanup-xsoar:
     needs: [package-create]
     if: always()
-    runs-on: [self-hosted, on-prem-arc]
+    runs-on: [on-prem-arc]
 
     steps:
       - name: Remove license file
