@@ -31,9 +31,17 @@ jobs:
       - name: Check DCO Everything commit hash
         id: check-dco-everything-commit-hash
         run: |
+          echo "Checking commit hash of DCO Everything image in GHCR"
+          curl -L \
+            -H "Accept: application/vnd.oci.image.manifest.v1+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://ghcr.io/v2/naps-dev/packages/dco-everything/manifests/${{ env.REF_NAME }}-amd64"
+
           COMMIT_HASH_RAW=`curl -L \
             -H "Accept: application/vnd.oci.image.manifest.v1+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
             "https://ghcr.io/v2/naps-dev/packages/dco-everything/manifests/${{ env.REF_NAME }}-amd64" \
             | jq -r '.annotations."org.opencontainers.image.source"'`
           echo "Current commit hash of OCI w/ this tag: $COMMIT_HASH_RAW"
