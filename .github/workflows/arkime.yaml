@@ -1,5 +1,5 @@
-name: Build and Deploy Arkime Zarf Package
-run-name: ${{github.actor}} is building the Arkime Zarf package
+name: Build and Test Arkime
+run-name: ${{github.actor}} updated Arkime
 on:
   push:
     paths:
@@ -12,14 +12,22 @@ on:
 permissions:
   id-token: write
   contents: read
+  packages: write
 
 jobs:
-  package-create:
-    uses: ./.github/workflows/package.yaml
+  lint:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "arkime"
+  
+  rebuild-everything:
+    needs: [lint]
+    uses: ./.github/workflows/rebuild-everything.yaml
+    secrets: inherit
+
+  test-arkime:
+    needs: [rebuild-everything]
+    uses: ./.github/workflows/component-test.yaml
     secrets: inherit
     with:
-      REF_NAME: "v4.2.0-2"
-      REF_TYPE: "tag"
-      ZARF_PACKAGE: zarf-package-arkime-amd64.tar.zst
-      IMAGE_TAG: "v4.2.0-2"
-      COMPONENT: "arkime"
+      component: "arkime"

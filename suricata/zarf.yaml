@@ -10,15 +10,15 @@ constants:
     value: "###ZARF_PKG_TMPL_GIT_REF###"
 
 variables:
-  - name: INTERFACE
+  - name: CAPTURE_INTERFACE
     default: "eth0"
     prompt: false
 
-  - name: NODE_LABEL
+  - name: SURICATA_NODE_LABEL
     default: "kubernetes.io/os"
     prompt: false
 
-  - name: NODE_LABEL_VALUE
+  - name: SURICATA_NODE_LABEL_VALUE
     default: "linux"
     prompt: false
 

@@ -1,30 +1,66 @@
-name: Build and Deploy DCO Core Zarf Package
-run-name: ${{github.actor}} is building the DCO Core Zarf package
+name: Build and Test DCO Core Components
+run-name: ${{github.actor}} updated DCO Core
 on:
   push:
     paths:
-      - '!**.md'
+      - '.github/workflows/component-test.yaml'
+      - '.github/workflows/dco-core.yaml'
+      - '.github/workflows/lint.yaml'
+      - '.github/workflows/rebuild-everything.yaml'
       - 'bigbang/**'
+      - 'dataplane-ek/**'
       - 'dco-core/**'
       - 'kubevirt/**'
       - 'metallb/**'
       - 'dataplane-ek/**'
       - 'test/dco_core_package_test.go'
-      - '.github/workflows/dco-core.yaml'
-      - '.github/workflows/package.yaml'
-  schedule:
-    - cron: '30 5 * * *'
+    tags-ignore: ["v**"]
+    branches: ['**']
 
 permissions:
   id-token: write
   contents: read
+  packages: write
 
 jobs:
-  package-create:
-    uses: ./.github/workflows/package.yaml
+  lint-1:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "bigbang"  
+
+  lint-2:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "dataplane-ek"
+
+  lint-3:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "dco-core"
+
+  lint-4:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "kubevirt"
+
+  lint-5:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "metallb"
+
+  lint-6:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "dco-everything"
+
+  rebuild-everything:
+    needs: [lint-1, lint-2, lint-3, lint-4, lint-5, lint-6]
+    uses: ./.github/workflows/rebuild-everything.yaml
+    secrets: inherit
+
+  test-dco-core:
+    needs : [rebuild-everything]
+    uses: ./.github/workflows/component-test.yaml
     secrets: inherit
     with:
-      REF_NAME: "${{ github.head_ref || github.ref_name }}"
-      REF_TYPE: "${{ github.ref_type }}"
-      ZARF_PACKAGE: zarf-package-dco-core-amd64.tar.zst
-      COMPONENT: "dco-core"
+      component: "dco-core"

@@ -1,5 +1,5 @@
-name: Build and Deploy XSoar Zarf Package
-run-name: ${{github.actor}} is building the XSoar Zarf package
+name: Build and Test XSoar
+run-name: ${{github.actor}} updated XSoar
 on:
   push:
     paths:
@@ -12,9 +12,24 @@ on:
 permissions:
   id-token: write
   contents: read
+  packages: write
+
+env:
+  component: "xsoar"
 
 jobs:
-  prepare-xsoar:
+  lint:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "xsoar"
+
+  rebuild-everything:
+    needs: [lint]
+    uses: ./.github/workflows/rebuild-everything.yaml
+    secrets: inherit
+
+  test-xsoar:
+    needs: [rebuild-everything]
     runs-on: [self-hosted, onprem]
 
     steps:
@@ -29,22 +44,29 @@ jobs:
         run:
           echo "${{ secrets.XSOAR_LICENSE }}" >> /tmp/demisto.lic
 
-  package-create:
-    needs: [prepare-xsoar]
-    uses: ./.github/workflows/package.yaml
-    secrets: inherit
-    with:
-      REF_NAME: "v6.5.0-5"
-      REF_TYPE: "tag"
-      ZARF_PACKAGE: zarf-package-xsoar-amd64.tar.zst
-      COMPONENT: "xsoar"
+      - name: GHCR Login
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '^1.19.5'
+          cache: true
+  
+      - name: Install dependencies for terratest
+        run: |
+          go get -t ./...
+  
+      - name: Run go test
+        working-directory: ./test/
+        run: |
+          go test -timeout 90m
 
-  cleanup-xsoar:
-    needs: [package-create]
-    if: always()
-    runs-on: [self-hosted, onprem]
-
-    steps:
-      - name: Remove license file
+      - name: Cleanup XSOAR license
+        if: always()
         run:
           rm -f /tmp/demisto.lic

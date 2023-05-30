@@ -3,7 +3,6 @@ metadata:
   name: polarity
   description: "Deploys Polarity Platform tool"
   architecture: amd64
-  # architecture: arm64
 
 constants:
   - name: GIT_REF

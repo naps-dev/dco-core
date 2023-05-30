@@ -1,0 +1,75 @@
+name: Build and Test Everything
+run-name: ${{github.actor}} updated something in DCO Core repo
+on:
+  pull_request:
+    branches: ['main']
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+jobs:
+  lint-everything:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: ${{ matrix.component }}
+    strategy:
+      max-parallel: 10
+      matrix:
+        component:
+          - arkime
+          - bigbang
+          - dataplane-ek
+          - dco-core
+          - dco-everything
+          - kasm
+          - kubevirt
+          - metallb
+          - mixmode
+          - mockingbird
+          - polarity
+          - suricata
+          - xsoar
+  
+  rebuild-everything:
+    needs: [lint-everything]
+    uses: ./.github/workflows/rebuild-everything.yaml
+    secrets: inherit
+  
+  test-all-components:
+    needs: [rebuild-everything]
+    uses: ./.github/workflows/component-test.yaml
+    secrets: inherit
+    with:
+      component: ${{ matrix.component }}
+    strategy:
+      max-parallel: 2
+      matrix:
+        component:
+          - arkime
+          - dco-core
+          - kasm
+          - mixmode
+          - mockingbird
+          - polarity
+          - suricata
+          - xsoar
+
+  end-to-end-tests:
+    needs: [test-all-components]
+    # As a placeholder for now - will eventually
+    # need to run on-prem w/ dedicated hardware
+    runs-on: ubuntu-latest
+    steps:
+      - name: Perform End-to-End Testing
+        run: |
+          echo "Not yet implemented"
+  
+  throughput-tests:
+    needs: [end-to-end-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Perform Throughput Testing
+        run: |
+          echo "Not yet implemented"

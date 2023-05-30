@@ -1,5 +1,5 @@
-name: Build and Deploy Polarity Zarf Package
-run-name: ${{github.actor}} is building the Polarity Zarf package
+name: Build and Test Polarity
+run-name: ${{github.actor}} updated Polarity
 on:
   push:
     paths:
@@ -12,9 +12,24 @@ on:
 permissions:
   id-token: write
   contents: read
+  packages: write
+
+env:
+  component: "polarity"
 
 jobs:
-  prepare-polarity:
+  lint:
+    uses: ./.github/workflows/lint.yaml
+    with:
+      component: "polarity"
+
+  rebuild-everything:
+    needs: [lint]
+    uses: ./.github/workflows/rebuild-everything.yaml
+    secrets: inherit
+
+  test-polarity:
+    needs: [rebuild-everything]
     runs-on: [self-hosted, onprem]
 
     steps:
@@ -22,22 +37,29 @@ jobs:
         run:
           echo "${{ secrets.POLARITY_LICENSE }}" >> /tmp/polarity.lic
 
-  package-create:
-    needs: [prepare-polarity]
-    uses: ./.github/workflows/package.yaml
-    secrets: inherit
-    with:
-      REF_NAME: "v4.0.10-4"
-      REF_TYPE: "tag"
-      ZARF_PACKAGE: zarf-package-polarity-amd64.tar.zst
-      COMPONENT: "polarity"
-
-  cleanup-polarity:
-    needs: [package-create]
-    if: always()
-    runs-on: [self-hosted, onprem]
-
-    steps:
+      - name: GHCR Login
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '^1.19.5'
+          cache: true
+  
+      - name: Install dependencies for terratest
+        run: |
+          go get -t ./...
+  
+      - name: Run go test
+        working-directory: ./test/
+        run: |
+          go test -timeout 90m
+        
       - name: Remove license file
+        if: always()
         run:
           rm -f /tmp/polarity.lic

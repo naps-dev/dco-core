@@ -36,4 +36,4 @@ spec:
   values:
     domain: "###ZARF_VAR_DOMAIN###"
     image:
-      tag: "###ZARF_CONST_IMAGE_TAG###"
+      tag: "###ZARF_CONST_MOCKINGBIRD_IMAGE_TAG###"

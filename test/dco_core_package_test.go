@@ -17,6 +17,8 @@ import (
 func TestZarfPackage(t *testing.T) {
 	component := os.Getenv("COMPONENT")
 	refName := os.Getenv("REF_NAME")
+	ociPath := os.Getenv("OCI_PATH")
+
 	clusterName := component + "-test-" + refName
 	kubeconfigPath := "/tmp/" + component + "_test_+" + refName + "_kubeconfig"
 
@@ -80,10 +82,13 @@ func TestZarfPackage(t *testing.T) {
 
 	shell.RunCommand(t, zarfInitCmd)
 
+	packagePath := ociPath + "/dco-everything:" + refName + "-amd64"
+
 	zarfDeployDCOCmd := shell.Command{
 		Command: "zarf",
-		Args: []string{"package", "deploy", "../dco-core/zarf-package-dco-core-amd64.tar.zst", "--confirm",
+		Args: []string{"package", "deploy", packagePath, "--confirm",
 			"--components", "flux,bigbang,setup,kubevirt,cdi,metallb,metallb-config,dataplane-ek",
+			"--oci-concurrency", "16",
 			"--set", "METALLB_IP_ADDRESS_POOL=" + ipstart.String() + "-" + ipend.String(),
 		},
 		Env: testEnv,
@@ -196,25 +201,25 @@ func TestZarfPackage(t *testing.T) {
 	})
 
 	if component == "arkime" {
-		ArkimeTestZarfPackage(t, contextName, kubeconfigPath)
+		ArkimeTestZarfPackage(t, contextName, kubeconfigPath, packagePath)
 	}
 	if component == "kasm" {
-		KasmTestZarfPackage(t, contextName, kubeconfigPath)
+		KasmTestZarfPackage(t, contextName, kubeconfigPath, packagePath)
 	}
 	if component == "mixmode" {
-		MixmodeTestZarfPackage(t, contextName, kubeconfigPath)
+		MixmodeTestZarfPackage(t, contextName, kubeconfigPath, packagePath)
 	}
 	if component == "mockingbird" {
-		MockingbirdTestZarfPackage(t, contextName, kubeconfigPath)
+		MockingbirdTestZarfPackage(t, contextName, kubeconfigPath, packagePath)
 	}
 	if component == "polarity" {
-		PolarityTestZarfPackage(t, contextName, kubeconfigPath)
+		PolarityTestZarfPackage(t, contextName, kubeconfigPath, packagePath)
 	}
 	if component == "suricata" {
-		SuricataTestZarfPackage(t, contextName, kubeconfigPath)
+		SuricataTestZarfPackage(t, contextName, kubeconfigPath, packagePath)
 	}
 	if component == "xsoar" {
-		XsoarTestZarfPackage(t, contextName, kubeconfigPath)
+		XsoarTestZarfPackage(t, contextName, kubeconfigPath, packagePath)
 	}
 }
 

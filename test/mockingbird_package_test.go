@@ -6,6 +6,6 @@ import (
 	"github.com/gruntwork-io/terratest/modules/logger"
 )
 
-func MockingbirdTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string) {
+func MockingbirdTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string, packagePath string) {
 	logger.Log(t, "Mockingbird test to be implemented")
 }

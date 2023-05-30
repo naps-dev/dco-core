@@ -9,15 +9,18 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string) {
+func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string, packagePath string) {
 	testEnv := map[string]string{
 		"KUBECONFIG": kubeconfigPath,
 	}
 
 	zarfDeployArkimeCmd := shell.Command{
 		Command: "zarf",
-		Args:    []string{"package", "deploy", "../arkime/zarf-package-arkime-amd64.tar.zst", "--confirm"},
-		Env:     testEnv,
+		Args: []string{"package", "deploy", packagePath, "--confirm",
+			"--components", "arkime",
+			"--oci-concurrency", "16",
+		},
+		Env: testEnv,
 	}
 
 	shell.RunCommand(t, zarfDeployArkimeCmd)
@@ -54,7 +57,7 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 	t.Run("Arkime undeploys cleanly", func(t *testing.T) {
 		zarfDeleteArkimeCmd := shell.Command{
 			Command: "zarf",
-			Args:    []string{"package", "remove", "../arkime/zarf-package-arkime-amd64.tar.zst", "--confirm"},
+			Args:    []string{"package", "remove", packagePath, "--components", "arkime", "--confirm"},
 			Env:     testEnv,
 		}
 

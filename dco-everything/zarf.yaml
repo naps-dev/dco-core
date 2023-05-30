@@ -1,10 +1,10 @@
 kind: ZarfPackageConfig
 metadata:
-  name: dco-core
-  description: "Defensive Cyber Ops (DCO) Suite Core"
-  # Big Bang / Iron Bank are only amd64
+  name: dco-everything
+  description: "Defensive Cyber Ops (DCO) Suite"
   architecture: amd64
   version: "###ZARF_PKG_TMPL_VERSION###"
+  source: "###ZARF_PKG_TMPL_SOURCE###"
 
 constants:
   - name: GIT_REF
@@ -12,10 +12,18 @@ constants:
     value: "###ZARF_PKG_TMPL_GIT_REF###"
 
 variables:
-  # Prompt user for the domain override
+
+  #############################################################################
+  # Global vars / prompt user for the domain override
+  #############################################################################
+
   - name: DOMAIN
     default: "vp.bigbang.dev"
     prompt: false
+
+  #############################################################################
+  # Elastic Search / Kibana Vars
+  #############################################################################
 
   - name: KIBANA_COUNT
     default: "1"
@@ -29,6 +37,10 @@ variables:
     default: "1"
     prompt: false
 
+  #############################################################################
+  # Metal LB vars
+  #############################################################################
+
   - name: METALLB_IP_ADDRESS_POOL
     default: "192.168.1.1-192.168.1.2"
     prompt: false
@@ -37,7 +49,29 @@ variables:
     default: "eth0"
     prompt: false
 
+  #############################################################################
+  # Traffic capture interface (used by Arkime and Suricata)
+  #############################################################################
+
+  - name: CAPTURE_INTERFACE
+    default: "cni0"
+    prompt: false
+
+  #############################################################################
+  # Suricata vars
+  #############################################################################
+
+  - name: SURICATA_NODE_LABEL
+    default: "kubernetes.io/os"
+    prompt: false
+
+  - name: SURICATA_NODE_LABEL_VALUE
+    default: "linux"
+    prompt: false
+
 components:
+  # Required dco-core sub-components
+
   - name: flux
     required: true
     manifests:
@@ -52,7 +86,6 @@ components:
       - registry1.dso.mil/ironbank/fluxcd/source-controller:v0.36.1
 
   - name: bigbang
-    description: "Big Bang"
     required: true
     import:
       path: '../bigbang/'
@@ -65,7 +98,7 @@ components:
     manifests:
       - name: setup
         files:
-          - manifests/setup.yaml
+          - '../dco-core/manifests/setup.yaml'
 
   - name: kubevirt
     required: true
@@ -91,3 +124,40 @@ components:
     required: true
     import:
       path: '../dataplane-ek/'
+
+  # Other standalone components
+
+  - name: arkime
+    required: false
+    import:
+      path: '../arkime/'
+
+  - name: kasm
+    required: false
+    import:
+      path: '../kasm/'
+
+  - name: mixmode
+    required: false
+    import:
+      path: '../mixmode/'
+
+  - name: mockingbird
+    required: false
+    import:
+      path: '../mockingbird/'
+
+  - name: polarity
+    required: false
+    import:
+      path: '../polarity/'
+
+  - name: suricata
+    required: false
+    import:
+      path: '../suricata/'
+
+  - name: xsoar
+    required: false
+    import:
+      path: '../xsoar/'
