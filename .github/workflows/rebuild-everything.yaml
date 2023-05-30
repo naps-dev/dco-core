@@ -4,7 +4,9 @@ on:
   workflow_call:
 
 permissions:
+  id-token: write
   contents: read
+  packages: write
 
 defaults:
   run:
@@ -20,8 +22,6 @@ env:
 
 jobs:
   check-commit-hash:
-    permissions:
-      packages: read
     runs-on: ubuntu-latest
     outputs:
       skip-build: ${{ steps.check-dco-everything-commit-hash.outputs.SKIP_BUILD }}
@@ -50,9 +50,6 @@ jobs:
           fi
 
   create-package:
-    permissions:
-      id-token: write
-      packages: write
     needs: check-commit-hash
     if: needs.check-commit-hash.outputs.skip-build != 'true'
     runs-on: ubuntu-latest
