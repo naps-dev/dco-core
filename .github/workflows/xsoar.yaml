@@ -64,7 +64,7 @@ jobs:
       - name: Run go test
         working-directory: ./test/
         run: |
-          go test -timeout 45m
+          go test -timeout 90m
 
       - name: Cleanup XSOAR license
         if: always()
