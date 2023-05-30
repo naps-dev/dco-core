@@ -44,7 +44,7 @@ jobs:
             -H "Accept: application/vnd.oci.image.manifest.v1+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            --fail \
+            --fail-with-body \
             "https://ghcr.io/v2/naps-dev/packages/dco-everything/manifests/${{ env.REF_NAME }}-amd64"
 
           COMMIT_HASH_RAW=`curl -L \
@@ -52,7 +52,7 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "https://ghcr.io/v2/naps-dev/packages/dco-everything/manifests/${{ env.REF_NAME }}-amd64" \
-            --fail \
+            --fail-with-body \
             | jq -r '.annotations."org.opencontainers.image.source"'`
           echo "Current commit hash of OCI w/ this tag: $COMMIT_HASH_RAW"
           if [[ ${COMMIT_HASH_RAW} == ${{ github.sha }} ]]; then
