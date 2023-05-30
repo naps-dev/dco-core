@@ -43,12 +43,6 @@ jobs:
           echo "Checking commit hash of DCO Everything image in GHCR"
           
           BEARER=`curl --fail-with-body -u "user:${{ secrets.GITHUB_TOKEN}}" "https://ghcr.io/token?scope=repository:naps-dev/packages/dco-everything:pull" | jq -r ".token"`
-          
-          curl -L \
-            --fail-with-body \
-            -H "Accept: application/vnd.oci.image.manifest.v1+json" \
-            -H "Authorization: Bearer ${BEARER}" \
-            "https://ghcr.io/v2/naps-dev/packages/dco-everything/manifests/${{ env.REF_NAME }}-amd64"
 
           COMMIT_HASH_RAW=`curl -L \
             --fail-with-body \
@@ -68,7 +62,7 @@ jobs:
       packages: write
     needs: check-commit-hash
     if: needs.check-commit-hash.outputs.skip-build != 'true'
-    runs-on: [self-hosted, onprem]
+    runs-on: ubuntu-latest
     steps:
       # For pushing Zarf OCI packages
       - name: GHCR Login
