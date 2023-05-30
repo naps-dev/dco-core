@@ -4,9 +4,7 @@ on:
   workflow_call:
 
 permissions:
-  id-token: write
   contents: read
-  packages: write
 
 defaults:
   run:
@@ -22,6 +20,8 @@ env:
 
 jobs:
   check-commit-hash:
+    permissions:
+      packages: read
     runs-on: ubuntu-latest
     outputs:
       skip-build: ${{ steps.check-dco-everything-commit-hash.outputs.SKIP_BUILD }}
@@ -38,11 +38,13 @@ jobs:
       - name: Check DCO Everything commit hash
         id: check-dco-everything-commit-hash
         run: |
+          set -euo pipefail
           echo "Checking commit hash of DCO Everything image in GHCR"
           curl -L \
             -H "Accept: application/vnd.oci.image.manifest.v1+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
+            --fail \
             "https://ghcr.io/v2/naps-dev/packages/dco-everything/manifests/${{ env.REF_NAME }}-amd64"
 
           COMMIT_HASH_RAW=`curl -L \
@@ -50,14 +52,18 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "https://ghcr.io/v2/naps-dev/packages/dco-everything/manifests/${{ env.REF_NAME }}-amd64" \
+            --fail \
             | jq -r '.annotations."org.opencontainers.image.source"'`
           echo "Current commit hash of OCI w/ this tag: $COMMIT_HASH_RAW"
-          if [[ ${COMMIT_HASH_RAW} == ${{ github.sha}} ]]; then
+          if [[ ${COMMIT_HASH_RAW} == ${{ github.sha }} ]]; then
             echo "Commit hash matches current commit, skipping build"
             echo "SKIP_BUILD=true" >> $GITHUB_OUTPUT
           fi
 
   create-package:
+    permissions:
+      id-token: write
+      packages: write
     needs: check-commit-hash
     if: needs.check-commit-hash.outputs.skip-build != 'true'
     runs-on: [self-hosted, onprem]
