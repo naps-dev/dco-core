@@ -79,6 +79,14 @@ jobs:
           role-session-name: arkime-ecr
           aws-region: us-east-1
 
+      # For SOAR Image Pull
+      - name: Login to SOAR registry
+        run: |
+          zarf tools registry login \
+            -u "${{secrets.XSOAR_USERNAME}}" \
+            -p "${{secrets.XSOAR_PASSWORD}}" \
+            "xsoar-registry.pan.dev"
+
       - name: ECR Login
         uses: aws-actions/amazon-ecr-login@v1
         id: login-ecr
