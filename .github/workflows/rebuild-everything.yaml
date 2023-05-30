@@ -39,20 +39,22 @@ jobs:
         id: check-dco-everything-commit-hash
         run: |
           set -euo pipefail
+          
           echo "Checking commit hash of DCO Everything image in GHCR"
+          
+          BEARER=`curl --fail-with-body -u "user:${{ secrets.GITHUB_TOKEN}}" "https://ghcr.io/token?scope=repository:naps-dev/packages/dco-everything:pull" | jq -r ".token"`
+          
           curl -L \
-            -H "Accept: application/vnd.oci.image.manifest.v1+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
             --fail-with-body \
+            -H "Accept: application/vnd.oci.image.manifest.v1+json" \
+            -H "Authorization: Bearer ${BEARER}" \
             "https://ghcr.io/v2/naps-dev/packages/dco-everything/manifests/${{ env.REF_NAME }}-amd64"
 
           COMMIT_HASH_RAW=`curl -L \
-            -H "Accept: application/vnd.oci.image.manifest.v1+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://ghcr.io/v2/naps-dev/packages/dco-everything/manifests/${{ env.REF_NAME }}-amd64" \
             --fail-with-body \
+            -H "Accept: application/vnd.oci.image.manifest.v1+json" \
+            -H "Authorization: Bearer ${BEARER}" \
+            "https://ghcr.io/v2/naps-dev/packages/dco-everything/manifests/${{ env.REF_NAME }}-amd64" \
             | jq -r '.annotations."org.opencontainers.image.source"'`
           echo "Current commit hash of OCI w/ this tag: $COMMIT_HASH_RAW"
           if [[ ${COMMIT_HASH_RAW} == ${{ github.sha }} ]]; then
