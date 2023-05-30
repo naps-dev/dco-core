@@ -26,13 +26,6 @@ jobs:
     outputs:
       skip-build: ${{ steps.check-dco-everything-commit-hash.outputs.SKIP_BUILD }}
     steps:
-      - name: GHCR Login
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       # Check commit hash of image in GHCR to see if it has already been built by
       # another workflow as a result of this commit.
       - name: Check DCO Everything commit hash
