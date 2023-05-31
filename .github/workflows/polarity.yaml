@@ -15,7 +15,9 @@ permissions:
 
 jobs:
   prepare-polarity:
-    runs-on: [self-hosted, onprem]
+    runs-on: [on-prem-arc]
+    container:
+      image: ghcr.io/defenseunicorns/not-a-build-harness/not-a-build-harness:0.0.13
 
     steps:
       - name: Set up license file
@@ -35,7 +37,9 @@ jobs:
   cleanup-polarity:
     needs: [package-create]
     if: always()
-    runs-on: [self-hosted, onprem]
+    runs-on: [on-prem-arc]
+    container:
+      image: ghcr.io/defenseunicorns/not-a-build-harness/not-a-build-harness:0.0.13
 
     steps:
       - name: Remove license file

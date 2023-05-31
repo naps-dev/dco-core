@@ -33,7 +33,9 @@ env:
   DCO_REF_TYPE: "${{ github.ref_type }}"
 jobs:
   package-component:
-    runs-on: [self-hosted, onprem]
+    runs-on: [on-prem-arc]
+    container:
+      image: ghcr.io/defenseunicorns/not-a-build-harness/not-a-build-harness:0.0.13
     steps:
       - name: Checkout
         uses: actions/checkout@v3
