@@ -43,7 +43,7 @@ jobs:
       - name: Install Zarf
         uses: defenseunicorns/setup-zarf@main
         with:
-          version: v0.26.2
+          version: v0.27.0
           download-init-package: true
 
       - name: Configure AWS ECR Credentials
@@ -52,6 +52,12 @@ jobs:
           role-to-assume: ${{secrets.AWS_ECR_ROLE}}
           role-session-name: arkime-ecr
           aws-region: us-east-1
+
+      - name: Install Docker
+        run: |
+          yum install -y yum-utils
+          yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+          yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
       - name: ECR Login
         uses: aws-actions/amazon-ecr-login@v1
