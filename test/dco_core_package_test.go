@@ -70,8 +70,6 @@ func TestZarfPackage(t *testing.T) {
 
 	// Get IP range we can use for metallb load balancer
 	ipstart, ipend := DetermineIPRange(t, networkID)
-	
-	time.Sleep(6000 * time.Second)
 
 	// Start up zarf
 	zarfInitCmd := shell.Command{

@@ -74,51 +74,51 @@ jobs:
             -p "${{secrets.REGISTRY1_PASSWORD}}" \
             "registry1.dso.mil"
 
-#      - name: Create Zarf Package from Branch
-#        if: ${{ inputs.REF_TYPE == 'branch'}}
-#        run: |
-#          # cleanup and init a tmp dir
-#          rm -rf big-tmp
-#          mkdir big-tmp
-#
-#          args=()
-#          args+=(--set GIT_REF=refs/heads/${{ inputs.REF_NAME }})
-#          if [[ -z "${IMAGE_TAG}" ]]; then
-#            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
-#          fi
-#          args+=(--confirm)
-#          args+=(--tmpdir $PWD/big-tmp)
-#          args+=(--skip-sbom)
-#
-#          # build the zarf package
-#          zarf package create "${args[@]}"
-#
-#          # cleanup tmp dir
-#          rm -rf ./big-tmp
-#        working-directory: ${{ inputs.COMPONENT }}
-#
-#      - name: Create Zarf Package from Tag
-#        if: ${{ inputs.REF_TYPE == 'tag'}}
-#        run: |
-#          # cleanup and init a tmp dir
-#          rm -rf big-tmp
-#          mkdir big-tmp
-#
-#          args=()
-#          args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
-#          if [[ -z "${IMAGE_TAG}" ]]; then
-#            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
-#          fi
-#          args+=(--confirm)
-#          args+=(--tmpdir $PWD/big-tmp)
-#          args+=(--skip-sbom)
-#
-#          # build the zarf package
-#          zarf package create "${args[@]}"
-#
-#          # cleanup tmp dir
-#          rm -rf ./big-tmp
-#        working-directory: ${{ inputs.COMPONENT }}
+      - name: Create Zarf Package from Branch
+        if: ${{ inputs.REF_TYPE == 'branch'}}
+        run: |
+          # cleanup and init a tmp dir
+          rm -rf big-tmp
+          mkdir big-tmp
+
+          args=()
+          args+=(--set GIT_REF=refs/heads/${{ inputs.REF_NAME }})
+          if [[ -z "${IMAGE_TAG}" ]]; then
+            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
+          fi
+          args+=(--confirm)
+          args+=(--tmpdir $PWD/big-tmp)
+          args+=(--skip-sbom)
+
+          # build the zarf package
+          zarf package create "${args[@]}"
+
+          # cleanup tmp dir
+          rm -rf ./big-tmp
+        working-directory: ${{ inputs.COMPONENT }}
+
+      - name: Create Zarf Package from Tag
+        if: ${{ inputs.REF_TYPE == 'tag'}}
+        run: |
+          # cleanup and init a tmp dir
+          rm -rf big-tmp
+          mkdir big-tmp
+
+          args=()
+          args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
+          if [[ -z "${IMAGE_TAG}" ]]; then
+            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
+          fi
+          args+=(--confirm)
+          args+=(--tmpdir $PWD/big-tmp)
+          args+=(--skip-sbom)
+
+          # build the zarf package
+          zarf package create "${args[@]}"
+
+          # cleanup tmp dir
+          rm -rf ./big-tmp
+        working-directory: ${{ inputs.COMPONENT }}
 
       - name: Configure AWS S3 Credentials
         uses: aws-actions/configure-aws-credentials@v1
