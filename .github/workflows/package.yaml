@@ -59,6 +59,10 @@ jobs:
           yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
           yum install docker-ce-cli -y
 
+      - name: Install K3D
+        run: |
+          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash"
+
       - name: ECR Login
         uses: aws-actions/amazon-ecr-login@v1
         id: login-ecr
