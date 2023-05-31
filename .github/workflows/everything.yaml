@@ -144,7 +144,7 @@ jobs:
     uses: ./.github/workflows/component-test-license.yaml
     secrets:
         license_key: ${{ secrets.POLARITY_LICENSE }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN_PASS: ${{ secrets.GITHUB_TOKEN }}
     with:
       component: "polarity"
       license_file_path: "/tmp/polarity.lic"
@@ -163,7 +163,7 @@ jobs:
     uses: ./.github/workflows/component-test-license.yaml
     secrets:
         license_key: ${{ secrets.XSOAR_LICENSE }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN_PASS: ${{ secrets.GITHUB_TOKEN }}
     with:
       component: "xsoar"
       license_file_path: "/tmp/demisto.lic"
