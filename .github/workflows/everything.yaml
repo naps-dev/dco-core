@@ -27,7 +27,6 @@ jobs:
       polarity: ${{ steps.filter.outputs.polarity }}
       suricata: ${{ steps.filter.outputs.suricata }}
       xsoar: ${{ steps.filter.outputs.xsoar }}
-      documentation: ${{ steps.filter.outputs.documentation }}
     steps:
     - uses: actions/checkout@v3
     - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50      
@@ -65,8 +64,6 @@ jobs:
           xsoar:
             - 'xsoar/**'
             - 'test/xsoar_package_test.go'
-          documentation:
-            - '**/*.md'
 
   lint-everything:
     uses: ./.github/workflows/lint.yaml
@@ -101,7 +98,7 @@ jobs:
   #############################################################################
   test-arkime:
     needs: [detect-changes, rebuild-everything]
-    if: ${{ needs.detect-changes.outputs.arkime == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    if: ${{ needs.detect-changes.outputs.arkime == 'true' }}
     uses: ./.github/workflows/component-test.yaml
     secrets: inherit
     with:
@@ -109,7 +106,7 @@ jobs:
 
   test-dco-core:
     needs : [detect-changes, rebuild-everything]
-    if: ${{ needs.detect-changes.outputs.dco-core == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    if: ${{ needs.detect-changes.outputs.dco-core == 'true' }}
     uses: ./.github/workflows/component-test.yaml
     secrets: inherit
     with:
@@ -117,7 +114,7 @@ jobs:
 
   test-kasm:
     needs: [detect-changes, rebuild-everything]
-    if: ${{ needs.detect-changes.outputs.kasm == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    if: ${{ needs.detect-changes.outputs.kasm == 'true' }}
     uses: ./.github/workflows/component-test.yaml
     secrets: inherit
     with:
@@ -125,7 +122,7 @@ jobs:
 
   test-mixmode:
     needs: [detect-changes, rebuild-everything]
-    if: ${{ needs.detect-changes.outputs.mixmode == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    if: ${{ needs.detect-changes.outputs.mixmode == 'true' }}
     uses: ./.github/workflows/component-test.yaml
     secrets: inherit
     with:
@@ -133,7 +130,7 @@ jobs:
   
   test-mockingbird:
     needs: [detect-changes, rebuild-everything]
-    if: ${{ needs.detect-changes.outputs.mockingbird == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    if: ${{ needs.detect-changes.outputs.mockingbird == 'true' }}
     uses: ./.github/workflows/component-test.yaml
     secrets: inherit
     with:
@@ -141,7 +138,7 @@ jobs:
 
   test-polarity:
     needs: [detect-changes, rebuild-everything]
-    if: ${{ needs.detect-changes.outputs.polarity == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    if: ${{ needs.detect-changes.outputs.polarity == 'true' }}
     uses: ./.github/workflows/component-test-license.yaml
     secrets:
         license_key: ${{ secrets.POLARITY_LICENSE }}
@@ -152,7 +149,7 @@ jobs:
 
   test-suricata:
     needs: [detect-changes, rebuild-everything]
-    if: ${{ needs.detect-changes.outputs.suricata == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    if: ${{ needs.detect-changes.outputs.suricata == 'true' }}
     uses: ./.github/workflows/component-test.yaml
     secrets: inherit
     with:
@@ -160,7 +157,7 @@ jobs:
 
   test-xsoar:
     needs: [detect-changes, rebuild-everything]
-    if: ${{ needs.detect-changes.outputs.xsoar == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    if: ${{ needs.detect-changes.outputs.xsoar == 'true' }}
     uses: ./.github/workflows/component-test-license.yaml
     secrets:
         license_key: ${{ secrets.XSOAR_LICENSE }}
