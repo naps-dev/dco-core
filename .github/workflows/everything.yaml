@@ -213,7 +213,7 @@ jobs:
     uses: ./.github/workflows/component-test-license.yaml
     secrets:
       license_key: ${{ secrets[matrix.license_key_name] }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN_PASS: ${{ secrets.GITHUB_TOKEN }}
     with:
       component: ${{ matrix.component }}
       license_file_path: ${{ matrix.license_file_path }}
