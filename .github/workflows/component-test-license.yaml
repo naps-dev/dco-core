@@ -1,0 +1,66 @@
+name: Component Test with License Key
+run-name: ${{github.actor}} is testing the ${{ inputs.COMPONENT }} DCO component
+on:
+  workflow_call:
+    inputs:
+      component:
+        required: true
+        type: string
+      license_file_path:
+        required: false
+        type: string
+    secrets:
+      license_key:
+        required: true
+      GITHUB_TOKEN:
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  OCI_PATH: "oci://ghcr.io/naps-dev/packages"
+  REF_NAME: "${{ github.head_ref || github.ref_name }}"
+  COMPONENT: "${{ inputs.component }}"
+
+jobs:
+  test-component:
+    runs-on: [self-hosted, onprem]
+
+    steps:
+    - name: Set up license file
+      run:
+        echo "${{ secrets.license_key }}" >> "${{ inputs.license_file_path }}"
+
+    - name: GHCR Login
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+            
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: '^1.19.5'
+        cache: true
+    
+    - name: Install dependencies for terratest
+      run: |
+        go get -t ./...
+    
+    - name: Run go test
+      working-directory: ./test/
+      run: |
+        go test -timeout 90m
+
+    - name: Cleanup license key file
+      if: always()
+      run:
+        rm -f ${{ inputs.license_file_path }}

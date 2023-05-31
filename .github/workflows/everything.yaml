@@ -1,6 +1,9 @@
 name: Build and Test Everything
 run-name: ${{github.actor}} updated something in DCO Core repo
 on:
+  push:
+    branches: ['**']
+    tags-ignore: ["v**"]
   pull_request:
     branches: ['main']
 
@@ -10,6 +13,60 @@ permissions:
   packages: write
 
 jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      arkime: ${{ steps.filter.outputs.arkime }}
+      dco-core: ${{ steps.filter.outputs.dco-core }}
+      dco-everything: ${{ steps.filter.outputs.dco-everything }}
+      kasm: ${{ steps.filter.outputs.kasm }}
+      mixmode: ${{ steps.filter.outputs.mixmode }}
+      mockingbird: ${{ steps.filter.outputs.mockingbird }}
+      polarity: ${{ steps.filter.outputs.polarity }}
+      suricata: ${{ steps.filter.outputs.suricata }}
+      xsoar: ${{ steps.filter.outputs.xsoar }}
+      documentation: ${{ steps.filter.outputs.documentation }}
+    steps:
+    - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50      
+      id: filter
+      with:
+        filters: |
+          arkime:
+            - 'arkime/**'
+            - 'test/arkime_package_test.go'
+            - '.github/workflows/arkime.yaml'
+          dco-core:
+            - 'bigbang/**'
+            - 'dataplane-ek/**'
+            - 'dco-core/**'
+            - 'kubevirt/**'
+            - 'metallb/**'
+            - 'test/dco_core_package_test.go'
+          dco-everything:
+            - 'dco-everything/**'
+          kasm:
+            - 'kasm/**'
+            - 'test/kasm_package_test.go'
+          mixmode:
+            - 'mixmode/**'
+            - 'test/mixmode_package_test.go'
+          mockingbird:
+            - 'mockingbird/**'
+            - 'test/mockingbird_package_test.go'
+          polarity:
+            - 'polarity/**'
+            - 'test/polarity_package_test.go'
+          suricata:
+            - 'suricata/**'
+            - 'test/suricata_package_test.go'
+          xsoar:
+            - 'xsoar/**'
+            - 'test/xsoar_package_test.go'
+          documentation:
+            - '**/*.md'
+
   lint-everything:
     uses: ./.github/workflows/lint.yaml
     with:
@@ -37,8 +94,104 @@ jobs:
     uses: ./.github/workflows/rebuild-everything.yaml
     secrets: inherit
   
+  #############################################################################
+  # Component Testing. Test only those components that changed as part of the
+  # latest push.
+  #############################################################################
+  test-arkime:
+    needs: [detect-changes, rebuild-everything]
+    if: ${{ needs.detect-changes.outputs.arkime == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    uses: ./.github/workflows/component-test.yaml
+    secrets: inherit
+    with:
+      component: "arkime"
+
+  test-dco-core:
+    needs : [detect-changes, rebuild-everything]
+    if: ${{ needs.detect-changes.outputs.dco-core == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    uses: ./.github/workflows/component-test.yaml
+    secrets: inherit
+    with:
+      component: "dco-core"
+
+  test-kasm:
+    needs: [detect-changes, rebuild-everything]
+    if: ${{ needs.detect-changes.outputs.kasm == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    uses: ./.github/workflows/component-test.yaml
+    secrets: inherit
+    with:
+      component: "kasm"
+
+  test-mixmode:
+    needs: [detect-changes, rebuild-everything]
+    if: ${{ needs.detect-changes.outputs.mixmode == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    uses: ./.github/workflows/component-test.yaml
+    secrets: inherit
+    with:
+      component: "mixmode"
+  
+  test-mockingbird:
+    needs: [detect-changes, rebuild-everything]
+    if: ${{ needs.detect-changes.outputs.mockingbird == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    uses: ./.github/workflows/component-test.yaml
+    secrets: inherit
+    with:
+      component: "mockingbird"
+
+  test-polarity:
+    needs: [detect-changes, rebuild-everything]
+    if: ${{ needs.detect-changes.outputs.polarity == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    uses: ./.github/workflows/component-test-license.yaml
+    secrets:
+        license_key: ${{ secrets.POLARITY_LICENSE }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      component: "polarity"
+      license_file_path: "/tmp/polarity.lic"
+
+  test-suricata:
+    needs: [detect-changes, rebuild-everything]
+    if: ${{ needs.detect-changes.outputs.suricata == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    uses: ./.github/workflows/component-test.yaml
+    secrets: inherit
+    with:
+      component: "suricata"
+
+  test-xsoar:
+    needs: [detect-changes, rebuild-everything]
+    if: ${{ needs.detect-changes.outputs.xsoar == 'true' && needs.detect-changes.outputs.documentation == 'false' }}
+    uses: ./.github/workflows/component-test-license.yaml
+    secrets:
+        license_key: ${{ secrets.XSOAR_LICENSE }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      component: "xsoar"
+      license_file_path: "/tmp/demisto.lic"
+
+
+  #############################################################################
+  # On PR ready for review, ping Slack
+  #############################################################################
+  slack-beg-for-review:
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_ICON: https://avatars.githubusercontent.com/u/87975021?s=200&v=4
+          SLACK_USERNAME: GitHub
+          SLACK_TITLE: ${{ github.event.pull_request.title }} is Ready for Review
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+  #############################################################################
+  # Comprehensive Testing. Should only be done when a PR is ready for review
+  #############################################################################
+
   test-all-components:
     needs: [rebuild-everything]
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
     uses: ./.github/workflows/component-test.yaml
     secrets: inherit
     with:
@@ -52,12 +205,33 @@ jobs:
           - kasm
           - mixmode
           - mockingbird
-          - polarity
           - suricata
-          - xsoar
+
+  test-all-components-with-licenses:
+    needs: [rebuild-everything]
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+    uses: ./.github/workflows/component-test-license.yaml
+    secrets:
+      license_key: ${{ secrets[matrix.license_key_name] }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      component: ${{ matrix.component }}
+      license_file_path: ${{ matrix.license_file_path }}
+    strategy:
+      max-parallel: 2
+      matrix:
+        component: [polarity, xsoar]
+        include:
+          - component: polarity
+            license_key_name: POLARITY_LICENSE
+            license_file_path: "/tmp/polarity.lic"
+          - component: xsoar
+            license_key_name: XSOAR_LICENSE
+            license_file_path: "/tmp/demisto.lic"
 
   end-to-end-tests:
     needs: [test-all-components]
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
     # As a placeholder for now - will eventually
     # need to run on-prem w/ dedicated hardware
     runs-on: ubuntu-latest
@@ -67,7 +241,8 @@ jobs:
           echo "Not yet implemented"
   
   throughput-tests:
-    needs: [end-to-end-tests]
+    needs: [test-all-components]
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
     runs-on: ubuntu-latest
     steps:
       - name: Perform Throughput Testing

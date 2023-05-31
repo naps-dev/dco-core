@@ -52,7 +52,7 @@ jobs:
   create-package:
     needs: check-commit-hash
     if: needs.check-commit-hash.outputs.skip-build != 'true'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     steps:
       # For pushing Zarf OCI packages
       - name: GHCR Login
