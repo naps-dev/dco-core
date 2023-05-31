@@ -52,7 +52,9 @@ jobs:
   create-package:
     needs: check-commit-hash
     if: needs.check-commit-hash.outputs.skip-build != 'true'
-    runs-on: [self-hosted, on-prem]
+    runs-on: [on-prem-arc]
+    container:
+      image: ghcr.io/defenseunicorns/not-a-build-harness/not-a-build-harness:0.0.13
     steps:
       # For pushing Zarf OCI packages
       - name: GHCR Login
