@@ -61,7 +61,7 @@ jobs:
 
       - name: Install K3D
         run: |
-          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash"
+          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
       - name: ECR Login
         uses: aws-actions/amazon-ecr-login@v1
