@@ -46,145 +46,146 @@ jobs:
           version: v0.27.0
           download-init-package: true
 
-      - name: Configure AWS ECR Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{secrets.AWS_ECR_ROLE}}
-          role-session-name: arkime-ecr
-          aws-region: us-east-1
-
-      - name: Install Docker Cli
-        run: |
-          yum install yum-utils -y
-          yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-          yum install docker-ce-cli -y
-
-      - name: Install K3D
-        run: |
-          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-
-      - name: ECR Login
-        uses: aws-actions/amazon-ecr-login@v1
-        id: login-ecr
-
-      - name: Login to Registry One
-        run: |
-          zarf tools registry login \
-            -u "${{secrets.REGISTRY1_USERNAME}}" \
-            -p "${{secrets.REGISTRY1_PASSWORD}}" \
-            "registry1.dso.mil"
-
-      - name: Create Zarf Package from Branch
-        if: ${{ inputs.REF_TYPE == 'branch'}}
-        run: |
-          # cleanup and init a tmp dir
-          rm -rf big-tmp
-          mkdir big-tmp
-
-          args=()
-          args+=(--set GIT_REF=refs/heads/${{ inputs.REF_NAME }})
-          if [[ -z "${IMAGE_TAG}" ]]; then
-            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
-          fi
-          args+=(--confirm)
-          args+=(--tmpdir $PWD/big-tmp)
-          args+=(--skip-sbom)
-
-          # build the zarf package
-          zarf package create "${args[@]}"
-
-          # cleanup tmp dir
-          rm -rf ./big-tmp
-        working-directory: ${{ inputs.COMPONENT }}
-
-      - name: Create Zarf Package from Tag
-        if: ${{ inputs.REF_TYPE == 'tag'}}
-        run: |
-          # cleanup and init a tmp dir
-          rm -rf big-tmp
-          mkdir big-tmp
-
-          args=()
-          args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
-          if [[ -z "${IMAGE_TAG}" ]]; then
-            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
-          fi
-          args+=(--confirm)
-          args+=(--tmpdir $PWD/big-tmp)
-          args+=(--skip-sbom)
-
-          # build the zarf package
-          zarf package create "${args[@]}"
-
-          # cleanup tmp dir
-          rm -rf ./big-tmp
-        working-directory: ${{ inputs.COMPONENT }}
-
-      - name: Configure AWS S3 Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{secrets.AWS_ROLE}}
-          role-session-name: arkime-s3
-          aws-region: us-east-1
-
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: '^1.19.5'
-          cache: true
-
-      - name: Create DCO package (from Branch) needed for testing individual component
-        if: ${{ env.DCO_REF_TYPE == 'branch' && inputs.COMPONENT != 'dco-core' }}
-        run: |
-          # cleanup and init a tmp dir
-          rm -rf big-tmp
-          mkdir big-tmp
-
-          # build the zarf package
-          zarf package create \
-            --set GIT_REF=refs/heads/${{ env.DCO_REF_NAME }} \
-            --confirm \
-            --tmpdir $PWD/big-tmp \
-            --skip-sbom
-
-          # cleanup tmp dir
-          rm -rf ./big-tmp
-        working-directory: dco-core
-
-      - name: Create DCO package (from Tag) needed for testing individual component
-        if: ${{ env.DCO_REF_TYPE == 'tag' && inputs.COMPONENT != 'dco-core' }}
-        run: |
-          # cleanup and init a tmp dir
-          rm -rf big-tmp
-          mkdir big-tmp
-
-          # build the zarf package
-          zarf package create \
-            --set GIT_REF=refs/tags/${{ env.DCO_REF_NAME }} \
-            --confirm \
-            --tmpdir $PWD/big-tmp \
-            --skip-sbom
-
-          # cleanup tmp dir
-          rm -rf ./big-tmp
-        working-directory: dco-core
-
-      - name: Install dependencies for terratest
-        run: |
-          go get -t ./...
-
-      - name: Run go test
-        working-directory: ./test/
-        run: |
-          go test -timeout 40m
-
-      - name: Save Package to S3
-        run: |
-          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
-        working-directory: ${{ inputs.COMPONENT }}
+#      - name: Configure AWS ECR Credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          role-to-assume: ${{secrets.AWS_ECR_ROLE}}
+#          role-session-name: arkime-ecr
+#          aws-region: us-east-1
+#
+#      - name: Install Docker Cli
+#        run: |
+#          yum install yum-utils -y
+#          yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+#          yum install docker-ce-cli -y
+#
+#      - name: Install K3D
+#        run: |
+#          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+#
+#      - name: ECR Login
+#        uses: aws-actions/amazon-ecr-login@v1
+#        id: login-ecr
+#
+#      - name: Login to Registry One
+#        run: |
+#          zarf tools registry login \
+#            -u "${{secrets.REGISTRY1_USERNAME}}" \
+#            -p "${{secrets.REGISTRY1_PASSWORD}}" \
+#            "registry1.dso.mil"
+#
+#      - name: Create Zarf Package from Branch
+#        if: ${{ inputs.REF_TYPE == 'branch'}}
+#        run: |
+#          # cleanup and init a tmp dir
+#          rm -rf big-tmp
+#          mkdir big-tmp
+#
+#          args=()
+#          args+=(--set GIT_REF=refs/heads/${{ inputs.REF_NAME }})
+#          if [[ -z "${IMAGE_TAG}" ]]; then
+#            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
+#          fi
+#          args+=(--confirm)
+#          args+=(--tmpdir $PWD/big-tmp)
+#          args+=(--skip-sbom)
+#
+#          # build the zarf package
+#          zarf package create "${args[@]}"
+#
+#          # cleanup tmp dir
+#          rm -rf ./big-tmp
+#        working-directory: ${{ inputs.COMPONENT }}
+#
+#      - name: Create Zarf Package from Tag
+#        if: ${{ inputs.REF_TYPE == 'tag'}}
+#        run: |
+#          # cleanup and init a tmp dir
+#          rm -rf big-tmp
+#          mkdir big-tmp
+#
+#          args=()
+#          args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
+#          if [[ -z "${IMAGE_TAG}" ]]; then
+#            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
+#          fi
+#          args+=(--confirm)
+#          args+=(--tmpdir $PWD/big-tmp)
+#          args+=(--skip-sbom)
+#
+#          # build the zarf package
+#          zarf package create "${args[@]}"
+#
+#          # cleanup tmp dir
+#          rm -rf ./big-tmp
+#        working-directory: ${{ inputs.COMPONENT }}
+#
+#      - name: Configure AWS S3 Credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          role-to-assume: ${{secrets.AWS_ROLE}}
+#          role-session-name: arkime-s3
+#          aws-region: us-east-1
+#
+#      - name: Set up Go
+#        uses: actions/setup-go@v3
+#        with:
+#          go-version: '^1.19.5'
+#          cache: true
+#
+#      - name: Create DCO package (from Branch) needed for testing individual component
+#        if: ${{ env.DCO_REF_TYPE == 'branch' && inputs.COMPONENT != 'dco-core' }}
+#        run: |
+#          # cleanup and init a tmp dir
+#          rm -rf big-tmp
+#          mkdir big-tmp
+#
+#          # build the zarf package
+#          zarf package create \
+#            --set GIT_REF=refs/heads/${{ env.DCO_REF_NAME }} \
+#            --confirm \
+#            --tmpdir $PWD/big-tmp \
+#            --skip-sbom
+#
+#          # cleanup tmp dir
+#          rm -rf ./big-tmp
+#        working-directory: dco-core
+#
+#      - name: Create DCO package (from Tag) needed for testing individual component
+#        if: ${{ env.DCO_REF_TYPE == 'tag' && inputs.COMPONENT != 'dco-core' }}
+#        run: |
+#          # cleanup and init a tmp dir
+#          rm -rf big-tmp
+#          mkdir big-tmp
+#
+#          # build the zarf package
+#          zarf package create \
+#            --set GIT_REF=refs/tags/${{ env.DCO_REF_NAME }} \
+#            --confirm \
+#            --tmpdir $PWD/big-tmp \
+#            --skip-sbom
+#
+#          # cleanup tmp dir
+#          rm -rf ./big-tmp
+#        working-directory: dco-core
+#
+#      - name: Install dependencies for terratest
+#        run: |
+#          go get -t ./...
+#
+#      - name: Run go test
+#        working-directory: ./test/
+#        run: |
+#          go test -timeout 40m
+#
+#      - name: Save Package to S3
+#        run: |
+#          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
+#        working-directory: ${{ inputs.COMPONENT }}
 
   slack-notification:
     runs-on: [on-prem-arc]
+    needs: [package-component]
     container:
       image: ghcr.io/rtcamp/action-slack-notify:v2.2.0
     steps:
