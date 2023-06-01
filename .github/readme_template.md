@@ -71,6 +71,10 @@ _{API for interacting with the application}_
 
 _{tests that can be performed to verify the application is running correctly}_
 
+## FAQ
+
+_{Questions and Answers for gotchas people have encountered that might not be intuitive to solve}_
+
 ## References
 
 _{links to documentation or other helpful external material}_
