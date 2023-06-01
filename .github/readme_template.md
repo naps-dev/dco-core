@@ -51,6 +51,10 @@ _{steps required to install the package}_
 
 _{how to use or interact with the application}_
 
+### Licensing (optional)
+
+_{how to provide the application(s)'s license information}_
+
 ### Credentials (optional)
 
 _{how to find the credentials}_
