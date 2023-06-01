@@ -183,10 +183,6 @@ jobs:
 #          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
 #        working-directory: ${{ inputs.COMPONENT }}
 
-  slack-notification:
-    runs-on: [on-prem-arc]
-    needs: [package-component]
-    steps:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
