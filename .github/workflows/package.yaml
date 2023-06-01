@@ -178,6 +178,16 @@ jobs:
         run: |
           go test -timeout 40m
 
+      - name: Save Package to S3
+        run: |
+          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
+        working-directory: ${{ inputs.COMPONENT }}
+
+  slack-notification:
+    runs-on: [on-prem-arc]
+    container:
+      image: ghcr.io/rtcamp/action-slack-notify:v2.2.0
+    steps:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
@@ -185,8 +195,3 @@ jobs:
           SLACK_ICON: https://avatars.githubusercontent.com/u/87975021?s=200&v=4
           SLACK_USERNAME: GitHub
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-
-      - name: Save Package to S3
-        run: |
-          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
-        working-directory: ${{ inputs.COMPONENT }}
