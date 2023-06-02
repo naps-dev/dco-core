@@ -59,7 +59,7 @@ func TestZarfPackage(t *testing.T) {
 	shell.RunCommand(t, clusterTeardownCmd)
 
 	// to leave cluster up for examination after this run, comment this out:
-// 	defer shell.RunCommand(t, clusterTeardownCmd)
+	defer shell.RunCommand(t, clusterTeardownCmd)
 
 	// create the cluster
 	shell.RunCommand(t, clusterSetupCmd)
@@ -84,7 +84,7 @@ func TestZarfPackage(t *testing.T) {
 		Command: "zarf",
 		Args: []string{"package", "deploy", "../dco-core/zarf-package-dco-core-amd64.tar.zst", "--confirm",
 			"--components", "flux,bigbang,setup,kubevirt,cdi,metallb,metallb-config,dataplane-ek",
-			"--set", "METALLB_IP_ADDRESS_POOL=" + ipstart.String() + "-" + ipend.String(),
+			"--set", "METALLB_IP_ADDRESS_POOL=" + ipstart.String() + "-" + ipend.String(), "--log-level=debug"
 		},
 		Env: testEnv,
 	}
