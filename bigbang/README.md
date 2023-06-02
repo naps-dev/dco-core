@@ -1,24 +1,89 @@
-## Zarf Package for Big Bang
+# Big Bang Zarf Package
 
-### Description
+## Quickstart
 
-This folder and associated Zarf package contains a single Zarf component: `bigbang`. This
-is an _opinionated_ release of [Big Bang](https://docs-bigbang.dso.mil/latest/), which includes
-only certain Big Bang applications.
+_{very brief zero-to-hero steps}_
 
-### Zarf variables
+1. Build
+    ```bash
+    zarf p c --set GIT_REF=refs/heads/main --confirm
+    ```
+1. Deploy
+    ```bash
+    zarf p d --confirm
+    ```
 
-This package defines these Zarf variables: `DOMAIN`, `KIBANA_COUNT`, `ES_MASTER_COUNT` and
-`ES_DATA_COUNT`. `KIBANA_COUNT`, `ES_MASTER_COUNT` and `ES_DATA_COUNT` are for specifying the
-number of replicas for the Kibana, Elastic Search Master and Elastic Search Data nodes,
-respectively.
+## Description
+
+This folder and associated Zarf package contains a single Zarf component: `bigbang`. This is an _opinionated_ release of [Big Bang](https://docs-bigbang.dso.mil/latest/), which includes only certain Big Bang applications.
+
+This package is a child to the [dco-core](../dco-core/) Zarf package. 
+
+## Build
+
+### Zarf Variables
+
+| Name | Type | Purpose |
+|--|--|--|
+| `GIT_REF` | `string` | Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy |
+
+### Steps
+
+1. Create the package
+    ```bash
+    # For a specific branch
+    zarf package create --set GIT_REF=refs/heads/main
+
+    # For a specific tag
+    zarf package create --set GIT_REF=refs/tags/v2.1.0
+    ```
+
+## Installation
+
+### Prerequisites
+
+* Kubernetes cluster
+* Cluster must have Flux installed
+* Cluster must have the Zarf initilization package deployed
+
+_Note: the [dco-core](../dco-core/) Zarf package includes these prerequisites and will deploy this package_
+
+### Zarf Variables
+
+| Name | Type | Purpose | Default |
+|--|--|--|--|
+| `DOMAIN` | `string` | Domain tied to Istio ingress and other parts of the Big Bang umbrella chart | `vp.bigbang.dev` |
+
+### Steps
+
+1. Deploy
+    ```bash
+    zarf package deploy
+
+    # Optionally, you can specify a different domain. However, the certificates packaged in kustomizations/bigbang/environment-bb-secret.yaml will need to be updated to match
+    zarf package deploy --set DOMAIN=[your.domain.here]
+    ```
+
+## Usage
+
+Please see the official [Big Bang](https://docs-bigbang.dso.mil/latest/) umbrella chart documents for detailed configuration and usage information.
+
+## FAQ
+
+_{Questions and Answers for gotchas people have encountered that might not be intuitive to solve}_
+
+## References
+
+_{links to documentation or other helpful external material}_
+* [Zarf](https://zarf.dev/docs)
+* [Big Bang](https://docs-bigbang.dso.mil/latest/)
+
+#### END
+
 
 ### Additional Customization
 
-Big Bang defines cascading Helm chart
-[values](https://docs-bigbang.dso.mil/latest/docs/understanding-bigbang/configuration/base-config/#Values).
-We selectively override/merge our own custom values provided in our
-(values.yaml file)[./kustomizations/bigbang/values.yaml].
+
 
 ### Gateway Configuration
 
@@ -42,8 +107,4 @@ the keycloak service because keycloak insists on doing its own TLS termination.
 > technique is used for the automated
 > [unit test](../test/dco_core_package_test.go).
 
-### Dependencies:
 
-This requires Flux to be present on the Kubernetes cluster. In DCO Core, this
-is done in the [dco-core umbrella package](../dco-core/zarf.yaml) prior to the
-Big Bang component deployment.
