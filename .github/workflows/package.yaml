@@ -47,7 +47,7 @@ jobs:
           download-init-package: true
 
       - name: Login to XSOAR registry
-        if: ${{ inputs.COMPONENT != 'xsoar' }}
+        if: ${{ inputs.COMPONENT == 'xsoar' }}
         run: |
           zarf tools registry login \
             -u "${{secrets.XSOAR_USERNAME}}" \
@@ -55,12 +55,12 @@ jobs:
             "xsoar-registry.pan.dev"
 
       - name: Set up XSOAR license file
-        if: ${{ inputs.COMPONENT != 'xsoar' }}
+        if: ${{ inputs.COMPONENT == 'xsoar' }}
         run:
           echo "${{ secrets.XSOAR_LICENSE }}" >> /tmp/demisto.lic
 
       - name: Set up Polarity license file
-        if: ${{ inputs.COMPONENT != 'polarity' }}
+        if: ${{ inputs.COMPONENT == 'polarity' }}
         run:
           echo "${{ secrets.POLARITY_LICENSE }}" >> /tmp/polarity.lic
 
