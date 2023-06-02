@@ -15,7 +15,6 @@ permissions:
 
 jobs:
   package-create:
-    needs: [prepare-polarity]
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
