@@ -14,29 +14,6 @@ permissions:
   contents: read
 
 jobs:
-  prepare-xsoar:
-    runs-on: [on-prem-arc]
-    container:
-      image: ghcr.io/defenseunicorns/not-a-build-harness/not-a-build-harness:0.0.13
-
-    steps:
-      - name: Install Zarf
-        uses: defenseunicorns/setup-zarf@main
-        with:
-          version: v0.27.0
-          download-init-package: true
-
-      - name: Login to XSOAR registry
-        run: |
-          zarf tools registry login \
-            -u "${{secrets.XSOAR_USERNAME}}" \
-            -p "${{secrets.XSOAR_PASSWORD}}" \
-            "xsoar-registry.pan.dev"
-
-      - name: Set up license file
-        run:
-          echo "${{ secrets.XSOAR_LICENSE }}" >> /tmp/demisto.lic
-
   package-create:
     needs: [prepare-xsoar]
     uses: ./.github/workflows/package.yaml
@@ -46,15 +23,3 @@ jobs:
       REF_TYPE: "tag"
       ZARF_PACKAGE: zarf-package-xsoar-amd64.tar.zst
       COMPONENT: "xsoar"
-
-  cleanup-xsoar:
-    needs: [package-create]
-    if: always()
-    runs-on: [on-prem-arc]
-    container:
-      image: ghcr.io/defenseunicorns/not-a-build-harness/not-a-build-harness:0.0.13
-
-    steps:
-      - name: Remove license file
-        run:
-          rm -f /tmp/demisto.lic

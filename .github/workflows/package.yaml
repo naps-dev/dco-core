@@ -46,6 +46,24 @@ jobs:
           version: v0.27.0
           download-init-package: true
 
+      - name: Login to XSOAR registry
+        if: ${{ inputs.COMPONENT != 'xsoar' }}
+        run: |
+          zarf tools registry login \
+            -u "${{secrets.XSOAR_USERNAME}}" \
+            -p "${{secrets.XSOAR_PASSWORD}}" \
+            "xsoar-registry.pan.dev"
+
+      - name: Set up XSOAR license file
+        if: ${{ inputs.COMPONENT != 'xsoar' }}
+        run:
+          echo "${{ secrets.XSOAR_LICENSE }}" >> /tmp/demisto.lic
+
+      - name: Set up Polarity license file
+        if: ${{ inputs.COMPONENT != 'polarity' }}
+        run:
+          echo "${{ secrets.POLARITY_LICENSE }}" >> /tmp/polarity.lic
+
       - name: Configure AWS ECR Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -191,3 +209,9 @@ jobs:
         run: |
           aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
         working-directory: ${{ inputs.COMPONENT }}
+
+      - name: Remove any license files
+        if: always()
+        run:
+          rm -f /tmp/demisto.lic
+          rm -f /tmp/polarity.lic

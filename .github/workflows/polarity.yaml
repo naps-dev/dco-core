@@ -14,16 +14,6 @@ permissions:
   contents: read
 
 jobs:
-  prepare-polarity:
-    runs-on: [on-prem-arc]
-    container:
-      image: ghcr.io/defenseunicorns/not-a-build-harness/not-a-build-harness:0.0.13
-
-    steps:
-      - name: Set up license file
-        run:
-          echo "${{ secrets.POLARITY_LICENSE }}" >> /tmp/polarity.lic
-
   package-create:
     needs: [prepare-polarity]
     uses: ./.github/workflows/package.yaml
@@ -33,15 +23,3 @@ jobs:
       REF_TYPE: "tag"
       ZARF_PACKAGE: zarf-package-polarity-amd64.tar.zst
       COMPONENT: "polarity"
-
-  cleanup-polarity:
-    needs: [package-create]
-    if: always()
-    runs-on: [on-prem-arc]
-    container:
-      image: ghcr.io/defenseunicorns/not-a-build-harness/not-a-build-harness:0.0.13
-
-    steps:
-      - name: Remove license file
-        run:
-          rm -f /tmp/polarity.lic
