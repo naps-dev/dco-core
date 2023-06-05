@@ -15,7 +15,7 @@ func KasmTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string
 
 	zarfDeployKasmCmd := shell.Command{
 		Command: "zarf",
-		Args:    []string{"package", "deploy", "../kasm/zarf-package-kasm-amd64.tar.zst", "--confirm"},
+		Args:    []string{"package", "deploy", "../kasm/zarf-package-kasm-amd64.tar.zst", "--confirm", "--no-progress"},
 		Env:     testEnv,
 	}
 
