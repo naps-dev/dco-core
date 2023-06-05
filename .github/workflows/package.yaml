@@ -109,7 +109,7 @@ jobs:
           args+=(--skip-sbom)
 
           # build the zarf package
-          zarf package create "${args[@]}"
+          zarf package create "${args[@]}" --no-progress
 
           # cleanup tmp dir
           rm -rf ./big-tmp
@@ -132,7 +132,7 @@ jobs:
           args+=(--skip-sbom)
 
           # build the zarf package
-          zarf package create "${args[@]}"
+          zarf package create "${args[@]}" --no-progress
 
           # cleanup tmp dir
           rm -rf ./big-tmp
@@ -163,7 +163,8 @@ jobs:
             --set GIT_REF=refs/heads/${{ env.DCO_REF_NAME }} \
             --confirm \
             --tmpdir $PWD/big-tmp \
-            --skip-sbom
+            --skip-sbom \
+            --no-progress
 
           # cleanup tmp dir
           rm -rf ./big-tmp
@@ -181,7 +182,8 @@ jobs:
             --set GIT_REF=refs/tags/${{ env.DCO_REF_NAME }} \
             --confirm \
             --tmpdir $PWD/big-tmp \
-            --skip-sbom
+            --skip-sbom \
+            --no-progress
 
           # cleanup tmp dir
           rm -rf ./big-tmp
