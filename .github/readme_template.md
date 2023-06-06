@@ -13,9 +13,9 @@ _{describe the application}_
 
 ## Build
 
-### Zarf Variables
+### Zarf Constants
 
-_{table with build-time Zarf variables}_
+_{table with build-time Zarf constants}_
 
 | Name | Type | Purpose |
 |--|--|--|
@@ -71,7 +71,7 @@ _{API for interacting with the application}_
 
 _{tests that can be performed to verify the application is running correctly}_
 
-## FAQ
+## FAQ (optional)
 
 _{Questions and Answers for gotchas people have encountered that might not be intuitive to solve}_
 
