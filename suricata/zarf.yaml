@@ -36,4 +36,4 @@ components:
           - manifests/gitrepository.yaml
           - manifests/helmrelease.yaml
     images:
-      - "registry.hub.docker.com/jasonish/suricata:6.0.2"
+      - "registry.hub.docker.com/jasonish/suricata:7.0"
