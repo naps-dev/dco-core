@@ -11,7 +11,7 @@ constants:
 
 variables:
   - name: INTERFACE
-    default: "eth0"
+    default: "eth00"
     prompt: false
 
   - name: NODE_LABEL
