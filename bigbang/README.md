@@ -4,11 +4,11 @@
 
 1. Build
     ```bash
-    zarf p c --set GIT_REF=refs/heads/main --confirm
+    zarf package create --set GIT_REF=refs/heads/main --confirm
     ```
 1. Deploy
     ```bash
-    zarf p d --confirm
+    zarf package deploy --confirm
     ```
 
 ## Description
@@ -19,45 +19,45 @@ This package is a child to the [dco-core](../dco-core/) Zarf package.
 
 | Application | Enabled |
 | -- | -- |
-| Network Policies | |
-| Kiali | |
-| Cluster Auditor | |
-| Gatekeeper | |
+| Network Policies | x |
+| Kiali | x |
+| Cluster Auditor | x |
+| Gatekeeper | x |
 | Istio | &check; |
 | Istio Operator | &check; |
 | Jaeger | &check; |
 | Kyverno | &check; |
 | Kyverno Policies | &check; |
-| Kyverno Reporter | |
+| Kyverno Reporter | x |
 | ElasticSearch and Kibana | &check; |
 | ECK Operator | &check; |
 | FluentBit | &check; |
-| Promtail | |
-| Loki | |
+| Promtail | x |
+| Loki | x |
 | Neuvector | &check; |
-| Tempo | |
+| Tempo | x |
 | Monitoring - Prometheus, Grafana, and Alert Manager | &check; |
-| Twistlock | |
+| Twistlock | x |
 
 Add-ons
 | Add-on | Enabled |
 | -- | -- |
-| ArgoCD | |
-| AuthService | |
-| MinIO Operator | |
-| MinIO | |
-| GitLab | |
-| GitLab Runner | |
-| Nexus | |
-| SonarQube | |
-| HA Proxy | |
-| Anchore | |
-| Matttermost Operator | |
-| Mattermost | |
-| Velero | |
+| ArgoCD | x |
+| AuthService | x |
+| MinIO Operator | x |
+| MinIO | x |
+| GitLab | x |
+| GitLab Runner | x |
+| Nexus | x |
+| SonarQube | x |
+| HA Proxy | x |
+| Anchore | x |
+| Mattermost Operator | x |
+| Mattermost | x |
+| Velero | x |
 | Keycloak | &check; |
-| Vault | |
-| Metrics Server | |
+| Vault | x |
+| Metrics Server | x |
 
 ## Build
 
