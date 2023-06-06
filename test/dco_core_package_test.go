@@ -81,7 +81,7 @@ func TestZarfPackage(t *testing.T) {
 	// Start up zarf
 	zarfInitCmd := shell.Command{
 		Command: "zarf",
-		Args:    []string{"init", "--components", "git-server", "--confirm"},
+		Args:    []string{"init", "--components", "git-server", "--confirm", "--no-progress"},
 		Env:     testEnv,
 	}
 
@@ -91,7 +91,7 @@ func TestZarfPackage(t *testing.T) {
 		Command: "zarf",
 		Args: []string{"package", "deploy", "../dco-core/zarf-package-dco-core-amd64.tar.zst", "--confirm",
 			"--components", "flux,bigbang,setup,kubevirt,cdi,metallb,metallb-config,dataplane-ek",
-			"--set", "METALLB_IP_ADDRESS_POOL=" + ipstart.String() + "-" + ipend.String(),
+			"--set", "METALLB_IP_ADDRESS_POOL=" + ipstart.String() + "-" + ipend.String(), "--no-progress",
 		},
 		Env: testEnv,
 	}

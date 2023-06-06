@@ -31,7 +31,7 @@ func PolarityTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 
 	zarfDeployPolarityCmd := shell.Command{
 		Command: "zarf",
-		Args:    []string{"package", "deploy", "../polarity/zarf-package-polarity-amd64.tar.zst", "--confirm"},
+		Args:    []string{"package", "deploy", "../polarity/zarf-package-polarity-amd64.tar.zst", "--confirm", "--no-progress"},
 		Env:     testEnv,
 	}
 
