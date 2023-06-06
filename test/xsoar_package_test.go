@@ -31,7 +31,7 @@ func XsoarTestZarfPackage(t *testing.T, contextName string, kubeconfigPath strin
 
 	zarfDeployXsoarCmd := shell.Command{
 		Command: "zarf",
-		Args:    []string{"package", "deploy", "../xsoar/zarf-package-xsoar-amd64.tar.zst", "--confirm"},
+		Args:    []string{"package", "deploy", "../xsoar/zarf-package-xsoar-amd64.tar.zst", "--confirm", "--no-progress"},
 		Env:     testEnv,
 	}
 
