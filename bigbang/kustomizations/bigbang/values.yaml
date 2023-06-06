@@ -72,13 +72,13 @@ elasticsearchKibana:
     elasticsearch:
       master:
         nodeSelector:
-          hardware-tier: Tier1
+          cnaps.io/node-type: Tier-1
       data:
         nodeSelector:
-          hardware-tier: Tier1
+          cnaps.io/node-type: Tier-1
     kibana:
       nodeSelector:
-        hardware-tier: Tier1
+        cnaps.io/node-type: Tier-1
 eckOperator:
   enabled: true
 jaeger:

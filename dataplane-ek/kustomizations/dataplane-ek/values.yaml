@@ -21,7 +21,7 @@ kibana:
   imagePullSecrets:
     - name: private-registry
   nodeSelector:
-    hardware-tier: Tier1
+    cnaps.io/node-type: Tier-1
 
 monitoring:
   enabled: false
@@ -34,7 +34,7 @@ elasticsearch:
     - name: private-registry
   master:
     nodeSelector:
-      hardware-tier: Tier1
+      cnaps.io/node-type: Tier-1
     count: ${ES_MASTER_COUNT}
     initContainers:
       - name: elastic-internal-init-filesystem
@@ -51,7 +51,7 @@ elasticsearch:
               - ALL
   data:
     nodeSelector:
-      hardware-tier: Tier1
+      cnaps.io/node-type: Tier-1
     count: ${ES_DATA_COUNT}
     initContainers:
       - name: elastic-internal-init-filesystem
@@ -68,7 +68,7 @@ elasticsearch:
               - ALL
   ingest:
     nodeSelector:
-      hardware-tier: Tier1
+      cnaps.io/node-type: Tier-1
     initContainers:
       - name: elastic-internal-init-filesystem
         securityContext:
@@ -84,7 +84,7 @@ elasticsearch:
               - ALL
   ml:
     nodeSelector:
-      hardware-tier: Tier1
+      cnaps.io/node-type: Tier-1
     initContainers:
       - name: elastic-internal-init-filesystem
         securityContext:
