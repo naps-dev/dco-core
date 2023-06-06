@@ -39,3 +39,4 @@ components:
           - manifests/virtualservice.yaml
     images:
       - '765814079306.dkr.ecr.us-east-1.amazonaws.com/arkime4:###ZARF_PKG_VAR_IMAGE_TAG###'
+      - 'difftest'
