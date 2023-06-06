@@ -2,8 +2,6 @@
 
 ## Quickstart
 
-_{very brief zero-to-hero steps}_
-
 1. Build
     ```bash
     zarf p c --set GIT_REF=refs/heads/main --confirm
@@ -15,13 +13,55 @@ _{very brief zero-to-hero steps}_
 
 ## Description
 
-This folder and associated Zarf package contains a single Zarf component: `bigbang`. This is an _opinionated_ release of [Big Bang](https://docs-bigbang.dso.mil/latest/), which includes only certain Big Bang applications.
+The `big bang` Zarf package is responsible for packaging and deploying PlatformOne's `big bang`. This is an _opinionated_ release of [Big Bang](https://docs-bigbang.dso.mil/latest/), which includes only certain applications.
 
-This package is a child to the [dco-core](../dco-core/) Zarf package. 
+This package is a child to the [dco-core](../dco-core/) Zarf package.
+
+| Application | Enabled |
+| -- | -- |
+| Network Policies | |
+| Kiali | |
+| Cluster Auditor | |
+| Gatekeeper | |
+| Istio | &check; |
+| Istio Operator | &check; |
+| Jaeger | &check; |
+| Kyverno | &check; |
+| Kyverno Policies | &check; |
+| Kyverno Reporter | |
+| ElasticSearch and Kibana | &check; |
+| ECK Operator | &check; |
+| FluentBit | &check; |
+| Promtail | |
+| Loki | |
+| Neuvector | &check; |
+| Tempo | |
+| Monitoring - Prometheus, Grafana, and Alert Manager | &check; |
+| Twistlock | |
+
+Add-ons
+| Add-on | Enabled |
+| -- | -- |
+| ArgoCD | |
+| AuthService | |
+| MinIO Operator | |
+| MinIO | |
+| GitLab | |
+| GitLab Runner | |
+| Nexus | |
+| SonarQube | |
+| HA Proxy | |
+| Anchore | |
+| Matttermost Operator | |
+| Mattermost | |
+| Velero | |
+| Keycloak | &check; |
+| Vault | |
+| Metrics Server | |
 
 ## Build
 
-### Zarf Variables
+### Zarf Constants
 
 | Name | Type | Purpose |
 |--|--|--|
@@ -29,14 +69,14 @@ This package is a child to the [dco-core](../dco-core/) Zarf package.
 
 ### Steps
 
-1. Create the package
-    ```bash
-    # For a specific branch
-    zarf package create --set GIT_REF=refs/heads/main
+Create the package
+```bash
+# For a specific branch
+zarf package create --set GIT_REF=refs/heads/main
 
-    # For a specific tag
-    zarf package create --set GIT_REF=refs/tags/v2.1.0
-    ```
+# For a specific tag
+zarf package create --set GIT_REF=refs/tags/v2.1.0
+```
 
 ## Installation
 
@@ -56,13 +96,13 @@ _Note: the [dco-core](../dco-core/) Zarf package includes these prerequisites an
 
 ### Steps
 
-1. Deploy
-    ```bash
-    zarf package deploy
+Deploy the package
+```bash
+zarf package deploy
 
-    # Optionally, you can specify a different domain. However, the certificates packaged in kustomizations/bigbang/environment-bb-secret.yaml will need to be updated to match
-    zarf package deploy --set DOMAIN=[your.domain.here]
-    ```
+# Optionally specify a different domain. The certificates packaged in kustomizations/bigbang/environment-bb-secret.yaml must match the provided domain
+zarf package deploy --set DOMAIN=your.domain.here
+```
 
 ## Usage
 
@@ -70,22 +110,7 @@ Please see the official [Big Bang](https://docs-bigbang.dso.mil/latest/) umbrell
 
 ## FAQ
 
-_{Questions and Answers for gotchas people have encountered that might not be intuitive to solve}_
-
-## References
-
-_{links to documentation or other helpful external material}_
-* [Zarf](https://zarf.dev/docs)
-* [Big Bang](https://docs-bigbang.dso.mil/latest/)
-
-#### END
-
-
-### Additional Customization
-
-
-
-### Gateway Configuration
+### How are the Istio Ingress Gateways Configured?
 
 Big Bang provides [Istio](https://istio.io/) which we use for a Service Mesh
 and also ingress gateways. Big Bang deployments typically define a single
@@ -98,13 +123,9 @@ Both the public-ingressgateway and dataplane-ingressgateway will do TLS
 termination at the gateway. The passthrough gateway is used for traffic to
 the keycloak service because keycloak insists on doing its own TLS termination.
 
-> ⚠️ **The default k3d load balancer is
-> unable to cope with multiple ingress gateways.** We recommend starting k3d
-> with `--k3s-arg --disable=servicelb@server:*` and then running Metal LB on
-> the cluster. This will allow you to run this package using all the gateways
-> specified. For more details see
-> [this](https://github.com/keunlee/k3d-metallb-starter-kit). This
-> technique is used for the automated
-> [unit test](../test/dco_core_package_test.go).
+> ⚠️ **The default k3d load balancer is unable to cope with multiple ingress gateways.** We recommend starting k3d with `--k3s-arg --disable=servicelb@server:*` and then running Metal LB on the cluster. This will allow you to run this package using all the gateways specified. For more details see [this](https://github.com/keunlee/k3d-metallb-starter-kit). This technique is used for the automated [unit test](../test/dco_core_package_test.go).
 
+## References
 
+* [Zarf](https://zarf.dev/docs)
+* [Big Bang](https://docs-bigbang.dso.mil/latest/)
