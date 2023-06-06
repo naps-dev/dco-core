@@ -66,7 +66,7 @@ zarf package deploy --set ES_MASTER_COUNT=2
 zarf package deploy --set ES_DATA_COUNT=2
 ```
 
-### Tests (optional)
+### Tests
 
 Verify Kibana is accessible
 
