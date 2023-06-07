@@ -79,6 +79,9 @@ elasticsearchKibana:
     kibana:
       nodeSelector:
         cnaps.io/node-type: Tier-1
+    metrics:
+      nodeSelector:
+        cnaps.io/node-type: Tier-1
 eckOperator:
   enabled: true
 jaeger:
