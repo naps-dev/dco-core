@@ -1,16 +1,24 @@
-# Introduction
+# Contributing to dco-core
 
-### Write something nice here!
+### Overview
 
->First off, thank you for considering contributing to Active Admin. It's people like you that make Active Admin such a great tool.
+This dco-core repository, in a nut-shell, is used for defining, creating, deploying, testing, and publishing zarf packages.  
 
-[source: [Active Admin](https://github.com/activeadmin/activeadmin/blob/master/CONTRIBUTING.md)] **Need more inspiration?** [1] [Read The Docs](http://read-the-docs.readthedocs.org/en/latest/contribute.html) [2] [Mustache.js](https://github.com/janl/mustache.js/#contributing)
+### Repo Structure
 
-### Tell them why they should read your guidelines.
+* Every component is contained in a directory at the top level of the repository (exceptions are the .github, adr, and test directories)
+* Within each component directory are manifests, kustomizations, and a zarf.yaml
+* The 'dco-core' directory is the foundational component that contains flux and includes bigbang, kubevirt, cdi, metallb, and dataplane-ek
+* The remaining components are the mission applications (arkime, suricata, kasm, etc.)
+* The test directory contains go tests that are ran as part of our CI workflows. NOTE: the dco-core package is required for all mission application to be deployed.  
+* The '.github/workflow' directory defines our CI workflows 
 
->Following these guidelines helps to communicate that you respect the time of the developers managing and developing this open source project. In return, they should reciprocate that respect in addressing your issue, assessing changes, and helping you finalize your pull requests.
+### Pull Requests
 
-[source: [Hoodie](https://github.com/hoodiehq/hoodie/blob/master/CONTRIBUTING.md)]
+When creating a pull request,
+
+[a relative link](.github/pull_request_template.md)
+
 
 ### Explain what kinds of contributions you are looking for.
 
