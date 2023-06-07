@@ -25,7 +25,7 @@ func TestZarfPackage(t *testing.T) {
 	if len(clusterName) > 32 {
 		clusterName = clusterName[:32]
 	}
-	tier1AgentName := "k3d-" + clusterName + "-agent-1"
+	tier1AgentName := "k3d-" + clusterName + "-agent-0"
 	cwd, err := os.Getwd()
 
 	if err != nil {
