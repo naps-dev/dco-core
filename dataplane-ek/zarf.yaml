@@ -30,3 +30,6 @@ components:
       - name: dataplane-ek
         files:
           - manifests/dataplane-ek.yaml
+      # - name: elk-modifications
+      #   kustomizations:
+      #     - "kustomizations/elk-modifications"

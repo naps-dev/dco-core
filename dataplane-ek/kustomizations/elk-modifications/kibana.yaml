@@ -1,0 +1,45 @@
+kind: Kibana
+apiVersion: kibana.k8s.elastic.co/v1
+metadata:
+  name: dataplane-ek
+  namespace: dataplane-ek
+spec:
+  version: 8.6.1
+  config:
+    server:
+      publicBaseUrl: https://dataplane-kibana.vp.bigbang.dev
+    xpack.fleet.agentPolicies:
+    - id: suricata-internal-sensor
+      is_default: false
+      is_managed: false
+      monitoring_enabled:
+      - logs
+      name: suricata-internal-sensor
+      namespace: default
+      package_policies:
+      - id: preconfigured-suricata-sensor
+        inputs:
+        - enabled: true
+          streams:
+          - data_stream:
+              dataset: suricata.eve
+            enabled: true
+            vars:
+            - name: preserve_original_event
+              value: false
+            - name: paths
+              value:
+              - /var/log/eve-*.json
+            - name: tags
+              value:
+              - forwarded
+              - suricata-eve
+          type: logfile
+        name: Suricata Sensor Integration
+        package:
+          name: suricata
+    xpack.fleet.agents.elasticsearch.hosts:
+    - https://dataplane-ek-es-http.dataplane-ek.svc:9200
+    xpack.fleet.packages:
+    - name: suricata
+      version: latest
