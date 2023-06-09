@@ -23,6 +23,15 @@ variables:
     default: "capture0"
     prompt: false
 
+  - name: READ_FROM_DISK
+    default: "no"
+    prompt: false
+
+  - name: READ_FROM_DISK_LOC
+    default: "/opt/suricata/pcaps/"
+    prompt: false
+    
+
 components:
   - name: arkime
     description: "Arkime traffic monitoring and analysis tool"

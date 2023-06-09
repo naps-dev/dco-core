@@ -3,6 +3,7 @@
 zarf-sbom/
 scratch/
 .DS_Store
+.vscode/
 .env
 .vscode
 .idea/

@@ -25,6 +25,14 @@ variables:
   - name: ES_DATA_COUNT
     default: "1"
     prompt: false
+  
+  - name: ES_INGEST_COUNT
+    default: "1"
+    prompt: false
+
+  - name: ES_ML_COUNT
+    default: "1"
+    prompt: false
 
 components:
 

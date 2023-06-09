@@ -36,4 +36,5 @@ components:
           - manifests/gitrepository.yaml
           - manifests/helmrelease.yaml
     images:
-      - "registry.hub.docker.com/jasonish/suricata:7.0"
+      - "devnexus.ultraman.cnaps.io:8443/suricata:7.0.0-rc1"
+      - "docker.elastic.co/beats/elastic-agent:8.6.0"
