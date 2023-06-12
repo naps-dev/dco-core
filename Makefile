@@ -2,6 +2,7 @@
 
 ZARF_VER="0.26.2"
 GOLANG_VER="1.19.5"
+PATH="$PATH:/usr/local/go/bin"
 AWS_ROLE_SESSION_NAME="arkime-ecr"
 AWS_REGION="us-east-1"
 AWS_ACCOUNT_ID="765814079306"
@@ -49,7 +50,7 @@ build-package:
 
 install-go:
 	curl -L -o go$(GOLANG_VER).linux-amd64.tar.gz https://dl.google.com/go/go$(GOLANG_VER).linux-amd64.tar.gz && \
-	    tar -C /usr/local/bin -xzf go$(GOLANG_VER).linux-amd64.tar.gz && \
+	    tar -C /usr/local/ -xzf go$(GOLANG_VER).linux-amd64.tar.gz && \
 	    rm go$(GOLANG_VER).linux-amd64.tar.gz
 
 run-tests:
@@ -61,4 +62,4 @@ clean:
 	rm -rf $(HOME)/.zarf-cache
 	rm $(COMPONENT)/$(ZARF_PACKAGE)
 	rm $(DCO_DIR)/zarf-package-dco-core-amd64.tar.zst
-	rm /usr/local/bin/go
+	rm /usr/local/go
