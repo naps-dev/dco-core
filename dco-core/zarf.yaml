@@ -28,6 +28,14 @@ variables:
     default: "1"
     prompt: false
 
+  - name: ES_INGEST_COUNT
+    default: "1"
+    prompt: false
+
+  - name: ES_ML_COUNT
+    default: "1"
+    prompt: false
+
   - name: METALLB_IP_ADDRESS_POOL
     default: "192.168.1.1-192.168.1.2"
     prompt: false

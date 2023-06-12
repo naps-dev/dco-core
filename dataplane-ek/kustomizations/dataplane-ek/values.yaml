@@ -31,7 +31,18 @@ elasticsearch:
   imagePullSecrets:
     - name: private-registry
   master:
+    enabled: true
     count: ${ES_MASTER_COUNT}
+    resources:
+      limits:
+        cpu: 4
+        memory: 32Gi
+      requests:
+        cpu: 1
+        memory: 16Gi
+    heap:
+      min: 15g
+      max: 15g
     initContainers:
       - name: elastic-internal-init-filesystem
         securityContext:
@@ -46,7 +57,18 @@ elasticsearch:
             drop:
               - ALL
   data:
+    enabled: true
     count: ${ES_DATA_COUNT}
+    resources:
+      limits:
+        cpu: 30
+        memory: 64Gi
+      requests:
+        cpu: 12
+        memory: 32Gi
+    heap:
+      min: 31g
+      max: 31g
     initContainers:
       - name: elastic-internal-init-filesystem
         securityContext:
@@ -61,6 +83,18 @@ elasticsearch:
             drop:
               - ALL
   ingest:
+    enabled: true
+    count: ${ES_INGEST_COUNT}
+    resources:
+      limits:
+        cpu: 20
+        memory: 64Gi
+      requests:
+        cpu: 8
+        memory: 32Gi
+    heap:
+      min: 31g
+      max: 31g
     initContainers:
       - name: elastic-internal-init-filesystem
         securityContext:
@@ -75,6 +109,18 @@ elasticsearch:
             drop:
               - ALL
   ml:
+    count: ${ES_ML_COUNT}
+    enabled: true
+    resources:
+      limits:
+        cpu: 12
+        memory: 50Gi
+      requests:
+        cpu: 4
+        memory: 25Gi
+    heap:
+      min: 24g
+      max: 24g
     initContainers:
       - name: elastic-internal-init-filesystem
         securityContext:
@@ -89,6 +135,7 @@ elasticsearch:
             drop:
               - ALL
   coord:
+    enabled: false
     initContainers:
       - name: elastic-internal-init-filesystem
         securityContext:

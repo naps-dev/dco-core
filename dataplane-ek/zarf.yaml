@@ -20,16 +20,31 @@ variables:
   - name: ES_DATA_COUNT
     default: "1"
     prompt: false
+  
+  - name: ES_INGEST_COUNT
+    default: "1"
+    prompt: false
+
+  - name: ES_ML_COUNT
+    default: "1"
+    prompt: false
 
 components:
 
   - name: dataplane-ek
     description: "EK Chart Deployment for the DataPlane"
     required: true
+    files:
+      - source: kustomizations/elk-modifications
+        target: /tmp/elk-modifications
     manifests:
       - name: dataplane-ek
         files:
           - manifests/dataplane-ek.yaml
+    actions:
+      onDeploy:
+        after:
+          - cmd: kubectl apply -k /tmp/elk-modifications
       # - name: elk-modifications
       #   kustomizations:
       #     - "kustomizations/elk-modifications"
