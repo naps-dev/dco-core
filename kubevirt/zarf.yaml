@@ -1,0 +1,45 @@
+kind: ZarfPackageConfig
+metadata:
+  name: kubevirt
+  description: "KubeVirt and CDI for running Virtual Machines in Kubernetes"
+  architecture: amd64
+
+constants:
+  - name: GIT_REF
+    description: "Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy"
+    value: "###ZARF_PKG_TMPL_GIT_REF###"
+
+components:
+  - name: kubevirt
+    description: "KubeVirt"
+    required: true
+    repos:
+      - https://repo1.dso.mil/big-bang/apps/third-party/kubevirt.git@0.58.0-bb.2
+    images:
+      - quay.io/kubevirt/virt-api:v0.58.0
+      - quay.io/kubevirt/virt-controller:v0.58.0
+      - quay.io/kubevirt/virt-launcher:v0.58.0
+      - quay.io/kubevirt/virt-handler:v0.58.0
+      - quay.io/kubevirt/virt-operator:v0.58.0
+    manifests:
+      - name: kubevirt
+        files:
+          - manifests/kubevirt.yaml
+
+  - name: cdi
+    description: "CDI for KubeVirt"
+    required: true
+    repos:
+      - https://repo1.dso.mil/big-bang/apps/sandbox/cdi.git@1.55.2-bb.1
+    images:
+      - quay.io/kubevirt/cdi-operator:v1.55.2
+      - quay.io/kubevirt/cdi-controller:v1.55.2
+      - quay.io/kubevirt/cdi-importer:v1.55.2
+      - quay.io/kubevirt/cdi-cloner:v1.55.2
+      - quay.io/kubevirt/cdi-apiserver:v1.55.2
+      - quay.io/kubevirt/cdi-uploadserver:v1.55.2
+      - quay.io/kubevirt/cdi-uploadproxy:v1.55.2
+    manifests:
+      - name: cdi
+        files:
+          - manifests/cdi.yaml
