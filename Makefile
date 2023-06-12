@@ -2,7 +2,7 @@
 
 ZARF_VER="0.26.2"
 GOLANG_VER="1.19.5"
-PATH="$PATH:/usr/local/go/bin"
+PATH="/usr/local/go/bin:$PATH"
 AWS_ROLE_SESSION_NAME="arkime-ecr"
 AWS_REGION="us-east-1"
 AWS_ACCOUNT_ID="765814079306"
