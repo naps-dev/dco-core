@@ -95,6 +95,8 @@ jobs:
       - name: Create Zarf Package from Branch
         if: ${{ inputs.REF_TYPE == 'branch'}}
         run: |
+          pwd
+          ls
           # cleanup and init a tmp dir
           rm -rf big-tmp
           mkdir big-tmp
