@@ -1,69 +1,36 @@
-domain: "###ZARF_VAR_DOMAIN###"
-
-registryCredentials:
-  registry: "###ZARF_REGISTRY###"
-  username: "zarf-pull"
-  password: "###ZARF_REGISTRY_AUTH_PULL###"
-
-git:
-  existingSecret: "private-git-server"
-
-networkPolicies:
-  enabled: false
-  # When in prod use a real CIDR. Don't do this, it isn't secure. This is done here since it is a demo and the CIDR changes based on which Linux distro you are running on.
-  controlPlaneCidr: "0.0.0.0/0"
-  nodeCidr: "0.0.0.0/0"
-  vpcCidr: "0.0.0.0/0"
-
 kiali:
   enabled: false
 
 istio:
-  enabled: true
   ingressGateways:
-    public-ingressgateway:
-      type: "LoadBalancer"
-      # Leaving this as a placeholder -- not sure we want to set this for dev quite yet due to multiple deployment envs and distros
-      # loadBalancerIP: 10.1.29.122
     dataplane-ingressgateway:
       type: "LoadBalancer"
-      # Leaving this as a placeholder -- not sure we want to set this for dev quite yet due to multiple deployment envs and distros
-      # loadBalancerIP: 10.1.29.123
-    passthrough-ingressgateway:
-      type: "LoadBalancer"
-      # Node ports are assigned starting from nodePortBase.  The nodePortBase specifies the start of a range of 4 unused node ports.
-      # Node port will be assigned as follows: Port 15021 (Status) = nodePortBase, Port 80 = nodePortBase+1, Port 443 = nodePortBase+2, Port 15443 (SNI) = nodePortBase+3
-      # Node port base should be in the range from 30000 to 32764
-      # nodePortBase: 32000  # Alternatively, the kubernetesResourceSpec can be used to configure all port parameters
 
   gateways:
     public:
-      ingressGateway: public-ingressgateway
       hosts:
         - "*.###ZARF_VAR_DOMAIN###"
     dataplane:
       ingressGateway: dataplane-ingressgateway
       hosts:
         - "*.###ZARF_VAR_DOMAIN###"
-    passthrough:
-      ingressGateway: "passthrough-ingressgateway"
-      hosts:
-        - keycloak.vp.bigbang.dev
       tls:
-        mode: "PASSTHROUGH"
+        key: "###ZARF_VAR_PUBLIC_KEY###"
+        cert: "###ZARF_VAR_PUBLIC_CERT###"
+    passthrough:
+      hosts:
+        - "keycloak.###ZARF_VAR_DOMAIN###"
 
 neuvector:
-  enabled: true
   ingress:
     gateway: "public"
-  values: 
+  values:
     k3s:
       enabled: true
-
-clusterAuditor:
-  enabled: false
-gatekeeper:
-  enabled: false
+    containerd:
+      enabled: false
+    monitor:
+      install: false
 
 # EFK -> PLG, see https://repo1.dso.mil/big-bang/bigbang/-/blob/1.39.0/docs/guides/using-bigbang/efk-plg-logging-migration.md
 elasticsearchKibana:
@@ -78,12 +45,7 @@ promtail:
   enabled: false
 tempo:
   enabled: false
-twistlock:
-  enabled: false
-kyverno:
-  enabled: true
 kyvernoPolicies:
-  enabled: true
   values:
     policies:
       # Keep policies in alphabetical order and name them the same as the .yaml file to help with configuration and troubleshooting
@@ -135,20 +97,20 @@ kyvernoPolicies:
         parameters:
           # -- List of images that must be signed and the public key to verify.  Use `kubectl explain clusterpolicy.spec.rules.verifyImages` for fields.
           require:
-          - imageReferences:
-            - "registry1.dso.mil/ironbank/*"
-            attestors:
-            - count: 1
-              entries:
-              - keys:
-                  publicKeys: |-
-                    -----BEGIN PUBLIC KEY-----
-                    MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7CjMGH005DFFz6mffqTIGurBt6fL
-                    UfTZxuEDFRBS8mFJx1xw8DEVvjMibLTtqmAoJxUmzmGFgzz+LV875syVEg==
-                    -----END PUBLIC KEY-----
-            # Ironbank images are rebuilt nightly and tags are not immutable
-            mutateDigest: false
-            verifyDigest: false
+            - imageReferences:
+                - "registry1.dso.mil/ironbank/*"
+              attestors:
+                - count: 1
+                  entries:
+                    - keys:
+                        publicKeys: |-
+                          -----BEGIN PUBLIC KEY-----
+                          MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7CjMGH005DFFz6mffqTIGurBt6fL
+                          UfTZxuEDFRBS8mFJx1xw8DEVvjMibLTtqmAoJxUmzmGFgzz+LV875syVEg==
+                          -----END PUBLIC KEY-----
+              # Ironbank images are rebuilt nightly and tags are not immutable
+              mutateDigest: false
+              verifyDigest: false
       require-istio-on-namespaces:
         enabled: false
       require-labels:
@@ -174,8 +136,8 @@ kyvernoPolicies:
           # -- List of allowed AppArmor profiles
           # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards/#baseline
           allow:
-          - runtime/default
-          - localhost/*
+            - runtime/default
+            - localhost/*
       restrict-external-ips:
         enabled: true
         validationFailureAction: audit
@@ -196,7 +158,7 @@ kyvernoPolicies:
           # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted
           # See https://man7.org/linux/man-pages/man7/capabilities.7.html for list of capabilities.  The `CAP_` prefix is removed in Kubernetes names.
           allow:
-          - NET_BIND_SERVICE
+            - NET_BIND_SERVICE
       restrict-group-id:
         enabled: false
       restrict-host-path-mount:
@@ -229,7 +191,7 @@ kyvernoPolicies:
         parameters:
           # -- List of allowed registries that images may use
           allow:
-          - registry1.dso.mil
+            - registry1.dso.mil
       restrict-proc-mount:
         enabled: true
         validationFailureAction: audit
@@ -237,7 +199,7 @@ kyvernoPolicies:
           # -- List of allowed proc mount values.  Valid values are `Default` and `Unmasked`.
           # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards
           allow:
-          - Default
+            - Default
       restrict-seccomp:
         enabled: true
         validationFailureAction: audit
@@ -245,8 +207,8 @@ kyvernoPolicies:
           # -- List of allowed seccomp profiles.  Valid values are `Localhost`, `RuntimeDefault`, and `Unconfined`
           # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted
           allow:
-          - RuntimeDefault
-          - Localhost
+            - RuntimeDefault
+            - Localhost
       restrict-selinux-type:
         enabled: true
         validationFailureAction: audit
@@ -254,9 +216,9 @@ kyvernoPolicies:
           # -- List of allowed values for the `type` field
           # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards
           allow:
-          - container_t
-          - container_init_t
-          - container_kvm_t
+            - container_t
+            - container_init_t
+            - container_kvm_t
       restrict-sysctls:
         enabled: true
         validationFailureAction: audit
@@ -264,11 +226,11 @@ kyvernoPolicies:
           # -- List of allowed sysctls.
           # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards
           allow:
-          - kernel.shm_rmid_forced
-          - net.ipv4.ip_local_port_range
-          - net.ipv4.ip_unprivileged_port_start
-          - net.ipv4.tcp_syncookies
-          - net.ipv4.ping_group_range
+            - kernel.shm_rmid_forced
+            - net.ipv4.ip_local_port_range
+            - net.ipv4.ip_unprivileged_port_start
+            - net.ipv4.tcp_syncookies
+            - net.ipv4.ping_group_range
       restrict-user-id:
         enabled: false
       restrict-volume-types:
@@ -278,14 +240,14 @@ kyvernoPolicies:
           # -- List of allowed Volume types.  Valid values are the volume types listed here: https://kubernetes.io/docs/concepts/storage/volumes/#volume-types
           # Defaults pulled from https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted
           allow:
-          - "configMap"
-          - "csi"
-          - "downwardAPI"
-          - "emptyDir"
-          - "ephemeral"
-          - "persistentVolumeClaim"
-          - "projected"
-          - "secret"
+            - "configMap"
+            - "csi"
+            - "downwardAPI"
+            - "emptyDir"
+            - "ephemeral"
+            - "persistentVolumeClaim"
+            - "projected"
+            - "secret"
       update-image-pull-policy:
         enabled: false
       update-image-registry:
@@ -299,12 +261,20 @@ kyvernoReporter:
 addons:
   keycloak:
     enabled: true
-    
+
     ingress:
       gateway: "passthrough"
-    
+      key: "###ZARF_VAR_KEYCLOAK_KEY###"
+      cert: "###ZARF_VAR_KEYCLOAK_CERT###"
+
     values:
       replicas: 1
+
+      secrets:
+        env:
+          stringData:
+            KEYCLOAK_ADMIN: "root"
+            KEYCLOAK_ADMIN_PASSWORD: "iamroot"
 
       extraEnv: |-
         - name: KC_HTTPS_CERTIFICATE_FILE
@@ -318,7 +288,7 @@ addons:
         - name: KC_HTTP_RELATIVE_PATH
           value: /auth
         - name: KC_HOSTNAME
-          value: keycloak.vp.bigbang.dev
+          value: keycloak.###ZARF_VAR_DOMAIN###
         - name: KC_HOSTNAME_STRICT
           value: "true"
         - name: KC_HOSTNAME_STRICT_HTTPS
@@ -380,3 +350,11 @@ fluentbit:
       - name: suricatalogs
         mountPath: /data/suricata
         readOnly: true
+
+monitoring:
+  values:
+    istio:
+      alertmanager:
+        enabled: true
+      prometheus:
+        enabled: true

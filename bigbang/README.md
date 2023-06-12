@@ -8,10 +8,8 @@ only certain Big Bang applications.
 
 ### Zarf variables
 
-This package defines these Zarf variables: `DOMAIN`, `KIBANA_COUNT`, `ES_MASTER_COUNT` and
-`ES_DATA_COUNT`. `KIBANA_COUNT`, `ES_MASTER_COUNT` and `ES_DATA_COUNT` are for specifying the
-number of replicas for the Kibana, Elastic Search Master and Elastic Search Data nodes,
-respectively.
+This package defines these Zarf variables: `KEYCLOAK_CERT_FILE` and `KEYCLOAK_KEY_FILE` which specify the key
+and cert files used for keycloak's load balancer. 
 
 ### Additional Customization
 
