@@ -17,9 +17,9 @@ DCO_DIR?="dco-core"
 all: install-zarf ecr-login registry-login build-dco-package build-package install-go run-tests
 
 install-zarf: 
-	curl -o zarf_v$(ZARF_VER)_Linux_amd64 https://github.com/defenseunicorns/zarf/releases/download/v$(ZARF_VER)/zarf_v$(ZARF_VER)_Linux_amd64
+	curl -L -o zarf_v$(ZARF_VER)_Linux_amd64 https://github.com/defenseunicorns/zarf/releases/download/v$(ZARF_VER)/zarf_v$(ZARF_VER)_Linux_amd64
 	chmod +x ./zarf_v$(ZARF_VER)_Linux_amd64 && mv ./zarf_v$(ZARF_VER)_Linux_amd64 /usr/local/bin/zarf
-	curl -o zarf-init-amd64-v$(ZARF_VER).tar.zst https://github.com/defenseunicorns/zarf/releases/download/v$(ZARF_VER)/zarf-init-amd64-v$(ZARF_VER).tar.zst
+	curl -L -o zarf-init-amd64-v$(ZARF_VER).tar.zst https://github.com/defenseunicorns/zarf/releases/download/v$(ZARF_VER)/zarf-init-amd64-v$(ZARF_VER).tar.zst
 	mkdir $(HOME)/.zarf-cache && mv ./zarf-init-amd64-v$(ZARF_VER).tar.zst $(HOME)/.zarf-cache/
 
 assume-role: ## This isn't needed when on a runner with the role AWS_ECR_ROLE
@@ -48,7 +48,7 @@ build-package:
 	./build-package.sh $(COMPONENT) $(REF_TYPE) $(REF_NAME) $(IMAGE_TAG)
 
 install-go:
-	curl -o go$(GOLANG_VER).linux-amd64.tar.gz https://dl.google.com/go/go$(GOLANG_VER).linux-amd64.tar.gz && \
+	curl -L -o go$(GOLANG_VER).linux-amd64.tar.gz https://dl.google.com/go/go$(GOLANG_VER).linux-amd64.tar.gz && \
 	    tar -C /usr/local/bin -xzf go$(GOLANG_VER).linux-amd64.tar.gz && \
 	    rm go$(GOLANG_VER).linux-amd64.tar.gz
 
