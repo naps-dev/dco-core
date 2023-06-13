@@ -46,51 +46,51 @@ jobs:
           version: v0.27.1
           download-init-package: true
 
-      - name: Login to XSOAR registry
-        if: ${{ inputs.COMPONENT == 'xsoar' }}
-        run: |
-          zarf tools registry login \
-            -u "${{secrets.XSOAR_USERNAME}}" \
-            -p "${{secrets.XSOAR_PASSWORD}}" \
-            "xsoar-registry.pan.dev"
-
-      - name: Set up XSOAR license file
-        if: ${{ inputs.COMPONENT == 'xsoar' }}
-        run:
-          echo "${{ secrets.XSOAR_LICENSE }}" >> /tmp/demisto.lic
-
-      - name: Set up Polarity license file
-        if: ${{ inputs.COMPONENT == 'polarity' }}
-        run:
-          echo "${{ secrets.POLARITY_LICENSE }}" >> /tmp/polarity.lic
-
-      - name: Configure AWS ECR Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{secrets.AWS_ECR_ROLE}}
-          role-session-name: arkime-ecr
-          aws-region: us-east-1
-
-      - name: Install Docker Cli
-        run: |
-          yum install yum-utils -y
-          yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-          yum install docker-ce-cli -y
-
-      - name: Install K3D
-        run: |
-          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-
-      - name: ECR Login
-        uses: aws-actions/amazon-ecr-login@v1
-        id: login-ecr
-
-      - name: Login to Registry One
-        run: |
-          zarf tools registry login \
-            -u "${{secrets.REGISTRY1_USERNAME}}" \
-            -p "${{secrets.REGISTRY1_PASSWORD}}" \
-            "registry1.dso.mil"
+#      - name: Login to XSOAR registry
+#        if: ${{ inputs.COMPONENT == 'xsoar' }}
+#        run: |
+#          zarf tools registry login \
+#            -u "${{secrets.XSOAR_USERNAME}}" \
+#            -p "${{secrets.XSOAR_PASSWORD}}" \
+#            "xsoar-registry.pan.dev"
+#
+#      - name: Set up XSOAR license file
+#        if: ${{ inputs.COMPONENT == 'xsoar' }}
+#        run:
+#          echo "${{ secrets.XSOAR_LICENSE }}" >> /tmp/demisto.lic
+#
+#      - name: Set up Polarity license file
+#        if: ${{ inputs.COMPONENT == 'polarity' }}
+#        run:
+#          echo "${{ secrets.POLARITY_LICENSE }}" >> /tmp/polarity.lic
+#
+#      - name: Configure AWS ECR Credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          role-to-assume: ${{secrets.AWS_ECR_ROLE}}
+#          role-session-name: arkime-ecr
+#          aws-region: us-east-1
+#
+#      - name: Install Docker Cli
+#        run: |
+#          yum install yum-utils -y
+#          yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+#          yum install docker-ce-cli -y
+#
+#      - name: Install K3D
+#        run: |
+#          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+#
+#      - name: ECR Login
+#        uses: aws-actions/amazon-ecr-login@v1
+#        id: login-ecr
+#
+#      - name: Login to Registry One
+#        run: |
+#          zarf tools registry login \
+#            -u "${{secrets.REGISTRY1_USERNAME}}" \
+#            -p "${{secrets.REGISTRY1_PASSWORD}}" \
+#            "registry1.dso.mil"
 
       - name: Create Zarf Package from Branch
         if: ${{ inputs.REF_TYPE == 'branch'}}
@@ -117,89 +117,89 @@ jobs:
           # cleanup tmp dir
           rm -rf ./big-tmp
 #        working-directory: ${{ inputs.COMPONENT }}
-
-      - name: Create Zarf Package from Tag
-        if: ${{ inputs.REF_TYPE == 'tag'}}
-        run: |
-          # cleanup and init a tmp dir
-          rm -rf big-tmp
-          mkdir big-tmp
-
-          args=()
-          args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
-          if [[ -z "${IMAGE_TAG}" ]]; then
-            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
-          fi
-          args+=(--confirm)
-          args+=(--tmpdir $PWD/big-tmp)
-          args+=(--skip-sbom)
-
-          # build the zarf package
-          zarf package create "${args[@]}" --no-progress
-
-          # cleanup tmp dir
-          rm -rf ./big-tmp
+#
+#      - name: Create Zarf Package from Tag
+#        if: ${{ inputs.REF_TYPE == 'tag'}}
+#        run: |
+#          # cleanup and init a tmp dir
+#          rm -rf big-tmp
+#          mkdir big-tmp
+#
+#          args=()
+#          args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
+#          if [[ -z "${IMAGE_TAG}" ]]; then
+#            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
+#          fi
+#          args+=(--confirm)
+#          args+=(--tmpdir $PWD/big-tmp)
+#          args+=(--skip-sbom)
+#
+#          # build the zarf package
+#          zarf package create "${args[@]}" --no-progress
+#
+#          # cleanup tmp dir
+#          rm -rf ./big-tmp
 #        working-directory: ${{ inputs.COMPONENT }}
-
-      - name: Configure AWS S3 Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{secrets.AWS_ROLE}}
-          role-session-name: arkime-s3
-          aws-region: us-east-1
-
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: '^1.19.5'
-          cache: true
-
-      - name: Create DCO package (from Branch) needed for testing individual component
-        if: ${{ env.DCO_REF_TYPE == 'branch' && inputs.COMPONENT != 'dco-core' }}
-        run: |
-          # cleanup and init a tmp dir
-          rm -rf big-tmp
-          mkdir big-tmp
-
-          # build the zarf package
-          zarf package create \
-            --set GIT_REF=refs/heads/${{ env.DCO_REF_NAME }} \
-            --confirm \
-            --tmpdir $PWD/big-tmp \
-            --skip-sbom \
-            --no-progress
-
-          # cleanup tmp dir
-          rm -rf ./big-tmp
-        working-directory: dco-core
-
-      - name: Create DCO package (from Tag) needed for testing individual component
-        if: ${{ env.DCO_REF_TYPE == 'tag' && inputs.COMPONENT != 'dco-core' }}
-        run: |
-          # cleanup and init a tmp dir
-          rm -rf big-tmp
-          mkdir big-tmp
-
-          # build the zarf package
-          zarf package create \
-            --set GIT_REF=refs/tags/${{ env.DCO_REF_NAME }} \
-            --confirm \
-            --tmpdir $PWD/big-tmp \
-            --skip-sbom \
-            --no-progress
-
-          # cleanup tmp dir
-          rm -rf ./big-tmp
-        working-directory: dco-core
-
-      - name: Install dependencies for terratest
-        run: |
-          go get -t ./...
-
-      - name: Run go test
-        working-directory: ./test/
-        run: |
-          go test -timeout 40m
+#
+#      - name: Configure AWS S3 Credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          role-to-assume: ${{secrets.AWS_ROLE}}
+#          role-session-name: arkime-s3
+#          aws-region: us-east-1
+#
+#      - name: Set up Go
+#        uses: actions/setup-go@v3
+#        with:
+#          go-version: '^1.19.5'
+#          cache: true
+#
+#      - name: Create DCO package (from Branch) needed for testing individual component
+#        if: ${{ env.DCO_REF_TYPE == 'branch' && inputs.COMPONENT != 'dco-core' }}
+#        run: |
+#          # cleanup and init a tmp dir
+#          rm -rf big-tmp
+#          mkdir big-tmp
+#
+#          # build the zarf package
+#          zarf package create \
+#            --set GIT_REF=refs/heads/${{ env.DCO_REF_NAME }} \
+#            --confirm \
+#            --tmpdir $PWD/big-tmp \
+#            --skip-sbom \
+#            --no-progress
+#
+#          # cleanup tmp dir
+#          rm -rf ./big-tmp
+#        working-directory: dco-core
+#
+#      - name: Create DCO package (from Tag) needed for testing individual component
+#        if: ${{ env.DCO_REF_TYPE == 'tag' && inputs.COMPONENT != 'dco-core' }}
+#        run: |
+#          # cleanup and init a tmp dir
+#          rm -rf big-tmp
+#          mkdir big-tmp
+#
+#          # build the zarf package
+#          zarf package create \
+#            --set GIT_REF=refs/tags/${{ env.DCO_REF_NAME }} \
+#            --confirm \
+#            --tmpdir $PWD/big-tmp \
+#            --skip-sbom \
+#            --no-progress
+#
+#          # cleanup tmp dir
+#          rm -rf ./big-tmp
+#        working-directory: dco-core
+#
+#      - name: Install dependencies for terratest
+#        run: |
+#          go get -t ./...
+#
+#      - name: Run go test
+#        working-directory: ./test/
+#        run: |
+#          go test -timeout 40m
 
 #        TODO: Determine why the following indefinitely hangs on our new runners and fix
 #      - name: Slack Notification
@@ -210,13 +210,13 @@ jobs:
 #          SLACK_USERNAME: GitHub
 #          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
-      - name: Save Package to S3
-        run: |
-          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
-        working-directory: ${{ inputs.COMPONENT }}
-
-      - name: Remove any license files
-        if: always()
-        run:
-          rm -f /tmp/demisto.lic
-          rm -f /tmp/polarity.lic
+#      - name: Save Package to S3
+#        run: |
+#          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
+#        working-directory: ${{ inputs.COMPONENT }}
+#
+#      - name: Remove any license files
+#        if: always()
+#        run:
+#          rm -f /tmp/demisto.lic
+#          rm -f /tmp/polarity.lic
