@@ -71,9 +71,7 @@ zarf package deploy --set ES_DATA_COUNT=2
 Verify Kibana is accessible
 
 ```bash
-kubectl port-forward -n istio-system svc/dataplane-ingressgateway 8443:443
-
-curl --resolve dataplane-kibana.vp.bigbang.dev:8443:127.0.0.1 --fail-with-body https://dataplane-kibana.vp.bigbang.dev:8443
+curl --resolve "dataplane-kibana.vp.bigbang.dev:443:<ip address>" --fail-with-body https://dataplane-kibana.vp.bigbang.dev
 ```
 
 ## References

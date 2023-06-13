@@ -1,7 +1,7 @@
 kind: ZarfPackageConfig
 metadata:
   name: kasm
-  description: "Kasm traffic monitoring and analysis tool"
+  description: "Kasm containerized desktop environments"
   # Big Bang / Iron Bank are only amd64
   architecture: amd64
 
@@ -18,7 +18,7 @@ variables:
 
 components:
   - name: kasm
-    description: "Kasm traffic monitoring and analysis tool"
+    description: "Kasm containerized desktop environments"
     required: true
     repos:
       - https://github.com/naps-dev/kasm.git
