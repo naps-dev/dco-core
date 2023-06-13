@@ -33,10 +33,9 @@ defaults:
 #  DCO_REF_TYPE: "${{ github.ref_type }}"
 jobs:
   package-component:
-#    runs-on: [on-prem-arc]
-#    container:
-#      image: ghcr.io/defenseunicorns/not-a-build-harness/not-a-build-harness:0.0.13
-    runs-on: [self-hosted, onprem]
+    runs-on: [on-prem-arc]
+    container:
+      image: ghcr.io/defenseunicorns/not-a-build-harness/not-a-build-harness:0.0.13
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -72,15 +71,15 @@ jobs:
           role-session-name: arkime-ecr
           aws-region: us-east-1
 
-#      - name: Install Docker Cli
-#        run: |
-#          yum install yum-utils -y
-#          yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-#          yum install docker-ce-cli -y
-#
-#      - name: Install K3D
-#        run: |
-#          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+      - name: Install Docker Cli
+        run: |
+          yum install yum-utils -y
+          yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+          yum install docker-ce-cli -y
+
+      - name: Install K3D
+        run: |
+          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
       - name: ECR Login
         uses: aws-actions/amazon-ecr-login@v1
@@ -94,7 +93,7 @@ jobs:
             "registry1.dso.mil"
 
       - name: Create Zarf Package from Branch
-#        if: ${{ inputs.REF_TYPE == 'branch'}}
+        if: ${{ inputs.REF_TYPE == 'branch'}}
         run: |
           pwd
           ls
@@ -104,9 +103,9 @@ jobs:
           mkdir big-tmp
 
           args=()
-          args+=(--set GIT_REF=refs/heads/dubbd-skeleton)
+          args+=(--set GIT_REF=refs/heads/${{ inputs.REF_NAME }})
           if [[ -z "${IMAGE_TAG}" ]]; then
-            args+=(--set IMAGE_TAG="asdfsadfsadf")
+            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
           fi
           args+=(--confirm)
           args+=(--tmpdir $PWD/big-tmp)
@@ -117,30 +116,30 @@ jobs:
 
           # cleanup tmp dir
           rm -rf ./big-tmp
-        working-directory: dco-core
-#
-#      - name: Create Zarf Package from Tag
-#        if: ${{ inputs.REF_TYPE == 'tag'}}
-#        run: |
-#          # cleanup and init a tmp dir
-#          rm -rf big-tmp
-#          mkdir big-tmp
-#
-#          args=()
-#          args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
-#          if [[ -z "${IMAGE_TAG}" ]]; then
-#            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
-#          fi
-#          args+=(--confirm)
-#          args+=(--tmpdir $PWD/big-tmp)
-#          args+=(--skip-sbom)
-#
-#          # build the zarf package
-#          zarf package create "${args[@]}" --no-progress
-#
-#          # cleanup tmp dir
-#          rm -rf ./big-tmp
-#        working-directory: ${{ inputs.COMPONENT }}
+        working-directory: ${{ inputs.COMPONENT }}
+
+      - name: Create Zarf Package from Tag
+        if: ${{ inputs.REF_TYPE == 'tag'}}
+        run: |
+          # cleanup and init a tmp dir
+          rm -rf big-tmp
+          mkdir big-tmp
+
+          args=()
+          args+=(--set GIT_REF=refs/tags/${{ inputs.REF_NAME }})
+          if [[ -z "${IMAGE_TAG}" ]]; then
+            args+=(--set IMAGE_TAG="${{ inputs.IMAGE_TAG }}")
+          fi
+          args+=(--confirm)
+          args+=(--tmpdir $PWD/big-tmp)
+          args+=(--skip-sbom)
+
+          # build the zarf package
+          zarf package create "${args[@]}" --no-progress
+
+          # cleanup tmp dir
+          rm -rf ./big-tmp
+        working-directory: ${{ inputs.COMPONENT }}
 #
 #      - name: Configure AWS S3 Credentials
 #        uses: aws-actions/configure-aws-credentials@v1
