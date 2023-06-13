@@ -97,6 +97,7 @@ jobs:
         run: |
           pwd
           ls
+          cat zarf-config.yaml
           # cleanup and init a tmp dir
           rm -rf big-tmp
           mkdir big-tmp
