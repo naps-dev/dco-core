@@ -108,9 +108,9 @@ kyvernoPolicies:
                     MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7CjMGH005DFFz6mffqTIGurBt6fL
                     UfTZxuEDFRBS8mFJx1xw8DEVvjMibLTtqmAoJxUmzmGFgzz+LV875syVEg==
                     -----END PUBLIC KEY-----
-              # Ironbank images are rebuilt nightly and tags are not immutable
-              mutateDigest: false
-              verifyDigest: false
+            # Ironbank images are rebuilt nightly and tags are not immutable
+            mutateDigest: false
+            verifyDigest: false
       require-istio-on-namespaces:
         enabled: false
       require-labels:
