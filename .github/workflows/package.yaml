@@ -26,7 +26,7 @@ defaults:
     shell: bash
 env:
   S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/${{ inputs.COMPONENT}}/${{ inputs.REF_NAME}}"
-#  ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
+  ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
   COMPONENT: "${{ inputs.COMPONENT}}"
   REF_NAME: "${{ inputs.REF_NAME}}"
   DCO_REF_NAME: "${{ github.head_ref || github.ref_name }}"
