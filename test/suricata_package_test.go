@@ -17,7 +17,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 
 	zarfDeploySuricataCmd := shell.Command{
 		Command: "zarf",
-		Args:    []string{"package", "deploy", "../suricata/zarf-package-suricata-amd64.tar.zst", "--confirm"},
+		Args:    []string{"package", "deploy", "../suricata/zarf-package-suricata-amd64.tar.zst", "--confirm", "--no-progress"},
 		Env:     testEnv,
 	}
 
