@@ -95,6 +95,7 @@ jobs:
       - name: Create Zarf Package from Branch
         if: ${{ inputs.REF_TYPE == 'branch'}}
         run: |
+          cd dco-core
           pwd
           ls
           # cleanup and init a tmp dir
@@ -115,7 +116,7 @@ jobs:
 
           # cleanup tmp dir
           rm -rf ./big-tmp
-        working-directory: ${{ inputs.COMPONENT }}
+#        working-directory: ${{ inputs.COMPONENT }}
 
       - name: Create Zarf Package from Tag
         if: ${{ inputs.REF_TYPE == 'tag'}}
@@ -138,7 +139,7 @@ jobs:
 
           # cleanup tmp dir
           rm -rf ./big-tmp
-        working-directory: ${{ inputs.COMPONENT }}
+#        working-directory: ${{ inputs.COMPONENT }}
 
       - name: Configure AWS S3 Credentials
         uses: aws-actions/configure-aws-credentials@v1
