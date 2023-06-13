@@ -40,59 +40,59 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-#
-#      - name: Install Zarf
-#        uses: defenseunicorns/setup-zarf@main
-#        with:
-#          version: v0.27.1
-#          download-init-package: true
-#
-#      - name: Login to XSOAR registry
-#        if: ${{ inputs.COMPONENT == 'xsoar' }}
-#        run: |
-#          zarf tools registry login \
-#            -u "${{secrets.XSOAR_USERNAME}}" \
-#            -p "${{secrets.XSOAR_PASSWORD}}" \
-#            "xsoar-registry.pan.dev"
-#
-#      - name: Set up XSOAR license file
-#        if: ${{ inputs.COMPONENT == 'xsoar' }}
-#        run:
-#          echo "${{ secrets.XSOAR_LICENSE }}" >> /tmp/demisto.lic
-#
-#      - name: Set up Polarity license file
-#        if: ${{ inputs.COMPONENT == 'polarity' }}
-#        run:
-#          echo "${{ secrets.POLARITY_LICENSE }}" >> /tmp/polarity.lic
-#
-#      - name: Configure AWS ECR Credentials
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          role-to-assume: ${{secrets.AWS_ECR_ROLE}}
-#          role-session-name: arkime-ecr
-#          aws-region: us-east-1
-#
-#      - name: Install Docker Cli
-#        run: |
-#          yum install yum-utils -y
-#          yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-#          yum install docker-ce-cli -y
-#
-#      - name: Install K3D
-#        run: |
-#          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-#
-#      - name: ECR Login
-#        uses: aws-actions/amazon-ecr-login@v1
-#        id: login-ecr
-#
-#      - name: Login to Registry One
-#        run: |
-#          zarf tools registry login \
-#            -u "${{secrets.REGISTRY1_USERNAME}}" \
-#            -p "${{secrets.REGISTRY1_PASSWORD}}" \
-#            "registry1.dso.mil"
-#
+
+      - name: Install Zarf
+        uses: defenseunicorns/setup-zarf@main
+        with:
+          version: v0.27.1
+          download-init-package: true
+
+      - name: Login to XSOAR registry
+        if: ${{ inputs.COMPONENT == 'xsoar' }}
+        run: |
+          zarf tools registry login \
+            -u "${{secrets.XSOAR_USERNAME}}" \
+            -p "${{secrets.XSOAR_PASSWORD}}" \
+            "xsoar-registry.pan.dev"
+
+      - name: Set up XSOAR license file
+        if: ${{ inputs.COMPONENT == 'xsoar' }}
+        run:
+          echo "${{ secrets.XSOAR_LICENSE }}" >> /tmp/demisto.lic
+
+      - name: Set up Polarity license file
+        if: ${{ inputs.COMPONENT == 'polarity' }}
+        run:
+          echo "${{ secrets.POLARITY_LICENSE }}" >> /tmp/polarity.lic
+
+      - name: Configure AWS ECR Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{secrets.AWS_ECR_ROLE}}
+          role-session-name: arkime-ecr
+          aws-region: us-east-1
+
+      - name: Install Docker Cli
+        run: |
+          yum install yum-utils -y
+          yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+          yum install docker-ce-cli -y
+
+      - name: Install K3D
+        run: |
+          curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
+      - name: ECR Login
+        uses: aws-actions/amazon-ecr-login@v1
+        id: login-ecr
+
+      - name: Login to Registry One
+        run: |
+          zarf tools registry login \
+            -u "${{secrets.REGISTRY1_USERNAME}}" \
+            -p "${{secrets.REGISTRY1_PASSWORD}}" \
+            "registry1.dso.mil"
+
       - name: Create Zarf Package from Branch
 #        if: ${{ inputs.REF_TYPE == 'branch'}}
         run: |
