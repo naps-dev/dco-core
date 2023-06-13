@@ -20,6 +20,6 @@ jobs:
     with:
       REF_NAME: "v1.2.0-5"
       REF_TYPE: "tag"
-      ZARF_PACKAGE: zarf-package-mockingbird-amd64.tar.zst
+      ZARF_PACKAGE_NAME: zarf-package-mockingbird-amd64.tar.zst
       IMAGE_TAG: "v1.2.0-5"
       COMPONENT: "mockingbird"

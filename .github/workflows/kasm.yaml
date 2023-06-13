@@ -20,5 +20,5 @@ jobs:
     with:
       REF_NAME: "v1.11.0-5"
       REF_TYPE: "tag"
-      ZARF_PACKAGE: zarf-package-kasm-amd64.tar.zst
+      ZARF_PACKAGE_NAME: zarf-package-kasm-amd64.tar.zst
       COMPONENT: "kasm"
