@@ -117,7 +117,7 @@ jobs:
 
           # cleanup tmp dir
           rm -rf ./big-tmp
-        working-directory: doc-core
+        working-directory: dco-core
 #
 #      - name: Create Zarf Package from Tag
 #        if: ${{ inputs.REF_TYPE == 'tag'}}
