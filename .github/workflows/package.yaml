@@ -160,7 +160,7 @@ jobs:
 
           # build the zarf package
           zarf package create \
-            --set GIT_REF=refs/heads/dubbd-skeleton \
+            --set GIT_REF=refs/heads/${{ env.DCO_REF_NAME }} \
             --confirm \
             --tmpdir $PWD/big-tmp \
             --skip-sbom \
