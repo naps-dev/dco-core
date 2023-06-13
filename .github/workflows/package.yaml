@@ -27,7 +27,7 @@ defaults:
 env:
   S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/${{ inputs.COMPONENT}}/${{ inputs.REF_NAME}}"
 #  ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
-#  COMPONENT: "${{ inputs.COMPONENT}}"
+  COMPONENT: "${{ inputs.COMPONENT}}"
   REF_NAME: "${{ inputs.REF_NAME}}"
   DCO_REF_NAME: "${{ github.head_ref || github.ref_name }}"
   DCO_REF_TYPE: "${{ github.ref_type }}"
@@ -95,9 +95,6 @@ jobs:
       - name: Create Zarf Package from Branch
         if: ${{ inputs.REF_TYPE == 'branch'}}
         run: |
-          pwd
-          ls
-          cat zarf-config.yaml
           # cleanup and init a tmp dir
           rm -rf big-tmp
           mkdir big-tmp
