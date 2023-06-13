@@ -3,34 +3,34 @@ run-name: ${{github.actor}} is building the ${{ inputs.COMPONENT }} Zarf Package
 on:
   workflow_call:
     inputs:
-#      REF_NAME:
-#        required: true
-#        type: string
+      REF_NAME:
+        required: true
+        type: string
       REF_TYPE:
         required: true
         type: string
-#      ZARF_PACKAGE:
-#        required: true
-#        type: string
-#      COMPONENT:
-#        required: true
-#        type: string
-#      IMAGE_TAG:
-#        required: false
-#        type: string
+      ZARF_PACKAGE:
+        required: true
+        type: string
+      COMPONENT:
+        required: true
+        type: string
+      IMAGE_TAG:
+        required: false
+        type: string
 permissions:
   id-token: write
   contents: read
 defaults:
   run:
     shell: bash
-#env:
-#  S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/${{ inputs.COMPONENT}}/${{ inputs.REF_NAME}}"
-#  ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
-#  COMPONENT: "${{ inputs.COMPONENT}}"
-#  REF_NAME: "${{ inputs.REF_NAME}}"
-#  DCO_REF_NAME: "${{ github.head_ref || github.ref_name }}"
-#  DCO_REF_TYPE: "${{ github.ref_type }}"
+env:
+  S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/${{ inputs.COMPONENT}}/${{ inputs.REF_NAME}}"
+  ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
+  COMPONENT: "${{ inputs.COMPONENT}}"
+  REF_NAME: "${{ inputs.REF_NAME}}"
+  DCO_REF_NAME: "${{ github.head_ref || github.ref_name }}"
+  DCO_REF_TYPE: "${{ github.ref_type }}"
 jobs:
   package-component:
 #    runs-on: [on-prem-arc]
