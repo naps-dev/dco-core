@@ -9,15 +9,26 @@ spec:
     server:
       publicBaseUrl: https://dataplane-kibana.vp.bigbang.dev
     xpack.fleet.agentPolicies:
-    - id: suricata-internal-sensor
-      is_default: false
-      is_managed: false
-      monitoring_enabled:
-      - logs
-      name: suricata-internal-sensor
+    - name: Fleet Server on ECK policy
+      id: eck-fleet-server
       namespace: default
+      monitoring_enabled:
+        - logs
+        - metrics
+      unenroll_timeout: 900
       package_policies:
-      - id: preconfigured-suricata-sensor
+      - name: fleet_server-1
+        id: fleet_server-1
+        package:
+          name: fleet_server
+    - name: Suricata Fleet Sensor
+      id: suricata-agent
+      namespace: default
+      monitoring_enabled:
+        - logs
+      unenroll_timeout: 900
+      package_policies:
+      - id: suricata-agent
         inputs:
         - enabled: true
           streams:
@@ -38,8 +49,43 @@ spec:
         name: Suricata Sensor Integration
         package:
           name: suricata
+    # - id: suricata-internal-sensor
+    #   is_default: false
+    #   is_managed: false
+    #   monitoring_enabled:
+    #   - logs
+    #   name: suricata-internal-sensor
+    #   namespace: default
+    #   package_policies:
+    #   - id: preconfigured-suricata-sensor
+    #     inputs:
+    #     - enabled: true
+    #       streams:
+    #       - data_stream:
+    #           dataset: suricata.eve
+    #         enabled: true
+    #         vars:
+    #         - name: preserve_original_event
+    #           value: false
+    #         - name: paths
+    #           value:
+    #           - /var/log/eve-*.json
+    #         - name: tags
+    #           value:
+    #           - forwarded
+    #           - suricata-eve
+    #       type: logfile
+    #     name: Suricata Sensor Integration
+    #     package:
+    #       name: suricata
     xpack.fleet.agents.elasticsearch.hosts:
     - https://dataplane-ek-es-http.dataplane-ek.svc:9200
+    xpack.fleet.agents.fleet_server.hosts: 
+    - "https://dataplane-ek-fleet-server-agent-http.dataplane-ek.svc:8220"
     xpack.fleet.packages:
     - name: suricata
+      version: latest
+    - name: elastic_agent
+      version: latest
+    - name: fleet_server
       version: latest

@@ -1,3 +1,4 @@
 resources:
   - kibana.yaml
   - elastic.yaml
+  - agent.yml
