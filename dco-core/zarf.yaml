@@ -11,6 +11,14 @@ constants:
     value: "###ZARF_PKG_TMPL_GIT_REF###"
 
 variables:
+  - name: BIGBANG_VERSION
+    default: "vp.bigbang.dev"
+    prompt: false
+
+  - name: FLUX_VERSION
+    default: "0.41.2"
+    prompt: false
+
   # Prompt user for the domain override
   - name: DOMAIN
     default: "vp.bigbang.dev"
