@@ -9,19 +9,19 @@ components:
     required: true
     import:
       name: load-certs
-      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-amd64
+      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-skeleton
 
   - name: preflight
     required: true
     import:
       name: preflight
-      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-amd64
+      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-skeleton
 
   - name: download-flux
     required: true
     import:
       name: download-flux
-      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-amd64
+      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-skeleton
 
   - name: bigbang
     required: true
