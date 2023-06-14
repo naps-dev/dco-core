@@ -2,6 +2,8 @@ package test
 
 import (
 	"context"
+	"fmt"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net"
 	"os"
 	"testing"
@@ -19,11 +21,11 @@ func TestZarfPackage(t *testing.T) {
 	refName := os.Getenv("REF_NAME")
 	clusterName := component + "-test-" + refName
 	kubeconfigPath := "/tmp/" + component + "_test_+" + refName + "_kubeconfig"
-
 	// Truncate string if too long (k3d not happy with strings over 32 chars)
 	if len(clusterName) > 32 {
 		clusterName = clusterName[:32]
 	}
+	tier1AgentName := "k3d-" + clusterName + "-agent-0"
 	cwd, err := os.Getwd()
 
 	if err != nil {
@@ -44,8 +46,13 @@ func TestZarfPackage(t *testing.T) {
 			"--k3s-arg", "--disable=servicelb@server:*",
 			"--port", "0:443@loadbalancer",
 			"--port", "0:80@loadbalancer",
-			"--agents", "2",
-			"--k3s-node-label", component + "-capture=true@agent:0"},
+			"--agents", "3",
+			"--k3s-node-label", component + "-capture=true@agent:0",
+			"--k3s-node-label", "cnaps.io/node-type=Tier-1@agent:0",
+			"--k3s-node-label", "cnaps.io/node-type=Tier-2@agent:1",
+			"--k3s-node-label", "cnaps.io/node-type=Tier-3@agent:2",
+			"--k3s-arg", "--node-taint=cnaps.io/node-class=noncore:NoSchedule@agent:2",
+			"--k3s-arg", "--node-taint=cnaps.io/node-class=noncore:NoExecute@agent:2"},
 		Env: testEnv,
 	}
 
@@ -101,8 +108,37 @@ func TestZarfPackage(t *testing.T) {
 		Args:    []string{"get", "policyreport", "-A"},
 		Env:     testEnv,
 	}
-
 	shell.RunCommand(t, checkAlert)
+
+	k8s.WaitUntilPodAvailable(t, opts, "dataplane-ek-es-master-0", 40, 30*time.Second)
+	k8s.WaitUntilPodAvailable(t, opts, "dataplane-ek-es-data-0", 40, 30*time.Second)
+	pods := k8s.ListPods(t, opts, metav1.ListOptions{})
+
+	for _, pod := range pods {
+		nodeName := pod.Spec.NodeName
+		if nodeName == tier1AgentName {
+			logger.Log(t, fmt.Sprintf("dataplane-ek Elasticsearch pod [%s] is running on Tier1 node", pod.Name))
+		} else {
+			logger.Log(t, fmt.Sprintf("dataplane-ek Elasticsearch pod [%s] node [%s] is not running on Tier1 node, failing test.", pod.Name, nodeName))
+			t.FailNow()
+		}
+	}
+	// Wait for DCO elastic to come up
+	opts = k8s.NewKubectlOptions(contextName, kubeconfigPath, "logging")
+
+	k8s.WaitUntilPodAvailable(t, opts, "logging-ek-es-master-0", 40, 30*time.Second)
+	k8s.WaitUntilPodAvailable(t, opts, "logging-ek-es-data-0", 40, 30*time.Second)
+	pods = k8s.ListPods(t, opts, metav1.ListOptions{})
+
+	for _, pod := range pods {
+		nodeName := pod.Spec.NodeName
+		if nodeName == tier1AgentName {
+			logger.Log(t, fmt.Sprintf("logging Elasticsearch pod [%s] is running on Tier1 node", pod.Name))
+		} else {
+			logger.Log(t, fmt.Sprintf("logging Elasticsearch pod [%s] node [%s] is not running on Tier1 node, failing test.", pod.Name, nodeName))
+			t.FailNow()
+		}
+	}
 
 	// Wait for Neuvector UI
 	opts = k8s.NewKubectlOptions(contextName, kubeconfigPath, "neuvector")
