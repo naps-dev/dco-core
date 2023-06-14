@@ -1,5 +1,5 @@
-# README
-## Build without Github Actions
+# Makefile README
+## Motivation
 Some future state of this effort may exist without access to Github actions. In this case, the `Makefile` can be used to facilitate the build and test of the Zarf packages in this repository.
 
 ### How To

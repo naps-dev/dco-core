@@ -1,4 +1,4 @@
-.PHONY: all clean check-dependencies install-dependencies install-zarf assume-role ecr-login registry-login build-dco-package build-package install-go run-tests
+.PHONY: all clean check-dependencies install-dependencies install-zarf install-go install-aws assume-role ecr-login push-to-s3 registry-login build-dco-package build-package run-tests clean clean-zarf clean-go clean-packages
 
 REQUIRED_BINS:=bash sudo gcc curl go docker aws # jq needed for assume-role, but since that's not a required target, ignoring here.
 
@@ -14,9 +14,9 @@ ZARF_PACKAGE?=zarf-package-dco-core-amd64.tar.zst
 COMPONENT?=dco-core
 DCO_REF_TYPE?=tag # In actions, defined as ${{ github.head_ref || github.ref_name }}. See README for notes.
 DCO_REF_NAME?=main # In actions, defined as ${{ github.ref_type }}. See README for notes.
-DCO_DIR?=dco-core 
+DCO_DIR?=dco-core
 
-all: check-dependencies install-dependencies ecr-login registry-login build-dco-package build-package install-go run-tests
+all: check-dependencies install-dependencies ecr-login registry-login build-dco-package build-package run-tests
 
 ## Check for and Install dependencies
 check-dependencies: ## Check for dependencies that would be easier to install using package manager for the specific distro
@@ -46,9 +46,10 @@ else
 endif
 
 # k3d
+# Note - during testing, it was noted that older version of k3d (v5.0.0) don't accept certain special characters in the cluster name, this version should work but version checking for k3d is probably needed
 ifeq (,$(shell which k3d))
 	$(info "k3d not installed. Installing...")
-	curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.0.0 bash
+	curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.4.3 bash 
 else
 	$(info "k3d already installed")
 endif
