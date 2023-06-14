@@ -10,7 +10,7 @@ istio:
       type: "LoadBalancer"
 
   gateways:
-    public:
+    admin:
       hosts:
         - "*.###ZARF_VAR_DOMAIN###"
     dataplane:
@@ -20,13 +20,13 @@ istio:
       tls:
         key: "###ZARF_VAR_PUBLIC_KEY###"
         cert: "###ZARF_VAR_PUBLIC_CERT###"
-    passthrough:
+    tenant:
       hosts:
         - "keycloak.###ZARF_VAR_DOMAIN###"
 
 neuvector:
   ingress:
-    gateway: "public"
+    gateway: "admin"
   values:
     k3s:
       enabled: true
@@ -266,7 +266,7 @@ addons:
     enabled: true
 
     ingress:
-      gateway: "passthrough"
+      gateway: "tenant"
       key: "###ZARF_VAR_PUBLIC_KEY###"
       cert: "###ZARF_VAR_PUBLIC_CERT###"
 

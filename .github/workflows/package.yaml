@@ -31,6 +31,7 @@ env:
   REF_NAME: "${{ inputs.REF_NAME}}"
   DCO_REF_NAME: "${{ github.head_ref || github.ref_name }}"
   DCO_REF_TYPE: "${{ github.ref_type }}"
+  ZARF_CONFIG: "${{ github.workspace }}/bigbang/zarf-config.yaml"
 jobs:
   package-component:
     runs-on: [on-prem-arc]

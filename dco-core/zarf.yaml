@@ -64,7 +64,7 @@ components:
       bigbang:
         version: "###ZARF_PKG_TMPL_BIGBANG_VERSION###"
         valuesFiles:
-          - values.yaml
+          - ../bigbang/values.yaml
 
   - name: setup
     description: "Required setup for the Zarf DCO package"
