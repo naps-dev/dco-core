@@ -197,6 +197,9 @@ jobs:
       - name: Run go test
         working-directory: ./test/
         run: |
+          # Copy cert and key to working dir as DUBBD (via the zarf-config.yaml) requires them at deploy time
+          cp "${{ github.workspace }}/bigbang/vp.bigbang.dev.cert" .
+          cp "${{ github.workspace }}/bigbang/vp.bigbang.dev.key" .
           go test -timeout 40m
 
 #        TODO: Determine why the following indefinitely hangs on our new runners and fix
