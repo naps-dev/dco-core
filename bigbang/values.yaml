@@ -1,3 +1,6 @@
+networkPolicies:
+  enabled: false
+
 kiali:
   enabled: false
 
