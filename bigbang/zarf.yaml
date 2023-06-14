@@ -4,15 +4,6 @@ metadata:
   description: "Defense Unicorns BigBang Distro"
   architecture: amd64
 
-variables:
-  - name: BIGBANG_VERSION
-    default: "vp.bigbang.dev"
-    prompt: false
-
-  - name: FLUX_VERSION
-    default: "0.41.2"
-    prompt: false
-
 components:
   - name: load-certs
     required: true
