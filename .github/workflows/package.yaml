@@ -32,6 +32,8 @@ env:
   DCO_REF_NAME: "${{ github.head_ref || github.ref_name }}"
   DCO_REF_TYPE: "${{ github.ref_type }}"
   ZARF_CONFIG: "${{ github.workspace }}/bigbang/zarf-config.yaml"
+  VP_CERT: "${{ github.workspace }}/bigbang/vp.bigbang.dev.cert"
+  VP_KEY: "${{ github.workspace }}/bigbang/vp.bigbang.dev.cert"
 jobs:
   package-component:
     runs-on: [on-prem-arc]
@@ -198,14 +200,14 @@ jobs:
         working-directory: ./test/
         run: |
           pwd
-          ls -ltr
-          ls -ltr ${{ github.workspace }}
-          ls -ltr "${{ github.workspace }}/bigbang/"
-          ls -ltr "${{ github.workspace }}/bigbang/vp.bigbang.dev.cert"
+          ls -ltr ../bigbang/vp.bigbang.dev.cert
+          ls -ltr ../bigbang/vp.bigbang.dev.key
+          echo 'done'
+          ls -ltr ${{ env.VP_CERT }}
+          ls -ltr ${{ env.VP_KEY }}
+          echo 'done 2'
           
           # Copy cert and key to working dir as DUBBD (via the zarf-config.yaml) requires them at deploy time
-          cp "${{ github.workspace }}/bigbang/vp.bigbang.dev.cert" ./
-          cp "${{ github.workspace }}/bigbang/vp.bigbang.dev.key" ./
           go test -timeout 40m
 
 #        TODO: Determine why the following indefinitely hangs on our new runners and fix
