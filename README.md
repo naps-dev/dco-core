@@ -1,14 +1,60 @@
 # README
-### How to build without GitHub Actions
-The purpose of this branch is to facilitate the build of Zarf packages in an environment that does use GitHub actions. The `Makefile` and `build-package.sh` have been added.
+## Build without Github Actions
+Some future state of this effort may exist without access to Github actions. In this case, the `Makefile` can be used to facilitate the build and test of the Zarf packages in this repository.
 
-The `Dockerfile` generates a docker image with the necessary components. The Makefile is invoked from the image as follows:
+### How To
+Most of the variables needed are pre-set in the Makefile, for individual packages the following values should be set
+- REF_NAME 
+- REF_TYPE 
+- ZARF_PACKAGE
+- COMPONENT 
+- IMAGE_TAG (optional)
 
-### Sample make commands
-```
-make all REF_NAME="v4.2.0-2" REF_TYPE="tag" ZARF_PACKAGE="zarf-package-arkime-amd64.tar.zst" IMAGE_TAG="v4.2.0-2" COMPONENT="arkime"
-```
-Requires the following to be environment variables
-- AWS_ECR_ROLE
+Additionally, the Iron Bank login credentials are required as so: 
 - REGISTRY1_USERNAME
 - REGISTRY1_PASSWORD
+
+AWS access credentials will need to be passed if not running on instance with proper priviledges:
+- AWS_ACCESS_KEY_ID
+- AWS_SECRET_ACCESS_KEY
+- AWS_DEFAULT_REGION
+
+This makefile assumes that users might be running in different environments with packages possibly not pre-installed. Two recipes attempt to handle this:
+- check-dependencies simply identifies if necessary dependencies are available in the environment. These are dependencies that are probably best managed by a package manager. With go and aws in particular, the out of the box installation wasn't compatible with alpine, so created install targets for both but omitting from `all`.
+- install-dependencies checks if a dependency is there, sometimes if it's the right version, and then installs if not. The makefile will install zarf and k3d. It will check versioning for go.
+
+Note - "assume_role" and "push" are currently unused and have not been fully tested.
+
+#### XSOAR
+If this component is being built, it also requires:
+- XSOAR_USERNAME (for xsoar registry)
+- XSOAR_PASSWORD (for xsoar registry)
+- XSOAR_LICENSE
+
+#### Polarity
+If this component is being built, it also requires:
+- POLARITY_LICENSE
+
+### Substitutions for github variables
+Several github variables are used in the Actions. While these are not currently replicated in the Makefile, the analogous definitions might look as follows:
+
+#### `github.ref_type`
+This can be extracted by `$(ref_type)` using the following bash script function
+
+```
+function ref_type {
+    if git show-ref --verify --quiet refs/heads/$(git rev-parse --abbrev-ref HEAD); then
+        echo "branch"
+    elif git show-ref --verify --quiet refs/tags/$(git describe --tags --exact-match); then
+        echo "tag"
+    else
+        echo "other"
+    fi
+}
+```
+
+#### `github.head_ref || github.ref_name`
+The following can be used to get the current git branch, which seems analogous to these variables (?)
+```
+$(git rev-parse --abbrev-ref HEAD)
+```
