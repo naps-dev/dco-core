@@ -37,8 +37,22 @@ variables:
     prompt: false
 
 components:
+  - name: load-certs
+    required: true
+    import:
+      path: '../bigbang/'
+
   - name: bigbang
-    description: "Big Bang"
+    required: true
+    import:
+      path: '../bigbang/'
+
+  - name: preflight
+    required: true
+    import:
+      path: '../bigbang/'
+
+  - name: download-flux
     required: true
     import:
       path: '../bigbang/'

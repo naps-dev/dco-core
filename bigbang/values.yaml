@@ -264,8 +264,8 @@ addons:
 
     ingress:
       gateway: "passthrough"
-      key: "###ZARF_VAR_KEYCLOAK_KEY###"
-      cert: "###ZARF_VAR_KEYCLOAK_CERT###"
+      key: "###ZARF_VAR_PUBLIC_KEY###"
+      cert: "###ZARF_VAR_PUBLIC_CERT###"
 
     values:
       replicas: 1

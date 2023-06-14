@@ -8,8 +8,8 @@ only certain Big Bang applications.
 
 ### Zarf variables
 
-This package defines these Zarf variables: `KEYCLOAK_CERT_FILE` and `KEYCLOAK_KEY_FILE` which specify the key
-and cert files used for keycloak's load balancer. 
+This package defines these Zarf variables: `BIGBANG_VERSION` and `FLUX_VERSION` which specify the versions of
+bigbang and flux, respectively, to be included in the zarf package.
 
 ### Additional Customization
 

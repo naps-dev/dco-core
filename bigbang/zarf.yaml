@@ -1,17 +1,16 @@
 kind: ZarfPackageConfig
 metadata:
   name: dubbd
-  description: "Big Bang"
+  description: "Defense Unicorns BigBang Distro"
   architecture: amd64
 
 variables:
-  - name: KEYCLOAK_CERT_FILE
-    default: vp.bigbang.dev.cert
-    description: "This file contains the cert for the public ingress gateway"
+  - name: BIGBANG_VERSION
+    default: "vp.bigbang.dev"
     prompt: false
-  - name: KEYCLOAK_KEY_FILE
-    default: vp.bigbang.dev.cert
-    description: "This file contains the key for the public ingress gateway"
+
+  - name: FLUX_VERSION
+    default: "0.41.2"
     prompt: false
 
 components:
@@ -20,40 +19,19 @@ components:
     import:
       name: load-certs
       url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-skeleton
-    files:
-      - source: ./cat_keycloak_cert.sh
-        target: cat_keycloak_cert.sh
-        executable: true
-      - source: ./cat_keycloak_key.sh
-        target: cat_keycloak_key.sh
-        executable: true
-    actions:
-      onDeploy:
-        after:
-          - cmd: ./cat_keycloak_cert.sh
-            description: read the cert
-            mute: true
-            setVariables:
-              - name: KEYCLOAK_CERT
-                sensitive: true
-          - cmd: ./cat_keycloak_key.sh
-            description: read the cert
-            mute: true
-            setVariables:
-              - name: KEYCLOAK_KEY
-                sensitive: true
-          - cmd: rm cat_keycloak_cert.sh
-          - cmd: rm cat_keycloak_key.sh
+
   - name: preflight
     required: true
     import:
       name: preflight
       url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-skeleton
+
   - name: download-flux
     required: true
     import:
       name: download-flux
       url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-skeleton
+
   - name: bigbang
     required: true
     import:
