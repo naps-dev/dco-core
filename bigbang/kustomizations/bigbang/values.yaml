@@ -394,3 +394,8 @@ fluentbit:
       - name: suricatalogs
         mountPath: /data/suricata
         readOnly: true
+    tolerations:
+      - key: "cnaps.io/node-taint"
+        operator: "Equal"
+        value: "noncore"
+        effect: "NoSchedule"
