@@ -40,22 +40,31 @@ components:
   - name: load-certs
     required: true
     import:
-      path: '../bigbang/'
+      name: load-certs
+      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-skeleton
 
   - name: preflight
     required: true
     import:
-      path: '../bigbang/'
+      name: preflight
+      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-skeleton
 
   - name: download-flux
     required: true
     import:
-      path: '../bigbang/'
+      name: download-flux
+      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-skeleton
 
   - name: bigbang
     required: true
     import:
-      path: '../bigbang/'
+      name: bigbang
+      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-skeleton
+    extensions:
+      bigbang:
+        version: "###ZARF_PKG_TMPL_BIGBANG_VERSION###"
+        valuesFiles:
+          - values.yaml
 
   - name: setup
     description: "Required setup for the Zarf DCO package"
