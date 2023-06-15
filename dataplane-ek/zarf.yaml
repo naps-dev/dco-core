@@ -41,10 +41,9 @@ components:
       - name: dataplane-ek
         files:
           - manifests/dataplane-ek.yaml
+    images:
+      - "docker.elastic.co/beats/elastic-agent:8.6.0"
     actions:
       onDeploy:
         after:
           - cmd: kubectl apply -k /tmp/elk-modifications
-      # - name: elk-modifications
-      #   kustomizations:
-      #     - "kustomizations/elk-modifications"
