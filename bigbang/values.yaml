@@ -8,6 +8,8 @@ istio:
   ingressGateways:
     dataplane-ingressgateway:
       type: "LoadBalancer"
+    passthrough-ingressgateway:
+      type: "LoadBalancer"
 
   gateways:
     admin:
@@ -20,9 +22,14 @@ istio:
       tls:
         key: "###ZARF_VAR_PUBLIC_KEY###"
         cert: "###ZARF_VAR_PUBLIC_CERT###"
-    tenant:
+    passthrough:
+      ingressGateway: "passthrough-ingressgateway"
       hosts:
-        - "keycloak.###ZARF_VAR_DOMAIN###"
+        - keycloak.vp.bigbang.dev
+      tls:
+        mode: "PASSTHROUGH"
+        key: "###ZARF_VAR_PUBLIC_KEY###"
+        cert: "###ZARF_VAR_PUBLIC_CERT###"
 
 neuvector:
   ingress:
@@ -38,10 +45,14 @@ neuvector:
 # EFK -> PLG, see https://repo1.dso.mil/big-bang/bigbang/-/blob/1.39.0/docs/guides/using-bigbang/efk-plg-logging-migration.md
 elasticsearchKibana:
   enabled: true
+  ingress:
+    gateway: "admin"
 eckOperator:
   enabled: true
 jaeger:
   enabled: true
+  ingress:
+    gateway: "admin"
 loki:
   enabled: false
 promtail:
@@ -266,7 +277,7 @@ addons:
     enabled: true
 
     ingress:
-      gateway: "tenant"
+      gateway: "passthrough"
       key: "###ZARF_VAR_PUBLIC_KEY###"
       cert: "###ZARF_VAR_PUBLIC_CERT###"
 

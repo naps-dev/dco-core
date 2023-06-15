@@ -23,12 +23,12 @@ We selectively override/merge our own custom values provided in our
 Big Bang provides [Istio](https://istio.io/) which we use for a Service Mesh
 and also ingress gateways. Big Bang deployments typically define a single
 ingress gateway `admin-ingressgateway`. We add two additional ingress
-gateways: `dataplane-ingressgateway` and `tenant-ingressgateway`. The
+gateways: `dataplane-ingressgateway` and `passthrough-ingressgateway`. The
 data plane gateway is used to provide some level of isolation between the Big
 Bang services and those added later.
 
 Both the admin-ingressgateway and dataplane-ingressgateway will do TLS
-termination at the gateway. The tenant gateway is used for traffic to
+termination at the gateway. The passthrough gateway is used for traffic to
 the keycloak service because keycloak insists on doing its own TLS termination.
 
 > ⚠️ **The default k3d load balancer is

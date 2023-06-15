@@ -165,13 +165,13 @@ func TestZarfPackage(t *testing.T) {
 		logger.Log(t, "Sleep 45s")
 		time.Sleep(45 * time.Second)
 
-		// Get tenant-ingressgateway service
-		logger.Log(t, "Check tenant-ingressgateway for LoadBalancer IP, attempt", retries+1)
-		tenantSvc := k8s.GetService(t, opts, "tenant-ingressgateway")
+		// Get passthrough-ingressgateway service
+		logger.Log(t, "Check passthrough-ingressgateway for LoadBalancer IP, attempt", retries+1)
+		passthroughSvc := k8s.GetService(t, opts, "passthrough-ingressgateway")
 
-		if len(tenantSvc.Status.LoadBalancer.Ingress) > 0 {
+		if len(passthroughSvc.Status.LoadBalancer.Ingress) > 0 {
 			retries = 0
-			logger.Log(t, "Success! LoadBalancer IP is assigned to tenant-ingressgateway")
+			logger.Log(t, "Success! LoadBalancer IP is assigned to passthrough-ingressgateway")
 			break
 		}
 	}
@@ -181,9 +181,9 @@ func TestZarfPackage(t *testing.T) {
 		t.FailNow()
 	}
 
-	// Determine IP used by the tenant ingressgateway
-	tenant_igw := k8s.GetService(t, k8s.NewKubectlOptions(contextName, kubeconfigPath, "istio-system"), "tenant-ingressgateway")
-	tenant_lb_ip := tenant_igw.Status.LoadBalancer.Ingress[0].IP
+	// Determine IP used by the passthrough ingressgateway
+	passthrough_igw := k8s.GetService(t, k8s.NewKubectlOptions(contextName, kubeconfigPath, "istio-system"), "passthrough-ingressgateway")
+	passthrough_lb_ip := passthrough_igw.Status.LoadBalancer.Ingress[0].IP
 
 	time.Sleep(120 * time.Second)
 
@@ -194,7 +194,7 @@ func TestZarfPackage(t *testing.T) {
 			"-L",
 			"https://keycloak.vp.bigbang.dev:443/auth",
 			"--resolve",
-			"keycloak.vp.bigbang.dev:443:" + tenant_lb_ip,
+			"keycloak.vp.bigbang.dev:443:" + passthrough_lb_ip,
 			"--fail-with-body"},
 		Env: testEnv,
 	}
