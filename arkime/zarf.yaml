@@ -24,8 +24,8 @@ variables:
     prompt: false
 
   - name: READ_FROM_DISK
-    default: false
-    prompt: true
+    default: "no"
+    prompt: false
     
 
 components:
