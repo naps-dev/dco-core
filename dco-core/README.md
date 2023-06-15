@@ -14,3 +14,4 @@ Instructions:
 * Use `yq '.package-image-list.*.images' ~/Downloads/package-images.yaml | yq 'unique'` to filter the list
 * Update the component `images` according to the `yq` output^
 * test test test
+* 
