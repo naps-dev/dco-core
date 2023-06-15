@@ -59,7 +59,7 @@ func TestZarfPackage(t *testing.T) {
 	shell.RunCommand(t, clusterTeardownCmd)
 
 	// to leave cluster up for examination after this run, comment this out:
-// 	defer shell.RunCommand(t, clusterTeardownCmd)
+	defer shell.RunCommand(t, clusterTeardownCmd)
 
 	// create the cluster
 	shell.RunCommand(t, clusterSetupCmd)
@@ -80,7 +80,7 @@ func TestZarfPackage(t *testing.T) {
 
 	shell.RunCommand(t, zarfInitCmd)
 
-	// Copy cert and key to working dir as DUBBD (via the zarf-config.yaml) requires them at deploy time
+	// Copy cert and key to the working dir as DUBBD (via the zarf-config.yaml) requires them at deploy time
 	copyCertKeyCmd := shell.Command{
 		Command: "cp",
 		Args: []string{"../bigbang/vp.bigbang.dev.cert", "../bigbang/vp.bigbang.dev.key", "./",

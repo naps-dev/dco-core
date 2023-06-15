@@ -6,11 +6,6 @@ This folder and associated Zarf package contains a single Zarf component: `bigba
 is an _opinionated_ release of [Big Bang](https://docs-bigbang.dso.mil/latest/), which includes
 only certain Big Bang applications.
 
-### Zarf variables
-
-This package defines these Zarf variables: `BIGBANG_VERSION` and `FLUX_VERSION` which specify the versions of
-bigbang and flux, respectively, to be included in the zarf package.
-
 ### Additional Customization
 
 Big Bang defines cascading Helm chart
