@@ -23,6 +23,11 @@ variables:
     default: "cni0"
     prompt: false
 
+  - name: READ_FROM_DISK
+    default: false
+    prompt: true
+    
+
 components:
   - name: arkime
     description: "Arkime traffic monitoring and analysis tool"
