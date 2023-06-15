@@ -26,7 +26,7 @@ variables:
     prompt: false
 
   - name: PLATFORM_HOSTNAME
-    default: mixmode-enterpise.svc.cluster.local
+    default: mixmode-enterpise.mixmode.svc.cluster.local
     description: "the hostname of the mixmode platform, ex. sd-12.mixmode.ai"
 
   - name: PROVIDER_ID
