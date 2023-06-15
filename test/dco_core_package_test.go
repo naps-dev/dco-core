@@ -81,8 +81,13 @@ func TestZarfPackage(t *testing.T) {
 	shell.RunCommand(t, zarfInitCmd)
 
 	// Copy cert and key to working dir as DUBBD (via the zarf-config.yaml) requires them at deploy time
-    shell.RunCommand(t, "cp ../bigbang/vp.bigbang.dev.cert ./")
-    shell.RunCommand(t, "cp ../bigbang/vp.bigbang.dev.key ./")
+	copyCertKeyCmd := shell.Command{
+		Command: "cp",
+		Args: []string{"../bigbang/vp.bigbang.dev.cert", "../bigbang/vp.bigbang.dev.key", "./",
+		},
+		Env: testEnv,
+	}
+	shell.RunCommand(t, copyCertKeyCmd)
 
 	zarfDeployDCOCmd := shell.Command{
 		Command: "zarf",
