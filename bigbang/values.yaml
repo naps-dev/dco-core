@@ -10,6 +10,8 @@ istio:
       type: "LoadBalancer"
     passthrough-ingressgateway:
       type: "LoadBalancer"
+    # Set tenant to null until if/when we want to move to using DUBBD's tenant gateway
+    tenant-ingressgateway: null
 
   gateways:
     admin:
@@ -30,6 +32,8 @@ istio:
         mode: "PASSTHROUGH"
         key: "###ZARF_VAR_PUBLIC_KEY###"
         cert: "###ZARF_VAR_PUBLIC_CERT###"
+    # Set tenant to null until if/when we want to move to using DUBBD's tenant gateway
+    tenant: null
 
 neuvector:
   ingress:

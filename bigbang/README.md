@@ -37,6 +37,15 @@ the keycloak service because keycloak insists on doing its own TLS termination.
 
 ### Dependencies:
 
-This requires Flux to be present on the Kubernetes cluster. In DCO Core, this
-is done in the [dco-core umbrella package](../dco-core/zarf.yaml) prior to the
-Big Bang component deployment.
+At deployment time, this package requires a zarf-config.yaml file present, either in the working directory
+or by setting `ZARF_CONFIG` to the location of the zarf-config.yaml file on the filesystem. This config file
+specifies the domain and correlating cert/key files for the domain. In short, the zarf-config.yaml must 
+contain the following, where key_file and cert_file are the names of local files containing the cert and key:
+```bash
+package:
+  deploy:
+    set:
+      domain: <domain name, ex: 'vp.bigbang.dev'>
+      key_file: <key filename, ex: 'vp.bigbang.dev.key'>
+      cert_file: <cert filename, ex: 'vp.bigbang.dev.cert'>
+```
