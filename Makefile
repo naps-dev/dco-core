@@ -1,6 +1,6 @@
 .PHONY: all clean check-dependencies install-dependencies install-zarf assume-role ecr-login registry-login build-dco-package build-package install-go run-tests
 
-REQUIRED_BINS:=bash sudo gcc curl go docker aws # jq needed for assume-role, but since that's not a required target, ignoring here.
+REQUIRED_BINS:=bash sudo curl go docker aws # jq needed for assume-role, but since that's not a required target, ignoring here.
 
 ZARF_VER=0.27.0
 GOLANG_VER_MIN=1.19.5
