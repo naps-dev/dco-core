@@ -62,7 +62,6 @@ components:
       url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.2-skeleton
     extensions:
       bigbang:
-        version: "###ZARF_PKG_TMPL_BIGBANG_VERSION###"
         valuesFiles:
           - ../bigbang/values.yaml
 
