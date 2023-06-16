@@ -3,6 +3,8 @@
 Some future state of this effort may exist without access to Github actions. In this case, the `Makefile` can be used to facilitate the build and test of the Zarf packages in this repository.
 
 ### How To
+This Makefile should only be executed on Linux, AMD64 architecture; most of the Zarf packages are only compatible with that architecture.
+
 Most of the variables needed are pre-set in the Makefile, for individual packages the following values should be set
 - REF_NAME 
 - REF_TYPE 
