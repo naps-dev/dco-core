@@ -6,9 +6,6 @@ kiali:
 
 istio:
   ingressGateways:
-    # Disable until if/when we want to move to using DUBBD's 'tenant' gateway
-    tenant-ingressgateway:
-      enabled: false
     dataplane-ingressgateway:
       type: "LoadBalancer"
     passthrough-ingressgateway:
