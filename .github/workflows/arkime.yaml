@@ -18,7 +18,7 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "add-toleration"
+      REF_NAME: "add-toleration" 
       REF_TYPE: "branch"
       ZARF_PACKAGE: zarf-package-arkime-amd64.tar.zst
       IMAGE_TAG: "v4.2.0-2"
