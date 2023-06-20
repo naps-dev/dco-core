@@ -1,0 +1,16 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: dataplane-ek
+  namespace: dataplane-ek
+spec:
+  interval: 5m
+  url: https://github.com/naps-dev/dataplane-ek.git
+  ref:
+<<<<<<< main:dataplane-ek/kustomizations/dataplane-ek/gitrepository.yaml
+    tag: "1.3.0-bb.0"
+  secretRef:
+    name: private-git-server
+=======
+    name: "###ZARF_CONST_GIT_REF###"
+>>>>>>> dataplane elastic and kibana:dataplane-ek/manifests/gitrepository.yaml

@@ -99,3 +99,9 @@ components:
     required: true
     import:
       path: '../dataplane-ek/'
+
+  - name: eck-operator
+    required: true
+    import:
+      path: '../eck-operator/'
+

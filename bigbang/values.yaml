@@ -44,11 +44,15 @@ neuvector:
 
 # EFK -> PLG, see https://repo1.dso.mil/big-bang/bigbang/-/blob/1.39.0/docs/guides/using-bigbang/efk-plg-logging-migration.md
 elasticsearchKibana:
+<<<<<<< main:bigbang/values.yaml
   enabled: true
   ingress:
     gateway: "admin"
+=======
+  enabled: false
+>>>>>>> dataplane elastic and kibana:bigbang/kustomizations/bigbang/values.yaml
 eckOperator:
-  enabled: true
+  enabled: false
 jaeger:
   enabled: true
   ingress:

@@ -1,0 +1,14 @@
+kind: ZarfPackageConfig
+metadata:
+  name: eck-operator
+  description: "eck-operator"
+  architecture: amd64
+
+components:
+  - name: eck-operator
+    description: "ECK operator Chart Deployment for the DataPlane"
+    required: true
+    manifests:
+      - name: eck-operator
+        files:
+          - manifests/eck-operator.yaml
