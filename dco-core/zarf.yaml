@@ -95,13 +95,12 @@ components:
     import:
       path: '../metallb/'
 
-  - name: dataplane-ek
-    required: true
-    import:
-      path: '../dataplane-ek/'
-
   - name: eck-operator
     required: true
     import:
       path: '../eck-operator/'
 
+  - name: dataplane-ek
+    required: true
+    import:
+      path: '../dataplane-ek/'
