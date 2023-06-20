@@ -13,92 +13,12 @@ istio:
   mtls:
     mode: PERMISSIVE
 
-networkPolicies:
-  enabled: false
-
 kibana:
+  publicBaseUrl: "dataplane-kibana.${DOMAIN}"
   count: ${KIBANA_COUNT}
-  imagePullSecrets:
-    - name: private-registry
 
-monitoring:
-  enabled: false
-
-metrics:
-  enabled: false
-
-elasticsearch:
-  imagePullSecrets:
-    - name: private-registry
+elastic:
   master:
     count: ${ES_MASTER_COUNT}
-    initContainers:
-      - name: elastic-internal-init-filesystem
-        securityContext:
-          privileged: false
-          capabilities:
-            drop:
-              - ALL
-      - name: elastic-internal-suspend
-        securityContext:
-          privileged: false
-          capabilities:
-            drop:
-              - ALL
   data:
     count: ${ES_DATA_COUNT}
-    initContainers:
-      - name: elastic-internal-init-filesystem
-        securityContext:
-          privileged: false
-          capabilities:
-            drop:
-              - ALL
-      - name: elastic-internal-suspend
-        securityContext:
-          privileged: false
-          capabilities:
-            drop:
-              - ALL
-  ingest:
-    initContainers:
-      - name: elastic-internal-init-filesystem
-        securityContext:
-          privileged: false
-          capabilities:
-            drop:
-              - ALL
-      - name: elastic-internal-suspend
-        securityContext:
-          privileged: false
-          capabilities:
-            drop:
-              - ALL
-  ml:
-    initContainers:
-      - name: elastic-internal-init-filesystem
-        securityContext:
-          privileged: false
-          capabilities:
-            drop:
-              - ALL
-      - name: elastic-internal-suspend
-        securityContext:
-          privileged: false
-          capabilities:
-            drop:
-              - ALL
-  coord:
-    initContainers:
-      - name: elastic-internal-init-filesystem
-        securityContext:
-          privileged: false
-          capabilities:
-            drop:
-              - ALL
-      - name: elastic-internal-suspend
-        securityContext:
-          privileged: false
-          capabilities:
-            drop:
-              - ALL

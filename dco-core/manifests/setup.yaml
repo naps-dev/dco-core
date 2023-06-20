@@ -27,6 +27,13 @@ metadata:
   labels:
     istio-injection: enabled
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: eck-operator
+  labels:
+    istio-injection: enabled
+---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: GitRepository
 metadata:

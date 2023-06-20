@@ -5,8 +5,6 @@ metadata:
   namespace: dataplane-ek
 spec:
   interval: 5m
-  url: https://repo1.dso.mil/big-bang/product/packages/elasticsearch-kibana.git
+  url: https://github.com/naps-dev/dataplane-ek.git
   ref:
-    tag: "1.2.0-bb.0"
-  secretRef:
-    name: private-git-server
+    name: "###ZARF_CONST_GIT_REF###"

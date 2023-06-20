@@ -1,7 +1,7 @@
 configurations:
   - transformer.yaml
+
 resources:
-  - gitrepository.yaml
   - helmrelease.yaml
 
 configMapGenerator:
