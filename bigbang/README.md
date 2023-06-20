@@ -2,9 +2,11 @@
 
 ### Description
 
-This folder and associated Zarf package contains a single Zarf component: `bigbang`. This
-is an _opinionated_ release of [Big Bang](https://docs-bigbang.dso.mil/latest/), which includes
-only certain Big Bang applications.
+This folder and associated Zarf package contains DUBBD (Defense Unicorns BigBang Distribution), which
+comprises of 4 Zarf components: `load-certs`, `preflish`, `download-flux`, and `bigbang`. See the DUBBD
+repo for further context and details: [uds-package-dubbd](https://github.com/defenseunicorns/uds-package-dubbd).
+Via DUBBD, we are able to overlay our own values.yaml on top of DUBBD's overrides, resulting in an _opinionated_
+release of [Big Bang](https://docs-bigbang.dso.mil/latest/), which includes only certain Big Bang applications.
 
 ### Additional Customization
 
