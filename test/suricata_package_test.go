@@ -1,6 +1,8 @@
 package test
 
 import (
+	"fmt"
+	"github.com/gruntwork-io/terratest/modules/logger"
 	"strings"
 	"testing"
 	"time"
@@ -38,6 +40,21 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 		x += 1
 	}
 	k8s.WaitUntilPodAvailable(t, opts, pods[0].Name, 40, 30*time.Second)
+
+	agents := k8s.GetNodes(t, opts)
+
+	//Test suricata daemonsets comes up on all hardware tiers (node taint toleration test)
+	for _, pod := range pods {
+		nodeName := pod.Spec.NodeName
+		for _, agent := range agents {
+			if agent.Name == nodeName {
+				logger.Log(t, fmt.Sprintf("suricata pod [%s] is running on node [%s]", pod.Name, agent.Name))
+			} else {
+				logger.Log(t, fmt.Sprintf("suricata pod [%s] is not running on node [%s], failing test.", pod.Name, agent.Name))
+				t.FailNow()
+			}
+		}
+	}
 
 	//Test alert provided by suricata devs
 	createAlert := shell.Command{
