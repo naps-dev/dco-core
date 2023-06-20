@@ -16,7 +16,7 @@ DCO_REF_TYPE?=tag # In actions, defined as ${{ github.head_ref || github.ref_nam
 DCO_REF_NAME?=main # In actions, defined as ${{ github.ref_type }}. See README for notes.
 DCO_DIR?=dco-core
 
-all: check-dependencies install-dependencies ecr-login registry-login build-dco-package build-package run-tests
+all: check-dependencies install-dependencies ecr-login registry-login build-dco-package build-package
 
 ## Check for and Install dependencies
 check-dependencies: ## Check for dependencies that would be easier to install using package manager for the specific distro
