@@ -1,89 +1,65 @@
-domain: "###ZARF_VAR_DOMAIN###"
-
-registryCredentials:
-  registry: "###ZARF_REGISTRY###"
-  username: "zarf-pull"
-  password: "###ZARF_REGISTRY_AUTH_PULL###"
-
-git:
-  existingSecret: "private-git-server"
-
 networkPolicies:
   enabled: false
-  # When in prod use a real CIDR. Don't do this, it isn't secure. This is done here since it is a demo and the CIDR changes based on which Linux distro you are running on.
-  controlPlaneCidr: "0.0.0.0/0"
-  nodeCidr: "0.0.0.0/0"
-  vpcCidr: "0.0.0.0/0"
 
 kiali:
   enabled: false
 
 istio:
-  enabled: true
   ingressGateways:
-    public-ingressgateway:
-      type: "LoadBalancer"
-      # Leaving this as a placeholder -- not sure we want to set this for dev quite yet due to multiple deployment envs and distros
-      # loadBalancerIP: 10.1.29.122
     dataplane-ingressgateway:
       type: "LoadBalancer"
-      # Leaving this as a placeholder -- not sure we want to set this for dev quite yet due to multiple deployment envs and distros
-      # loadBalancerIP: 10.1.29.123
     passthrough-ingressgateway:
       type: "LoadBalancer"
-      # Node ports are assigned starting from nodePortBase.  The nodePortBase specifies the start of a range of 4 unused node ports.
-      # Node port will be assigned as follows: Port 15021 (Status) = nodePortBase, Port 80 = nodePortBase+1, Port 443 = nodePortBase+2, Port 15443 (SNI) = nodePortBase+3
-      # Node port base should be in the range from 30000 to 32764
-      # nodePortBase: 32000  # Alternatively, the kubernetesResourceSpec can be used to configure all port parameters
 
   gateways:
-    public:
-      ingressGateway: public-ingressgateway
+    admin:
       hosts:
         - "*.###ZARF_VAR_DOMAIN###"
     dataplane:
       ingressGateway: dataplane-ingressgateway
       hosts:
         - "*.###ZARF_VAR_DOMAIN###"
+      tls:
+        key: "###ZARF_VAR_PUBLIC_KEY###"
+        cert: "###ZARF_VAR_PUBLIC_CERT###"
     passthrough:
       ingressGateway: "passthrough-ingressgateway"
       hosts:
         - keycloak.vp.bigbang.dev
       tls:
         mode: "PASSTHROUGH"
+        key: "###ZARF_VAR_PUBLIC_KEY###"
+        cert: "###ZARF_VAR_PUBLIC_CERT###"
 
 neuvector:
-  enabled: true
   ingress:
-    gateway: "public"
-  values: 
+    gateway: "admin"
+  values:
     k3s:
       enabled: true
-
-clusterAuditor:
-  enabled: false
-gatekeeper:
-  enabled: false
+    containerd:
+      enabled: false
+    monitor:
+      install: false
 
 # EFK -> PLG, see https://repo1.dso.mil/big-bang/bigbang/-/blob/1.39.0/docs/guides/using-bigbang/efk-plg-logging-migration.md
 elasticsearchKibana:
   enabled: true
+  ingress:
+    gateway: "admin"
 eckOperator:
   enabled: true
 jaeger:
   enabled: true
+  ingress:
+    gateway: "admin"
 loki:
   enabled: false
 promtail:
   enabled: false
 tempo:
   enabled: false
-twistlock:
-  enabled: false
-kyverno:
-  enabled: true
 kyvernoPolicies:
-  enabled: true
   values:
     policies:
       # Keep policies in alphabetical order and name them the same as the .yaml file to help with configuration and troubleshooting
@@ -299,12 +275,20 @@ kyvernoReporter:
 addons:
   keycloak:
     enabled: true
-    
+
     ingress:
       gateway: "passthrough"
-    
+      key: "###ZARF_VAR_PUBLIC_KEY###"
+      cert: "###ZARF_VAR_PUBLIC_CERT###"
+
     values:
       replicas: 1
+
+      secrets:
+        env:
+          stringData:
+            KEYCLOAK_ADMIN: "root"
+            KEYCLOAK_ADMIN_PASSWORD: "iamroot"
 
       extraEnv: |-
         - name: KC_HTTPS_CERTIFICATE_FILE
@@ -318,7 +302,7 @@ addons:
         - name: KC_HTTP_RELATIVE_PATH
           value: /auth
         - name: KC_HOSTNAME
-          value: keycloak.vp.bigbang.dev
+          value: keycloak.###ZARF_VAR_DOMAIN###
         - name: KC_HOSTNAME_STRICT
           value: "true"
         - name: KC_HOSTNAME_STRICT_HTTPS
@@ -385,3 +369,11 @@ fluentbit:
         operator: "Equal"
         value: "noncore"
         effect: "NoSchedule"
+
+monitoring:
+  values:
+    istio:
+      alertmanager:
+        enabled: true
+      prometheus:
+        enabled: true

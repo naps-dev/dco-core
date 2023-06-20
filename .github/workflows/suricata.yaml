@@ -20,5 +20,5 @@ jobs:
     with:
       REF_NAME: "v7.0.0-0"
       REF_TYPE: "tag"
-      ZARF_PACKAGE: zarf-package-suricata-amd64.tar.zst
+      ZARF_PACKAGE_NAME: zarf-package-suricata-amd64.tar.zst
       COMPONENT: "suricata"

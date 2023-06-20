@@ -20,5 +20,5 @@ jobs:
     with:
       REF_NAME: "v6.5.0-5"
       REF_TYPE: "tag"
-      ZARF_PACKAGE: zarf-package-xsoar-amd64.tar.zst
+      ZARF_PACKAGE_NAME: zarf-package-xsoar-amd64.tar.zst
       COMPONENT: "xsoar"

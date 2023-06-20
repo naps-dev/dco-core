@@ -20,5 +20,5 @@ jobs:
     with:
       REF_NAME: "v4.0.10-4"
       REF_TYPE: "tag"
-      ZARF_PACKAGE: zarf-package-polarity-amd64.tar.zst
+      ZARF_PACKAGE_NAME: zarf-package-polarity-amd64.tar.zst
       COMPONENT: "polarity"

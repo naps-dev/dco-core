@@ -26,5 +26,5 @@ jobs:
     with:
       REF_NAME: "${{ github.head_ref || github.ref_name }}"
       REF_TYPE: "${{ github.ref_type }}"
-      ZARF_PACKAGE: zarf-package-dco-core-amd64.tar.zst
+      ZARF_PACKAGE_NAME: zarf-package-dco-core-amd64.tar.zst
       COMPONENT: "dco-core"
