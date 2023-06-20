@@ -8,7 +8,12 @@ components:
   - name: eck-operator
     description: "ECK operator Chart Deployment for the DataPlane"
     required: true
+    repos:
+      -  https://github.com/naps-dev/eck-operator.git
     manifests:
       - name: eck-operator
         files:
-          - manifests/eck-operator.yaml
+          - manifests/gitrepository.yaml
+          - manifests/helmrelease.yaml
+    images:
+      - docker.elastic.co/eck/eck-operator:2.8.0
