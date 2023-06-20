@@ -97,7 +97,7 @@ build-dco-package:
 	./build-package.sh $(DCO_DIR) $(DCO_REF_TYPE) $(DCO_REF_NAME) ""
 
 build-package:
-ifeq ($(COMPONENT),"xsoar")
+ifeq ($(COMPONENT),xsoar)
 	# Login to registry, add license file
 	@zarf tools registry login \
 		-u "$(XSOAR_USERNAME)" \
@@ -105,7 +105,7 @@ ifeq ($(COMPONENT),"xsoar")
 		"xsoar-registry.pan.dev"
 	@echo "$(XSOAR_LICENSE)" >> /tmp/demisto.lic
 endif
-ifeq ($(COMPONENT),"polarity")
+ifeq ($(COMPONENT),polarity)
 	# Add license file
 	@echo "$(POLARITY_LICENSE)" >> /tmp/polarity.lic
 endif
@@ -128,3 +128,9 @@ clean-go:
 clean-packages:
 	rm $(COMPONENT)/$(ZARF_PACKAGE)
 	rm $(DCO_DIR)/zarf-package-dco-core-amd64.tar.zst
+ifeq ($(COMPONENT),xsoar)
+	rm /tmp/demisto.lic
+endif
+ifeq ($(COMPONENT),polarity)
+	rm /tmp/polarity.lic
+endif
