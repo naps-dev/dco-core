@@ -319,6 +319,7 @@ addons:
           value: kubernetes
 
 fluentbit:
+<<<<<<< main:bigbang/values.yaml
   enabled: true
   values:
     config:
@@ -381,3 +382,6 @@ monitoring:
         enabled: true
       prometheus:
         enabled: true
+=======
+  enabled: false
+>>>>>>> removed fluent deployment and bigbang logging:bigbang/kustomizations/bigbang/values.yaml
