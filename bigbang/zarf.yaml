@@ -42,10 +42,6 @@ components:
       # Kyverno
       - https://repo1.dso.mil/big-bang/product/packages/kyverno.git@2.6.5-bb.3
       - https://repo1.dso.mil/big-bang/product/packages/kyverno-policies.git@1.1.0-bb.5
-      # Logging
-      - https://repo1.dso.mil/big-bang/product/packages/elasticsearch-kibana.git@1.2.0-bb.0
-      - https://repo1.dso.mil/big-bang/product/packages/eck-operator.git@2.7.0-bb.0
-      - https://repo1.dso.mil/big-bang/product/packages/fluentbit.git@0.27.0-bb.0
       # Neuvector
       - https://repo1.dso.mil/big-bang/product/packages/neuvector.git@2.4.3-bb.0
       # Monitoring
@@ -78,12 +74,6 @@ components:
       - "registry1.dso.mil/ironbank/nirmata/kyverno:v1.8.5"
       - "registry1.dso.mil/ironbank/nirmata/kyvernopre:v1.8.5"
       - "registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.26.3"
-
-      # Logging
-      - "registry1.dso.mil/ironbank/elastic/elasticsearch/elasticsearch:8.6.0"
-      - "registry1.dso.mil/ironbank/elastic/kibana/kibana:8.6.1"
-      - "registry1.dso.mil/ironbank/elastic/eck-operator/eck-operator:2.7.0"
-      - "registry1.dso.mil/ironbank/opensource/fluent/fluent-bit:2.0.11"
 
       # Neuvector
       - "registry1.dso.mil/ironbank/neuvector/neuvector/controller:5.1.2"
