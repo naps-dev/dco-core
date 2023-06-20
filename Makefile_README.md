@@ -12,18 +12,22 @@ Most of the variables needed are pre-set in the Makefile, for individual package
 - COMPONENT 
 - IMAGE_TAG (optional)
 
-Additionally, the Iron Bank login credentials are required as so: 
+Iron Bank login credentials are required as so: 
 - REGISTRY1_USERNAME
 - REGISTRY1_PASSWORD
+
+For ECR login, AWS_ACCOUNT_ID is required
 
 AWS access credentials will need to be passed if not running on instance with proper priviledges:
 - AWS_ACCESS_KEY_ID
 - AWS_SECRET_ACCESS_KEY
 - AWS_DEFAULT_REGION
 
-This makefile assumes that users might be running in different environments with packages possibly not pre-installed. Two recipes attempt to handle this:
+This makefile assumes that users might be running in different environments with packages possibly not pre-installed. Two targets attempt to handle this:
 - check-dependencies simply identifies if necessary dependencies are available in the environment. These are dependencies that are probably best managed by a package manager. With go and aws in particular, the out of the box installation wasn't compatible with alpine, so created install targets for both but omitting from `all`.
 - install-dependencies checks if a dependency is there, sometimes if it's the right version, and then installs if not. The makefile will install zarf and k3d. It will check versioning for go.
+
+The `run-tests` target is currently separate from `all` due to some issues with running successfully in certain environments. This target can be run independently (COMPONENT and REF_NAME required) after the packages are built.
 
 Note - "assume_role" and "push" are currently unused and have not been fully tested.
 
