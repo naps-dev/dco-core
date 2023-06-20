@@ -18,7 +18,8 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "v7.0.0-0"
-      REF_TYPE: "tag"
+      REF_NAME: "add-suricata-toleration-test"
+      # REF_TYPE: "tag"
+      REF_TYPE: "branch"
       ZARF_PACKAGE: zarf-package-suricata-amd64.tar.zst
       COMPONENT: "suricata"
