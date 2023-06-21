@@ -4,6 +4,11 @@ metadata:
   description: "dataplane-ek"
   architecture: amd64
 
+constants:
+  - name: GIT_REF
+    description: "Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy"
+    value: "###ZARF_PKG_TMPL_GIT_REF###"
+
 variables:
   - name: DOMAIN
     default: "vp.bigbang.dev"
