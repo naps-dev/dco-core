@@ -46,9 +46,10 @@ else
 endif
 
 # k3d
+# Note - during testing, it was noted that older version of k3d (v5.0.0) don't accept certain special characters in the cluster name, this version should work but version checking for k3d is probably needed
 ifeq (,$(shell which k3d))
 	$(info "k3d not installed. Installing...")
-	curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.0.0 bash
+	curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.4.3 bash 
 else
 	$(info "k3d already installed")
 endif
