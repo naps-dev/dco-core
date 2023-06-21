@@ -23,6 +23,8 @@ AWS access credentials will need to be passed if not running on instance with pr
 - AWS_SECRET_ACCESS_KEY
 - AWS_DEFAULT_REGION
 
+Finally, ZARF_CONFIG will need to be updated if it's not located in ./bigbang/zarf-config.yaml
+
 This makefile assumes that users might be running in different environments with packages possibly not pre-installed. Two targets attempt to handle this:
 - check-dependencies simply identifies if necessary dependencies are available in the environment. These are dependencies that are probably best managed by a package manager. With go and aws in particular, the out of the box installation wasn't compatible with alpine, so created install targets for both but omitting from `all`.
 - install-dependencies checks if a dependency is there, sometimes if it's the right version, and then installs if not. The makefile will install zarf and k3d. It will check versioning for go.

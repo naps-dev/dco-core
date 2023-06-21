@@ -2,7 +2,7 @@
 
 REQUIRED_BINS:=bash sudo curl go docker aws # jq needed for assume-role, but since that's not a required target, ignoring here.
 
-ZARF_VER=0.27.0
+ZARF_VER=0.27.1
 GOLANG_VER_MIN=1.19.5
 AWS_ROLE_SESSION_NAME=arkime-ecr
 AWS_REGION=us-east-1
@@ -10,6 +10,7 @@ AWS_REGION=us-east-1
 REF_TYPE?=branch
 REF_NAME?=main
 ZARF_PACKAGE?=zarf-package-dco-core-amd64.tar.zst
+ZARF_CONFIG?=$(shell pwd)/bigbang/zarf-config.yaml
 COMPONENT?=dco-core
 DCO_REF_TYPE?=tag # In actions, defined as ${{ github.head_ref || github.ref_name }}. See README for notes.
 DCO_REF_NAME?=main # In actions, defined as ${{ github.ref_type }}. See README for notes.
@@ -111,6 +112,7 @@ endif
 	./build-package.sh $(COMPONENT) $(REF_TYPE) $(REF_NAME) $(IMAGE_TAG)
 
 run-tests:
+	$(info zarf_config=$(ZARF_CONFIG))
 	go get -t ./...
 	cd ./test && go test -timeout 40m
 
