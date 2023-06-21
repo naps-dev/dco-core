@@ -60,7 +60,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 		}
 
 		if !isRunningOnExpectedAgent {
-			t.Errorf("Pod %s is not running on any of the expected agents", pod.Name)
+			t.Errorf("Pod %s is not running on any of the expected agents [%s]", pod.Name, expectedAgents)
 		}
 	}
 
