@@ -63,10 +63,10 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 			for key, value := range expectedLabels {
 				if nodeValue, ok := agent.Labels[key]; ok {
 					if nodeValue != value {
-						t.Errorf("Pod %s running on wrong agent, expected label %s=%s, got %s=%s", pod.Name, key, value, key, nodeValue)
+						t.Errorf("Pod %s running on wrong agent [%s], expected label %s=%s, got %s=%s", pod.Name, agent.Name, key, value, key, nodeValue)
 					}
 				} else {
-					t.Errorf("Pod %s running on wrong agent, expected label %s=%s, but label is missing", pod.Name, key, value)
+					t.Errorf("Pod %s running on wrong agent [%s], expected label %s=%s, but label is missing", pod.Name, agent.Name, key, value)
 				}
 			}
 
