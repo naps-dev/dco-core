@@ -1,6 +1,7 @@
 package test
 
 import (
+	"os"
 	"fmt"
 	"github.com/gruntwork-io/terratest/modules/logger"
 	"strings"
@@ -51,6 +52,8 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 				logger.Log(t, fmt.Sprintf("suricata pod [%s] is running on node [%s]", pod.Name, agent.Name))
 			} else {
 				logger.Log(t, fmt.Sprintf("suricata pod [%s] is not running on node [%s], failing test.", pod.Name, agent.Name))
+				logger.Log(t, fmt.Sprintf("agent [%s] Labels [%s], taints [%s].", agent.Name, agent.Labels, agent.Spec.Taints))
+				logger.Log(t, fmt.Sprintf("Component: [%s]", os.Getenv("COMPONENT")))
 				t.FailNow()
 			}
 		}
