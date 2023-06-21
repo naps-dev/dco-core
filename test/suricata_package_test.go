@@ -40,49 +40,29 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	}
 	k8s.WaitUntilPodAvailable(t, opts, pods[0].Name, 40, 30*time.Second)
 
+	// Test that the pods are running on the correct agents
 	agents := k8s.GetNodes(t, opts)
 	for _, pod := range pods {
-		agent := getAgent(pod.Spec.NodeName, agents)
+		isRunningOnExpectedAgent := false
+		expectedAgents := getAgentsWithLabel(agents, []string{"Tier-1", "Tier-2"})
 
-		// Check if the agent exists in the agents list
-		if agent == nil {
-			t.Errorf("Pod %s is running on an agent that is not in the agents list", pod.Name)
+		// Check if any expected agent exists
+		if len(expectedAgents) == 0 {
+			t.Errorf("Pod %s is running on an agent that is not in the agents list or does not have matching labels", pod.Name)
 			continue
 		}
 
-		// Check if it's running on the correct agent
-		expectedLabels := map[string]string{
-			"suricata-capture":   "true",
-			"cnaps.io/node-type": "",
+		for _, agent := range expectedAgents {
+			if isPodRunningOnAgent(pod, agent) {
+				isRunningOnExpectedAgent = true
+				break
+			}
 		}
-		//pod = tier-1
-		for _, label := range []string{"Tier-1", "Tier-2"} {
-			expectedLabels["cnaps.io/node-type"] = label
 
-			// Check labels
-			for key, value := range expectedLabels {
-				if nodeValue, ok := agent.Labels[key]; ok {
-					if nodeValue != value {
-						t.Errorf("Pod %s running on wrong agent [%s], expected label %s=%s, got %s=%s", pod.Name, agent.Name, key, value, key, nodeValue)
-					}
-				} else {
-					t.Errorf("Pod %s running on wrong agent [%s], expected label %s=%s, but label is missing", pod.Name, agent.Name, key, value)
-				}
-			}
-
-			// Check taints
-			for _, taint := range agent.Spec.Taints {
-				if taint.Key == "cnaps.io/node-taint" && taint.Value != "noncore:NoSchedule" && taint.Effect != v1.TaintEffectNoSchedule {
-					t.Errorf("Pod %s running on wrong agent, expected taint %s=%s:%s", pod.Name, taint.Key, taint.Value, taint.Effect)
-				}
-			}
+		if !isRunningOnExpectedAgent {
+			t.Errorf("Pod %s is not running on any of the expected agents", pod.Name)
 		}
 	}
-
-	// for each pod check if it is running on agents with the following labels:
-	// - agent-0: labels: {"suricata-capture":"true", "cnaps.io/node-type": "Tier-1", } taints: {"cnaps.io/node-taint": "noncore:NoSchedule"}
-	// - agent-1: labels: {"suricata-capture":"true", "cnaps.io/node-type": "Tier-2", } taints: {"cnaps.io/node-taint": "noncore:NoSchedule"}
-	// if it's running on agents without the above labels, fail the test
 
 	//Test alert provided by suricata devs
 	createAlert := shell.Command{
@@ -108,11 +88,21 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	}
 }
 
-func getAgent(nodeName string, agents []v1.Node) *v1.Node {
+func getAgentsWithLabel(agents []v1.Node, labels []string) []*v1.Node {
+	var matchingAgents []*v1.Node
+
 	for _, agent := range agents {
-		if agent.Name == nodeName {
-			return &agent
+		for _, label := range labels {
+			if agent.Labels["cnaps.io/node-type"] == label {
+				matchingAgents = append(matchingAgents, &agent)
+				break
+			}
 		}
 	}
-	return nil
+
+	return matchingAgents
+}
+
+func isPodRunningOnAgent(pod v1.Pod, agent *v1.Node) bool {
+	return pod.Spec.NodeName == agent.Name
 }

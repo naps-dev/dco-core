@@ -18,6 +18,8 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
+    # The REF_NAME is referencing the tag or branch name in the suricata repo (not the dco-core repo)
+    # if you're making a change to the capability chart change the REF_NAME to the tag or branch name in the capability repo
       REF_NAME: "add-noncore-toleration"
       # REF_TYPE: "tag"
       REF_TYPE: "branch"
