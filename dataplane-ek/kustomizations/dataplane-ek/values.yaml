@@ -4,7 +4,7 @@ hostname: ${DOMAIN}
 domain: ${DOMAIN}
 
 kibana:
-  publicBaseUrl: "dataplane-kibana.${DOMAIN}"
+  publicBaseUrl: "https://dataplane-kibana.${DOMAIN}"
   count: ${KIBANA_COUNT}
 
 elastic:
