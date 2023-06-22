@@ -63,7 +63,13 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 		}
 
 		if isEqual(expectedNodeTypes, actualNodeTypes) != true {
-			t.Errorf("Pod %s is not running on any of the expected agents [%s]", pod.Name, expectedNodeTypes)
+			t.Errorf("Pod %s is not running on any of the expected node-types", pod.Name)
+			for k, v := range expectedNodeTypes {
+				t.Errorf("Expected Node Type: %s, %t", k, v)
+			}
+			for k, v := range actualNodeTypes {
+				t.Errorf("Actual Node Type: %s, %t", k, v)
+			}
 		}
 	}
 
@@ -107,7 +113,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 //}
 //
 
-func isEqual(expected, actual map[string]bool) bool {
+func isEqual(expected map[string]bool, actual map[string]bool) bool {
 	if len(expected) != len(actual) {
 		return false
 	}
