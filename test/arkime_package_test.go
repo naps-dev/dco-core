@@ -9,7 +9,6 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-
 func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string) {
 	testEnv := map[string]string{
 		"KUBECONFIG": kubeconfigPath,
