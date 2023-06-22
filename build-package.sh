@@ -1,4 +1,5 @@
 #!/bin/bash
+# Arguments: [1 = COMPONENT, 2 = REF_TYPE, 3 = REF_NAME, 4 (optional) = IMAGE_TAG] 
 
 cd $1
 
@@ -13,7 +14,7 @@ fi
 if [ "$2" = "tag" ]; then
     args+=(--set GIT_REF=refs/tags/$3)
 fi
-if [ "$4" != "" ]; then
+if [ $4 ]; then
     args+=(--set IMAGE_TAG="$4")
 fi
 args+=(--confirm)

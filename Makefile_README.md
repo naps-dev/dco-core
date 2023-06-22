@@ -2,13 +2,72 @@
 ## Motivation
 Some future state of this effort may exist without access to Github actions. In this case, the `Makefile` can be used to facilitate the build and test of the Zarf packages in this repository.
 
-### How To
-This Makefile should only be executed on Linux, AMD64 architecture; most of the Zarf packages are only compatible with that architecture.
+## How To
+Help is available for the supported `make` targets by running `make` in the root project directory.
 
-Most of the variables needed are pre-set in the Makefile, for individual packages the following values should be set
+```shell
+make
+
+--------------------- Run [TARGET] [ARGS] or make help for more information ---------------------
+
+help                           List of targets with descriptions
+build-image                    Builds the docker image with all dependencies to produce Zarf packages
+build-all                      Builds the dco-core and COMPONENT Zarf packages
+build-all-docker               Builds the dco-core and COMPONENT Zarf packages in a docker container (preferred)
+test                           Runs the go tests
+check-dependencies             Check for dependencies that would be easier to install using package manager for the specific distro
+install-dependencies           Installs certain dependency packages - currently Zarf and k3d
+install-zarf                   Install Zarf
+install-go                     Install Go
+install-aws                    Install AWS CLI
+assume-role                    Assumes role user; not needed on EC2 instance with the role AWS_ECR_ROLE
+ecr-login                      Login to Amazon ECR
+zarf-registry1-login           Zarf registry1 login
+build-dco-package              Builds dco-core Zarf package
+build-package                  Builds COMPONENT Zarf package
+run-tests                      Runs go tests
+clean                          Clean files
+clean-zarf                     Cleans Zarf install
+clean-go                       Cleans go install 
+clean-packages                 Cleans built packages
+
+---------------------------------------------------------------------------------------------------
+```
+### Build Packages
+
+There are two targets to help build the Zarf packages:
+1) build-all
+2) build-all-docker
+
+If you would like to build the Zarf packages using a containerized environment to host dependencies (as opposed to needing them installed locally), the image needs to be build first (future: load to ghcr)
+``` shell
+make build-image
+```
+Create a .env file at the root directory to hold your credentials and variables, for example:
+```yaml
+REGISTRY1_USERNAME=[Username]
+REGISTRY1_PASSWORD=[Password]
+AWS_ACCOUNT_ID=[Account ID]
+AWS_ACCESS_KEY_ID=[ID]
+AWS_SECRET_ACCESS_KEY=[Key]
+AWS_DEFAULT_REGION=us-east-1
+
+COMPONENT=arkime
+REF_NAME=v4.2.0-2
+REF_TYPE=tag
+ZARF_PACKAGE_NAME=zarf-package-arkime-amd64.tar.zst
+IMAGE_TAG=v4.2.0-2
+```
+
+Then run your build-all-docker target, for example
+```
+make build-all-docker
+```
+
+When building an individual package, the following values should be set
 - REF_NAME 
 - REF_TYPE 
-- ZARF_PACKAGE
+- ZARF_PACKAGE_NAME
 - COMPONENT 
 - IMAGE_TAG (optional)
 
@@ -25,13 +84,9 @@ AWS access credentials will need to be passed if not running on instance with pr
 
 Finally, ZARF_CONFIG will need to be updated if it's not located in ./bigbang/zarf-config.yaml
 
-This makefile assumes that users might be running in different environments with packages possibly not pre-installed. Two targets attempt to handle this:
-- check-dependencies simply identifies if necessary dependencies are available in the environment. These are dependencies that are probably best managed by a package manager. With go and aws in particular, the out of the box installation wasn't compatible with alpine, so created install targets for both but omitting from `all`.
-- install-dependencies checks if a dependency is there, sometimes if it's the right version, and then installs if not. The makefile will install zarf and k3d. It will check versioning for go.
+The `test` target is currently separate from `build-all` and can only be run with the dependencies installed locally after the packages are built. (COMPONENT and REF_NAME required) 
 
-The `run-tests` target is currently separate from `all` due to some issues with running successfully in certain environments. This target can be run independently (COMPONENT and REF_NAME required) after the packages are built.
-
-Note - "assume_role" and "push" are currently unused and have not been fully tested.
+Note - "assume_role" and "push-to-s3" are currently unused and have not been fully tested.
 
 #### XSOAR
 If this component is being built, it also requires:
@@ -49,7 +104,7 @@ Several github variables are used in the Actions. While these are not currently 
 #### `github.ref_type`
 This can be extracted by `$(ref_type)` using the following bash script function
 
-```
+``` shell
 function ref_type {
     if git show-ref --verify --quiet refs/heads/$(git rev-parse --abbrev-ref HEAD); then
         echo "branch"
@@ -63,6 +118,6 @@ function ref_type {
 
 #### `github.head_ref || github.ref_name`
 The following can be used to get the current git branch, which seems analogous to these variables (?)
-```
+``` shell
 $(git rev-parse --abbrev-ref HEAD)
 ```
