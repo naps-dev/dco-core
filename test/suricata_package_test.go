@@ -45,8 +45,6 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	actualNodeTypes := map[string]bool{}
 	expectedNodeTypes := map[string]bool{"Tier-1": true, "Tier-2": true}
 	for _, pod := range pods {
-		//isRunningOnExpectedAgent := false
-		//expectedNodeTypes := getAgentsWithLabel(agents, []string{"Tier-1", "Tier-2"})
 
 		// Check if any expected agent exists
 		if len(agents) == 0 {
@@ -56,7 +54,6 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 
 		for _, agent := range agents {
 			if isPodRunningOnAgent(pod, &agent) {
-				//isRunningOnExpectedAgent = true
 				actualNodeTypes[agent.Labels["cnaps.io/node-type"]] = true
 				break
 			}
@@ -96,22 +93,6 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 		t.Errorf("tail /var/log/suricata/fast.log did not contain \"Suspicious User Agent\"")
 	}
 }
-
-//func getAgentsWithLabel(agents []v1.Node, labels []string) []*v1.Node {
-//	var matchingAgents []*v1.Node
-//
-//	for _, agent := range agents {
-//		for _, label := range labels {
-//			if agent.Labels["cnaps.io/node-type"] == label {
-//				matchingAgents = append(matchingAgents, &agent)
-//				break
-//			}
-//		}
-//	}
-//
-//	return matchingAgents
-//}
-//
 
 func isEqual(expected map[string]bool, actual map[string]bool) bool {
 	if len(expected) != len(actual) {
