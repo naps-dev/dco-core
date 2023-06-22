@@ -47,7 +47,6 @@ func TestZarfPackage(t *testing.T) {
 			"--agents", "3",
 			"--k3s-node-label", component + "-capture=true@agent:0",
 			"--k3s-node-label", component + "-capture=true@agent:1",
-			"--k3s-node-label", component + "-capture=true@agent:2",
 			"--k3s-node-label", "cnaps.io/node-type=Tier-1@agent:0",
 			"--k3s-node-label", "cnaps.io/node-type=Tier-2@agent:1",
 			"--k3s-node-label", "cnaps.io/node-type=Tier-3@agent:2",

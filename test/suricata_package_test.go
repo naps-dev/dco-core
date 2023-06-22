@@ -42,25 +42,28 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 
 	// Test that the pods are running on the correct agents
 	agents := k8s.GetNodes(t, opts)
+	var actualNodeTypes map[string]bool
+	expectedNodeTypes := map[string]bool{"Tier-1": true, "Tier-2": true}
 	for _, pod := range pods {
-		isRunningOnExpectedAgent := false
-		expectedAgents := getAgentsWithLabel(agents, []string{"Tier-1", "Tier-2"})
+		//isRunningOnExpectedAgent := false
+		//expectedNodeTypes := getAgentsWithLabel(agents, []string{"Tier-1", "Tier-2"})
 
 		// Check if any expected agent exists
-		if len(expectedAgents) == 0 {
+		if len(agents) == 0 {
 			t.Errorf("Pod %s is running on an agent that is not in the agents list or does not have matching labels", pod.Name)
 			continue
 		}
 
-		for _, agent := range expectedAgents {
-			if isPodRunningOnAgent(pod, agent) {
-				isRunningOnExpectedAgent = true
+		for _, agent := range agents {
+			if isPodRunningOnAgent(pod, &agent) {
+				//isRunningOnExpectedAgent = true
+				actualNodeTypes[agent.Labels["cnaps.io/node-type"]] = true
 				break
 			}
 		}
 
-		if !isRunningOnExpectedAgent {
-			t.Errorf("Pod %s is not running on any of the expected agents [%s]", pod.Name, expectedAgents)
+		if isEqual(expectedNodeTypes, actualNodeTypes) != true {
+			t.Errorf("Pod %s is not running on any of the expected agents [%s]", pod.Name, expectedNodeTypes)
 		}
 	}
 
@@ -88,19 +91,31 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	}
 }
 
-func getAgentsWithLabel(agents []v1.Node, labels []string) []*v1.Node {
-	var matchingAgents []*v1.Node
+//func getAgentsWithLabel(agents []v1.Node, labels []string) []*v1.Node {
+//	var matchingAgents []*v1.Node
+//
+//	for _, agent := range agents {
+//		for _, label := range labels {
+//			if agent.Labels["cnaps.io/node-type"] == label {
+//				matchingAgents = append(matchingAgents, &agent)
+//				break
+//			}
+//		}
+//	}
+//
+//	return matchingAgents
+//}
 
-	for _, agent := range agents {
-		for _, label := range labels {
-			if agent.Labels["cnaps.io/node-type"] == label {
-				matchingAgents = append(matchingAgents, &agent)
-				break
-			}
+func isEqual(expected, actual map[string]bool) bool {
+	if len(expected) != len(actual) {
+		return false
+	}
+	for k, v := range expected {
+		if actual[k] != v {
+			return false
 		}
 	}
-
-	return matchingAgents
+	return true
 }
 
 func isPodRunningOnAgent(pod v1.Pod, agent *v1.Node) bool {
