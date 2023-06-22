@@ -39,6 +39,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 		x += 1
 	}
 	k8s.WaitUntilPodAvailable(t, opts, pods[0].Name, 40, 30*time.Second)
+	k8s.WaitUntilPodAvailable(t, opts, pods[1].Name, 40, 30*time.Second)
 
 	// Test that the pods are running on the correct agents
 	agents := k8s.GetNodes(t, opts)
@@ -46,16 +47,9 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	expectedNodeTypes := map[string]bool{"Tier-1": true, "Tier-2": true}
 	for _, pod := range pods {
 
-		// Check if any expected agent exists
-		if len(agents) == 0 {
-			t.Errorf("Pod %s is running on an agent that is not in the agents list or does not have matching labels", pod.Name)
-			continue
-		}
-
 		for _, agent := range agents {
 			if isPodRunningOnAgent(pod, &agent) {
 				actualNodeTypes[agent.Labels["cnaps.io/node-type"]] = true
-				break
 			}
 		}
 
