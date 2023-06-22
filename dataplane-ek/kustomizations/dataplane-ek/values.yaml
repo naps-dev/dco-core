@@ -3,16 +3,6 @@
 hostname: ${DOMAIN}
 domain: ${DOMAIN}
 
-istio:
-  enabled: true
-  kibana:
-    gateways:
-      - istio-system/dataplane
-    hosts:
-      - "dataplane-kibana.${DOMAIN}"
-  mtls:
-    mode: PERMISSIVE
-
 kibana:
   publicBaseUrl: "dataplane-kibana.${DOMAIN}"
   count: ${KIBANA_COUNT}
