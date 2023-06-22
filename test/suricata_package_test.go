@@ -42,7 +42,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 
 	// Test that the pods are running on the correct agents
 	agents := k8s.GetNodes(t, opts)
-	var actualNodeTypes map[string]bool
+	actualNodeTypes := map[string]bool{}
 	expectedNodeTypes := map[string]bool{"Tier-1": true, "Tier-2": true}
 	for _, pod := range pods {
 		//isRunningOnExpectedAgent := false

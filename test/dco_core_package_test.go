@@ -51,8 +51,7 @@ func TestZarfPackage(t *testing.T) {
 			"--k3s-node-label", "cnaps.io/node-type=Tier-2@agent:1",
 			"--k3s-node-label", "cnaps.io/node-type=Tier-3@agent:2",
 			"--k3s-arg", "--node-taint=cnaps.io/node-taint=noncore:NoSchedule@agent:1",
-			"--k3s-arg", "--node-taint=cnaps.io/node-taint=noncore:NoSchedule@agent:2",
-			"--k3s-arg", "--node-taint=cnaps.io/node-taint=noncore:NoSchedule@agent:3"},
+			"--k3s-arg", "--node-taint=cnaps.io/node-taint=noncore:NoSchedule@agent:2"},
 		Env: testEnv,
 	}
 
