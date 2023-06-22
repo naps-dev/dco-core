@@ -105,6 +105,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 //
 //	return matchingAgents
 //}
+//
 
 func isEqual(expected, actual map[string]bool) bool {
 	if len(expected) != len(actual) {
