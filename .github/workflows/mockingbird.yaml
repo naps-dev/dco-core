@@ -18,6 +18,8 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
+    # The REF_NAME is referencing the tag or branch name in the mockingbird repo (not the dco-core repo)
+    # if you're making a change to the capability chart change the REF_NAME to the tag or branch name in the capability repo
       REF_NAME: "v1.2.0-5"
       REF_TYPE: "tag"
       ZARF_PACKAGE_NAME: zarf-package-mockingbird-amd64.tar.zst
