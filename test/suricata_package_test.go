@@ -46,7 +46,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	agents := k8s.GetNodes(t, opts)
 	actualNodeTypes := map[string]bool{}
 	expectedNodeTypes := map[string]bool{"Tier-1": true, "Tier-2": true}
-	fmt.Printf("Pods available: [%s] \n", len(pods))
+	fmt.Printf("Pods available: [%n] \n", len(pods))
 	for _, pod := range pods {
 		fmt.Printf("Pod name: [%s] \n", pod.Name)
 
