@@ -29,10 +29,10 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	x := 0
 	pods := k8s.ListPods(t, opts, metav1.ListOptions{})
 	for x < 30 {
-		if len(pods) > 0 {
+		if len(pods) > 1 {
 			break
 		} else if x == 29 {
-			t.Errorf("Could not start Suricata pod (Timeout)")
+			t.Errorf("Could not start Suricata pods (Timeout)")
 		}
 		time.Sleep(10 * time.Second)
 		pods = k8s.ListPods(t, opts, metav1.ListOptions{})
