@@ -9,7 +9,7 @@ on:
       REF_TYPE:
         required: true
         type: string
-      ZARF_PACKAGE:
+      ZARF_PACKAGE_NAME:
         required: true
         type: string
       COMPONENT:
@@ -26,11 +26,12 @@ defaults:
     shell: bash
 env:
   S3_PATH: "s3://${{ secrets.AWS_BUCKET }}/naps-dev/${{ inputs.COMPONENT}}/${{ inputs.REF_NAME}}"
-  ZARF_PACKAGE: "${{ inputs.ZARF_PACKAGE}}"
+  ZARF_PACKAGE_NAME: "${{ inputs.ZARF_PACKAGE_NAME}}"
   COMPONENT: "${{ inputs.COMPONENT}}"
   REF_NAME: "${{ inputs.REF_NAME}}"
   DCO_REF_NAME: "${{ github.head_ref || github.ref_name }}"
   DCO_REF_TYPE: "${{ github.ref_type }}"
+  ZARF_CONFIG: "${{ github.workspace }}/bigbang/zarf-config.yaml"
 jobs:
   package-component:
     runs-on: [on-prem-arc]
@@ -43,7 +44,7 @@ jobs:
       - name: Install Zarf
         uses: defenseunicorns/setup-zarf@main
         with:
-          version: v0.27.0
+          version: v0.27.1
           download-init-package: true
 
       - name: Login to XSOAR registry
@@ -209,7 +210,7 @@ jobs:
 
       - name: Save Package to S3
         run: |
-          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE }}"
+          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE_NAME }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE_NAME }}"
         working-directory: ${{ inputs.COMPONENT }}
 
       - name: Remove any license files

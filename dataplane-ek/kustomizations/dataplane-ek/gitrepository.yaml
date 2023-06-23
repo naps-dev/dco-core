@@ -7,6 +7,6 @@ spec:
   interval: 5m
   url: https://repo1.dso.mil/big-bang/product/packages/elasticsearch-kibana.git
   ref:
-    tag: "1.2.0-bb.0"
+    tag: "1.3.0-bb.0"
   secretRef:
     name: private-git-server
