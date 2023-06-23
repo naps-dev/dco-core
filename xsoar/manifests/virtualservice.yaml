@@ -5,7 +5,7 @@ metadata:
   namespace: xsoar
 spec:
   hosts:
-    - "dataplane-kibana.###ZARF_VAR_DOMAIN###"
+    - "xsoar.###ZARF_VAR_DOMAIN###"
   gateways:
     - istio-system/dataplane
   http:
