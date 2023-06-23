@@ -46,10 +46,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	agents := k8s.GetNodes(t, opts)
 	actualNodeTypes := map[string]bool{}
 	expectedNodeTypes := map[string]bool{"Tier-1": true, "Tier-2": true}
-	fmt.Printf("Pods available: [%d] \n", len(pods))
 	for _, pod := range pods {
-		fmt.Printf("Pod name: [%s] \n", pod.Name)
-
 		for _, agent := range agents {
 			fmt.Printf("Agent name: [%s] \n", agent.Name)
 			if isPodRunningOnAgent(pod, &agent) {
@@ -59,6 +56,9 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	}
 
 	if isEqual(expectedNodeTypes, actualNodeTypes) != true {
+		for _, pod := range pods {
+			fmt.Printf("Pod [%s] agent [%s] \n", pod.Name, pod.Spec.NodeName)
+		}
 		for k, v := range expectedNodeTypes {
 			t.Errorf("Expected Node Type: %s, %t", k, v)
 		}
