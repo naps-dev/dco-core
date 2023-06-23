@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	v1 "k8s.io/api/core/v1"
 	"strings"
 	"testing"
@@ -45,22 +46,25 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	agents := k8s.GetNodes(t, opts)
 	actualNodeTypes := map[string]bool{}
 	expectedNodeTypes := map[string]bool{"Tier-1": true, "Tier-2": true}
+	fmt.Printf("Pods available: [%s] \n", len(pods))
 	for _, pod := range pods {
+		fmt.Printf("Pod name: [%s] \n", pod.Name)
 
 		for _, agent := range agents {
+			fmt.Printf("Agent name: [%s] \n", agent.Name)
 			if isPodRunningOnAgent(pod, &agent) {
 				actualNodeTypes[agent.Labels["cnaps.io/node-type"]] = true
 			}
 		}
-
-		if isEqual(expectedNodeTypes, actualNodeTypes) != true {
-			t.Errorf("Pod %s is not running on any of the expected node-types", pod.Name)
-			for k, v := range expectedNodeTypes {
-				t.Errorf("Expected Node Type: %s, %t", k, v)
-			}
-			for k, v := range actualNodeTypes {
-				t.Errorf("Actual Node Type: %s, %t", k, v)
-			}
+	}
+	
+	if isEqual(expectedNodeTypes, actualNodeTypes) != true {
+		t.Errorf("Pod %s is not running on any of the expected node-types", pod.Name)
+		for k, v := range expectedNodeTypes {
+			t.Errorf("Expected Node Type: %s, %t", k, v)
+		}
+		for k, v := range actualNodeTypes {
+			t.Errorf("Actual Node Type: %s, %t", k, v)
 		}
 	}
 
