@@ -56,9 +56,6 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	}
 
 	if isEqual(expectedNodeTypes, actualNodeTypes) != true {
-		for _, pod := range pods {
-			fmt.Printf("Pod [%s] agent [%s] \n", pod.Name, pod.Spec.NodeName)
-		}
 		for k, v := range expectedNodeTypes {
 			t.Errorf("Expected Node Type: %s, %t", k, v)
 		}
