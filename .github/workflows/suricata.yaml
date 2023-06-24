@@ -25,3 +25,4 @@ jobs:
       REF_TYPE: "branch"
       ZARF_PACKAGE: zarf-package-suricata-amd64.tar.zst
       COMPONENT: "suricata"
+
