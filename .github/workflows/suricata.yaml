@@ -23,6 +23,6 @@ jobs:
       REF_NAME: "add-noncore-toleration"
       # REF_TYPE: "tag"
       REF_TYPE: "branch"
-      ZARF_PACKAGE: zarf-package-suricata-amd64.tar.zst
+      ZARF_PACKAGE_NAME: zarf-package-suricata-amd64.tar.zst
       COMPONENT: "suricata"
 
