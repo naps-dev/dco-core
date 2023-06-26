@@ -18,8 +18,8 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-      REF_NAME: "update-cert"
-      REF_TYPE: "branch"
+      REF_NAME: "v8.17.0-3"
+      REF_TYPE: "tag"
       ZARF_PACKAGE_NAME: zarf-package-mixmode-amd64.tar.zst
-      IMAGE_TAG: "update-cert"
+      IMAGE_TAG: "v8.17.0-3"
       COMPONENT: "mixmode"
