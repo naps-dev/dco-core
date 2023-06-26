@@ -44,8 +44,14 @@ func TestZarfPackage(t *testing.T) {
 			"--k3s-arg", "--disable=servicelb@server:*",
 			"--port", "0:443@loadbalancer",
 			"--port", "0:80@loadbalancer",
-			"--agents", "2",
-			"--k3s-node-label", component + "-capture=true@agent:0"},
+			"--agents", "3",
+			"--k3s-node-label", component + "-capture=true@agent:0",
+			"--k3s-node-label", component + "-capture=true@agent:1",
+			"--k3s-node-label", "cnaps.io/node-type=Tier-1@agent:0",
+			"--k3s-node-label", "cnaps.io/node-type=Tier-2@agent:1",
+			"--k3s-node-label", "cnaps.io/node-type=Tier-3@agent:2",
+			"--k3s-arg", "--node-taint=cnaps.io/node-taint=noncore:NoSchedule@agent:1",
+			"--k3s-arg", "--node-taint=cnaps.io/node-taint=noncore:NoSchedule@agent:2"},
 		Env: testEnv,
 	}
 
@@ -79,6 +85,15 @@ func TestZarfPackage(t *testing.T) {
 	}
 
 	shell.RunCommand(t, zarfInitCmd)
+
+	// Copy cert and key to the working dir as DUBBD (via the zarf-config.yaml) requires them at deploy time
+	copyCertKeyCmd := shell.Command{
+		Command: "cp",
+		Args: []string{"../bigbang/vp.bigbang.dev.cert", "../bigbang/vp.bigbang.dev.key", "./",
+		},
+		Env: testEnv,
+	}
+	shell.RunCommand(t, copyCertKeyCmd)
 
 	zarfDeployDCOCmd := shell.Command{
 		Command: "zarf",
@@ -115,25 +130,25 @@ func TestZarfPackage(t *testing.T) {
 		logger.Log(t, "Sleep 45s")
 		time.Sleep(45 * time.Second)
 
-		// Get public-ingressgateway service
-		logger.Log(t, "Check public-ingressgateway for LoadBalancer IP, attempt", retries+1)
-		publicSvc := k8s.GetService(t, opts, "public-ingressgateway")
+		// Get admin-ingressgateway service
+		logger.Log(t, "Check admin-ingressgateway for LoadBalancer IP, attempt", retries+1)
+		adminSvc := k8s.GetService(t, opts, "admin-ingressgateway")
 
-		if len(publicSvc.Status.LoadBalancer.Ingress) > 0 {
+		if len(adminSvc.Status.LoadBalancer.Ingress) > 0 {
 			retries = 0
-			logger.Log(t, "Success! LoadBalancer IP is assigned to public-ingressgateway")
+			logger.Log(t, "Success! LoadBalancer IP is assigned to admin-ingressgateway")
 			break
 		}
 	}
 
 	if retries > 0 {
-		logger.Log(t, "Failed to align LoadBalancer IP with public-ingressgateway")
+		logger.Log(t, "Failed to align LoadBalancer IP with admin-ingressgateway")
 		t.FailNow()
 	}
 
-	// Determine IP used by the public ingressgateway
-	public_igw := k8s.GetService(t, k8s.NewKubectlOptions(contextName, kubeconfigPath, "istio-system"), "public-ingressgateway")
-	public_lb_ip := public_igw.Status.LoadBalancer.Ingress[0].IP
+	// Determine IP used by the admin ingressgateway
+	admin_igw := k8s.GetService(t, k8s.NewKubectlOptions(contextName, kubeconfigPath, "istio-system"), "admin-ingressgateway")
+	admin_lb_ip := admin_igw.Status.LoadBalancer.Ingress[0].IP
 
 	curlCmd := shell.Command{
 		Command: "curl",
@@ -142,7 +157,7 @@ func TestZarfPackage(t *testing.T) {
 			"-L",
 			"https://neuvector.vp.bigbang.dev:443",
 			"--resolve",
-			"neuvector.vp.bigbang.dev:443:" + public_lb_ip,
+			"neuvector.vp.bigbang.dev:443:" + admin_lb_ip,
 			"--fail-with-body"},
 		Env: testEnv,
 	}
@@ -169,7 +184,7 @@ func TestZarfPackage(t *testing.T) {
 	}
 
 	if retries > 0 {
-		logger.Log(t, "Failed to align LoadBalancer IP with public-ingressgateway")
+		logger.Log(t, "Failed to align LoadBalancer IP with admin-ingressgateway")
 		t.FailNow()
 	}
 

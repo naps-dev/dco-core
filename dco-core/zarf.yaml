@@ -37,24 +37,33 @@ variables:
     prompt: false
 
 components:
-  - name: flux
-    required: true
-    manifests:
-      - name: flux-installer
-        # This will be built on the package create side and deployed as a regular manifest on package deploy
-        kustomizations:
-          - https://repo1.dso.mil/big-bang/bigbang.git//base/flux?ref=2.0.1
-    images:
-      - registry1.dso.mil/ironbank/fluxcd/helm-controller:v0.32.1
-      - registry1.dso.mil/ironbank/fluxcd/kustomize-controller:v0.35.1
-      - registry1.dso.mil/ironbank/fluxcd/notification-controller:v0.33.0
-      - registry1.dso.mil/ironbank/fluxcd/source-controller:v0.36.1
-
-  - name: bigbang
-    description: "Big Bang"
+  - name: load-certs
     required: true
     import:
-      path: '../bigbang/'
+      name: load-certs
+      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.4-skeleton
+
+  - name: preflight
+    required: true
+    import:
+      name: preflight
+      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.4-skeleton
+
+  - name: download-flux
+    required: true
+    import:
+      name: download-flux
+      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.4-skeleton
+
+  - name: bigbang
+    required: true
+    import:
+      name: bigbang
+      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.4-skeleton
+    extensions:
+      bigbang:
+        valuesFiles:
+          - ../bigbang/values.yaml
 
   - name: setup
     description: "Required setup for the Zarf DCO package"

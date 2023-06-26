@@ -2,16 +2,11 @@
 
 ### Description
 
-This folder and associated Zarf package contains a single Zarf component: `bigbang`. This
-is an _opinionated_ release of [Big Bang](https://docs-bigbang.dso.mil/latest/), which includes
-only certain Big Bang applications.
-
-### Zarf variables
-
-This package defines these Zarf variables: `DOMAIN`, `KIBANA_COUNT`, `ES_MASTER_COUNT` and
-`ES_DATA_COUNT`. `KIBANA_COUNT`, `ES_MASTER_COUNT` and `ES_DATA_COUNT` are for specifying the
-number of replicas for the Kibana, Elastic Search Master and Elastic Search Data nodes,
-respectively.
+This folder and associated Zarf package contains DUBBD (Defense Unicorns BigBang Distribution), which
+comprises of 4 Zarf components: `load-certs`, `preflight`, `download-flux`, and `bigbang`. See the DUBBD
+repo for further context and details: [uds-package-dubbd](https://github.com/defenseunicorns/uds-package-dubbd).
+Via DUBBD, we are able to overlay our own values.yaml on top of DUBBD's overrides, resulting in an _opinionated_
+release of [Big Bang](https://docs-bigbang.dso.mil/latest/), which includes only certain Big Bang applications.
 
 ### Additional Customization
 
@@ -24,12 +19,12 @@ We selectively override/merge our own custom values provided in our
 
 Big Bang provides [Istio](https://istio.io/) which we use for a Service Mesh
 and also ingress gateways. Big Bang deployments typically define a single
-ingress gateway `public-ingressgateway`. We add two additional ingress
+ingress gateway `admin-ingressgateway`. We add two additional ingress
 gateways: `dataplane-ingressgateway` and `passthrough-ingressgateway`. The
 data plane gateway is used to provide some level of isolation between the Big
 Bang services and those added later.
 
-Both the public-ingressgateway and dataplane-ingressgateway will do TLS
+Both the admin-ingressgateway and dataplane-ingressgateway will do TLS
 termination at the gateway. The passthrough gateway is used for traffic to
 the keycloak service because keycloak insists on doing its own TLS termination.
 
@@ -44,6 +39,15 @@ the keycloak service because keycloak insists on doing its own TLS termination.
 
 ### Dependencies:
 
-This requires Flux to be present on the Kubernetes cluster. In DCO Core, this
-is done in the [dco-core umbrella package](../dco-core/zarf.yaml) prior to the
-Big Bang component deployment.
+At deployment time, this package requires a zarf-config.yaml file present, either in the working directory
+or by setting `ZARF_CONFIG` to the location of the zarf-config.yaml file on the filesystem. This config file
+specifies the domain and correlating cert/key files for the domain. In short, the zarf-config.yaml must 
+contain the following, where key_file and cert_file are the names of local files containing the cert and key:
+```bash
+package:
+  deploy:
+    set:
+      domain: <domain name, ex: 'vp.bigbang.dev'>
+      key_file: <key filename, ex: 'vp.bigbang.dev.key'>
+      cert_file: <cert filename, ex: 'vp.bigbang.dev.cert'>
+```

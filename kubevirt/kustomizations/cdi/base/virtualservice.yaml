@@ -8,7 +8,7 @@ spec:
   hosts:
     - "cdi.${DOMAIN}"
   gateways:
-    - istio-system/public
+    - istio-system/admin
   http:
     - route:
         - destination:

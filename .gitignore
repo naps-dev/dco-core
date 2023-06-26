@@ -3,4 +3,5 @@
 zarf-sbom/
 scratch/
 .DS_Store
+.idea/
 .vscode
