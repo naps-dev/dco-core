@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
  
 [unreleased]: https://github.com/naps-dev/dco-core/compare/v2.3.0-1...HEAD
-[0.5.0]: https://github.com/naps-dev/dco-core/compare/v2.0.1-3...v2.3.0-1
-[0.5.0]: https://github.com/naps-dev/dco-core/compare/v2.0.1-2...v2.0.1-3
-[0.5.0]: https://github.com/naps-dev/dco-core/compare/v2.0.1-1...v2.0.1-2
+[v2.3.0-1]: https://github.com/naps-dev/dco-core/compare/v2.0.1-3...v2.3.0-1
+[v2.0.1-3]: https://github.com/naps-dev/dco-core/compare/v2.0.1-2...v2.0.1-3
+[v2.0.1-2]: https://github.com/naps-dev/dco-core/compare/v2.0.1-1...v2.0.1-2
 [v2.0.1-1]: https://github.com/naps-dev/dco-core/releases/tag/v2.0.1-1
