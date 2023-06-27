@@ -2,7 +2,6 @@ package test
 
 import (
 	"fmt"
-	v1 "k8s.io/api/core/v1"
 	"strings"
 	"testing"
 	"time"
@@ -86,20 +85,4 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	if got != true {
 		t.Errorf("tail /var/log/suricata/fast.log did not contain \"Suspicious User Agent\"")
 	}
-}
-
-func isEqual(expected map[string]bool, actual map[string]bool) bool {
-	if len(expected) != len(actual) {
-		return false
-	}
-	for k, v := range expected {
-		if actual[k] != v {
-			return false
-		}
-	}
-	return true
-}
-
-func isPodRunningOnAgent(pod v1.Pod, agent *v1.Node) bool {
-	return pod.Spec.NodeName == agent.Name
 }
