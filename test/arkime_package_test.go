@@ -1,6 +1,8 @@
 package test
 
 import (
+	"fmt"
+	v1 "k8s.io/api/core/v1"
 	"testing"
 	"time"
 
@@ -21,6 +23,28 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 	}
 
 	shell.RunCommand(t, zarfDeployArkimeCmd)
+
+	// Test that the pods are running on the correct agents
+	agents := k8s.GetNodes(t, opts)
+	actualNodeTypes := map[string]bool{}
+	expectedNodeTypes := map[string]bool{"Tier-1": true, "Tier-2": true}
+	for _, pod := range pods {
+		for _, agent := range agents {
+			fmt.Printf("Agent name: [%s] \n", agent.Name)
+			if isPodRunningOnAgent(pod, &agent) {
+				actualNodeTypes[agent.Labels["cnaps.io/node-type"]] = true
+			}
+		}
+	}
+
+	if isEqual(expectedNodeTypes, actualNodeTypes) != true {
+		for k, v := range expectedNodeTypes {
+			t.Errorf("Expected Node Type: %s, %t", k, v)
+		}
+		for k, v := range actualNodeTypes {
+			t.Errorf("Actual Node Type: %s, %t", k, v)
+		}
+	}	
 
 	// Wait for arkime service to come up before attempting to hit it
 	opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "arkime")
@@ -83,4 +107,20 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 			t.Log("Pod log: " + k8s.GetPodLogs(t, opts, &pod, ""))
 		}
 	})
+}
+
+func isEqual(expected map[string]bool, actual map[string]bool) bool {
+	if len(expected) != len(actual) {
+		return false
+	}
+	for k, v := range expected {
+		if actual[k] != v {
+			return false
+		}
+	}
+	return true
+}
+
+func isPodRunningOnAgent(pod v1.Pod, agent *v1.Node) bool {
+	return pod.Spec.NodeName == agent.Name
 }
