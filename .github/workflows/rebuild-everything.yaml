@@ -116,13 +116,13 @@ jobs:
             exit 1
           fi
             
-          zarf package create --set GIT_REF=${VAR_GIT_REF} \
+          zarf package create . --set GIT_REF=${VAR_GIT_REF} \
             --set VERSION=${{ env.REF_NAME }} \
             --set SOURCE=${{ github.sha }} \
             --tmpdir $PWD/big-tmp \
             --skip-sbom \
             --log-level debug \
-            --output ${{ env.OCI_PATH }}/dco-everything \
+            --output ${{ env.OCI_PATH }} \
             --confirm 
 
           # cleanup tmp dir
