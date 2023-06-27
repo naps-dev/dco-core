@@ -121,8 +121,6 @@ jobs:
             --set SOURCE=${{ github.sha }} \
             --tmpdir $PWD/big-tmp \
             --skip-sbom \
-            --log-level debug \
-            --output ${{ env.OCI_PATH }} \
             --confirm 
 
           # cleanup tmp dir
