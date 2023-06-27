@@ -24,6 +24,23 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 
 	shell.RunCommand(t, zarfDeployArkimeCmd)
 
+	//Test pods come up
+	opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "Arkime")
+	x := 0
+	pods := k8s.ListPods(t, opts, metav1.ListOptions{})
+	for x < 30 {
+		if len(pods) > 1 {
+			break
+		} else if x == 29 {
+			t.Errorf("Could not start Arkime pods (Timeout)")
+		}
+		time.Sleep(10 * time.Second)
+		pods = k8s.ListPods(t, opts, metav1.ListOptions{})
+		x += 1
+	}
+	k8s.WaitUntilPodAvailable(t, opts, pods[0].Name, 40, 30*time.Second)
+	k8s.WaitUntilPodAvailable(t, opts, pods[1].Name, 40, 30*time.Second)
+
 	// Test that the pods are running on the correct agents
 	agents := k8s.GetNodes(t, opts)
 	actualNodeTypes := map[string]bool{}
