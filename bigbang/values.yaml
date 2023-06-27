@@ -41,6 +41,7 @@ neuvector:
       enabled: false
     monitor:
       install: false
+    enforcer:
       tolerations:
         - key: "cnaps.io/node-taint"
           operator: "Equal"
