@@ -115,7 +115,7 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 	// @TODO: Sensor tests
 	//-------------------------------------------------------------------------
 	t.Run("Arkime sensor is running", func(t *testing.T) {
-		pods := k8s.ListPods(t, opts, v1.ListOptions{
+		pods := k8s.ListPods(t, opts, metav1.ListOptions {
 			LabelSelector: "k8s-app=arkime-sensor",
 		})
 
@@ -123,20 +123,4 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 			t.Log("Pod log: " + k8s.GetPodLogs(t, opts, &pod, ""))
 		}
 	})
-}
-
-func isEqual(expected map[string]bool, actual map[string]bool) bool {
-	if len(expected) != len(actual) {
-		return false
-	}
-	for k, v := range expected {
-		if actual[k] != v {
-			return false
-		}
-	}
-	return true
-}
-
-func isPodRunningOnAgent(pod v1.Pod, agent *v1.Node) bool {
-	return pod.Spec.NodeName == agent.Name
 }
