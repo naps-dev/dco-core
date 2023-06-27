@@ -121,7 +121,8 @@ jobs:
             --set SOURCE=${{ github.sha }} \
             --tmpdir $PWD/big-tmp \
             --skip-sbom \
-            --output ${{ env.OCI_PATH }}/dco-everything
+            --log-level debug \
+            --output ${{ env.OCI_PATH }}/dco-everything \
             --confirm 
 
           # cleanup tmp dir
