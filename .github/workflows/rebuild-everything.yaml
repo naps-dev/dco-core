@@ -52,7 +52,8 @@ jobs:
   create-package:
     needs: check-commit-hash
     if: needs.check-commit-hash.outputs.skip-build != 'true'
-    runs-on: [self-hosted, onprem]
+    # runs-on: [self-hosted, onprem]
+    runs-on: ubuntu-latest
     steps:
       # For pushing Zarf OCI packages
       - name: GHCR Login
@@ -120,6 +121,7 @@ jobs:
             --set SOURCE=${{ github.sha }} \
             --tmpdir $PWD/big-tmp \
             --skip-sbom \
+            --output "${{ env.OCI_PATH }}"
             --confirm 
 
           # cleanup tmp dir
@@ -135,10 +137,10 @@ jobs:
           SLACK_TITLE: DCO Everything Zarf Package Built Successfully
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
-      - name: Save Zarf Package to OCI Repo
-        run: |
-          zarf package publish "${{ env.ZARF_PACKAGE }}" "${{ env.OCI_PATH }}"
-        working-directory: dco-everything
+      # - name: Save Zarf Package to OCI Repo
+      #   run: |
+      #     zarf package publish "${{ env.ZARF_PACKAGE }}" "${{ env.OCI_PATH }}"
+      #   working-directory: dco-everything
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
