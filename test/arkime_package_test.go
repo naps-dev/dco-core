@@ -8,7 +8,7 @@ import (
 
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/gruntwork-io/terratest/modules/shell"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string) {
@@ -64,7 +64,6 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 	}	
 
 	// Wait for arkime service to come up before attempting to hit it
-	opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "arkime")
 	k8s.WaitUntilServiceAvailable(t, opts, "arkime-viewer", 40, 30*time.Second)
 
 	// Determine IP used by the dataplane ingressgateway
