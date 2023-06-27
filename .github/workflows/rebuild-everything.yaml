@@ -68,7 +68,7 @@ jobs:
       - name: Install Zarf
         uses: defenseunicorns/setup-zarf@main
         with:
-          version: v0.27.1
+          version: v0.28.0
           download-init-package: true
 
       # Needed for image pulls only - remove when component images are in GHCR
