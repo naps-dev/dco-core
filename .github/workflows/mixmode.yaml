@@ -20,8 +20,8 @@ jobs:
     with:
     # The REF_NAME is referencing the tag or branch name in the mixmode repo (not the dco-core repo)
     # if you're making a change to the capability chart change the REF_NAME to the tag or branch name in the capability repo
-      REF_NAME: "v8.17.0-2"
+      REF_NAME: "v8.17.0-3"
       REF_TYPE: "tag"
       ZARF_PACKAGE_NAME: zarf-package-mixmode-amd64.tar.zst
-      IMAGE_TAG: "v8.17.0-2"
+      IMAGE_TAG: "v8.17.0-3"
       COMPONENT: "mixmode"
