@@ -3,7 +3,7 @@ metadata:
   name: dco-core
   description: "Defensive Cyber Ops (DCO) Suite Core"
   # Big Bang / Iron Bank are only amd64
-  architecture: amd64
+  architecture: arm64
 
 constants:
   - name: GIT_REF
@@ -37,65 +37,86 @@ variables:
     prompt: false
 
 components:
-  - name: load-certs
-    required: true
-    import:
-      name: load-certs
-      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.4-skeleton
+#  - name: load-certs
+#    required: true
+#    import:
+#      name: load-certs
+#      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.4-skeleton
+#
+#  - name: preflight
+#    required: true
+#    import:
+#      name: preflight
+#      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.4-skeleton
+#
+#  - name: download-flux
+#    required: true
+#    import:
+#      name: download-flux
+#      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.4-skeleton
+#
+#  - name: bigbang
+#    required: true
+#    import:
+#      name: bigbang
+#      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.4-skeleton
+#    extensions:
+#      bigbang:
+#        valuesFiles:
+#          - ../bigbang/values.yaml
+#
+#  - name: setup
+#    description: "Required setup for the Zarf DCO package"
+#    required: true
+#    repos:
+#      - https://github.com/naps-dev/dco-core.git
+#    manifests:
+#      - name: setup
+#        files:
+#          - manifests/setup.yaml
 
-  - name: preflight
-    required: true
-    import:
-      name: preflight
-      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.4-skeleton
-
-  - name: download-flux
-    required: true
-    import:
-      name: download-flux
-      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.4-skeleton
-
-  - name: bigbang
-    required: true
-    import:
-      name: bigbang
-      url: oci://ghcr.io/defenseunicorns/packages/dubbd:0.2.4-skeleton
-    extensions:
-      bigbang:
-        valuesFiles:
-          - ../bigbang/values.yaml
-
-  - name: setup
-    description: "Required setup for the Zarf DCO package"
-    required: true
-    repos:
-      - https://github.com/naps-dev/dco-core.git
+  - name: configure-coredns-rke2
+    group: rke2
+    default: true
     manifests:
-      - name: setup
+      - name: rke2-coredns-configmap
         files:
-          - manifests/setup.yaml
+          - manifests/rke2-coredns-configmap.yaml
 
-  - name: kubevirt
-    required: true
-    import:
-      path: '../kubevirt/'
-  
-  - name: cdi
-    required: true
-    import:
-      path: '../kubevirt/'
+  - name: configure-coredns-k3d
+    group: k3d
+    actions:
+      onDeploy:
+        before:
+          - cmd: zarf tools kubectl get configmap -n kube-system coredns -o jsonpath="{.data.NodeHosts}"
+            setVariables:
+              - name: K3D_NODEHOSTS
+    manifests:
+      - name: k3d-coredns-configmap
+        files:
+          - manifests/k3d-coredns-configmap.yaml
 
-  - name: metallb
-    required: true
-    import:
-      path: '../metallb/'
-
-  - name: metallb-config
-    required: true
-    import:
-      path: '../metallb/'
-
-  - name: dataplane-ek
-    required: true
-    import:
-      path: '../dataplane-ek/'
+#  - name: kubevirt
+#    required: true
+#    import:
+#      path: '../kubevirt/'
+#
+#  - name: cdi
+#    required: true
+#    import:
+#      path: '../kubevirt/'
+#
+#  - name: metallb
+#    required: true
+#    import:
+#      path: '../metallb/'
+#
+#  - name: metallb-config
+#    required: true
+#    import:
+#      path: '../metallb/'
+#
+#  - name: dataplane-ek
+#    required: true
+#    import:
+#      path: '../dataplane-ek/'

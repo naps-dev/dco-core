@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns
+  namespace: kube-system
+  annotations:
+    objectset.rio.cattle.io/owner-name: coredns
+    objectset.rio.cattle.io/owner-namespace: kube-system
+data:
+  Corefile: |
+    .:53 {
+        errors
+        health
+        ready
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+          pods insecure
+          fallthrough in-addr.arpa ip6.arpa
+        }
+        hosts /etc/coredns/NodeHosts {
+          ttl 60
+          reload 15s
+          fallthrough
+        }
+        prometheus :9153
+        forward . /etc/resolv.conf
+        cache 30
+        loop
+        reload
+        loadbalance
+        rewrite name grafana.###ZARF_VAR_DOMAIN### admin-ingressgateway.istio-system.svc.cluster.local
+        rewrite name prometheus.###ZARF_VAR_DOMAIN### admin-ingressgateway.istio-system.svc.cluster.local
+        rewrite name alertmanager.###ZARF_VAR_DOMAIN### admin-ingressgateway.istio-system.svc.cluster.local
+        rewrite name kibana.###ZARF_VAR_DOMAIN### admin-ingressgateway.istio-system.svc.cluster.local
+        rewrite name neuvector.###ZARF_VAR_DOMAIN### admin-ingressgateway.istio-system.svc.cluster.local
+        rewrite name tracing.###ZARF_VAR_DOMAIN### admin-ingressgateway.istio-system.svc.cluster.local
+        rewrite name cdi.###ZARF_VAR_DOMAIN### admin-ingressgateway.istio-system.svc.cluster.local
+        rewrite name keycloak.###ZARF_VAR_DOMAIN### passthrough-ingressgateway.istio-system.svc.cluster.local
+        rewrite name dataplane-kibana.###ZARF_VAR_DOMAIN### dataplane-ingressgateway.istio-system.svc.cluster.local
+        rewrite name arkime-viewer.###ZARF_VAR_DOMAIN### dataplane-ingressgateway.istio-system.svc.cluster.local
+        rewrite name kasm.###ZARF_VAR_DOMAIN### dataplane-ingressgateway.istio-system.svc.cluster.local
+        rewrite name mixmode-enterprise.###ZARF_VAR_DOMAIN### dataplane-ingressgateway.istio-system.svc.cluster.local
+        rewrite name mockingbird.###ZARF_VAR_DOMAIN### dataplane-ingressgateway.istio-system.svc.cluster.local
+        rewrite name mockingbird-api.###ZARF_VAR_DOMAIN### dataplane-ingressgateway.istio-system.svc.cluster.local
+        rewrite name polarity.###ZARF_VAR_DOMAIN### dataplane-ingressgateway.istio-system.svc.cluster.local
+        rewrite name xsoar.###ZARF_VAR_DOMAIN### dataplane-ingressgateway.istio-system.svc.cluster.local
+    }
+    import /etc/coredns/custom/*.server
+  NodeHosts: |
+    asdfasdfds
