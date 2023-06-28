@@ -4,3 +4,4 @@ zarf-sbom/
 scratch/
 .DS_Store
 .env
+.idea/
