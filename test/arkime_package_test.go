@@ -25,7 +25,7 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 	shell.RunCommand(t, zarfDeployArkimeCmd)
 
 	//Test pods come up
-	opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "Arkime")
+	opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "arkime")
 	x := 0
 	pods := k8s.ListPods(t, opts, metav1.ListOptions{})
 	for x < 30 {
