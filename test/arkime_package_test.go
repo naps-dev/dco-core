@@ -26,7 +26,9 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 	//Test pods come up
 	opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "arkime")
 	x := 0
-	pods := k8s.ListPods(t, opts, metav1.ListOptions{})
+	pods := k8s.ListPods(t, opts, metav1.ListOptions{
+		LabelSelector: "app=arkime-sensor",
+	})
 	for x < 30 {
 		if len(pods) > 1 {
 			break
@@ -60,7 +62,7 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 		for k, v := range actualNodeTypes {
 			t.Errorf("Actual Node Type: %s, %t", k, v)
 		}
-	}	
+	}
 
 	// Wait for arkime service to come up before attempting to hit it
 	k8s.WaitUntilServiceAvailable(t, opts, "arkime-viewer", 40, 30*time.Second)
@@ -114,7 +116,7 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 	// @TODO: Sensor tests
 	//-------------------------------------------------------------------------
 	t.Run("Arkime sensor is running", func(t *testing.T) {
-		pods := k8s.ListPods(t, opts, metav1.ListOptions {
+		pods := k8s.ListPods(t, opts, metav1.ListOptions{
 			LabelSelector: "k8s-app=arkime-sensor",
 		})
 
