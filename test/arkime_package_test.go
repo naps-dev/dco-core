@@ -27,7 +27,7 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 	opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "arkime")
 	x := 0
 	pods := k8s.ListPods(t, opts, v1.ListOptions{
-		LabelSelector: "k8s-app=arkime-sensor",
+		LabelSelector: "app=arkime-sensor",
 	})
 	for x < 30 {
 		if len(pods) > 1 {
