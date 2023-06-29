@@ -3,7 +3,7 @@
 Some future state of this effort may exist without access to Github actions. In this case, the `Makefile` can be used to facilitate the build and test of the Zarf packages in this repository.
 
 ## How To
-Help is available for the supported `make` targets by running `make` in the root project directory.
+Help is available for the supported `make` targets by running `make` in the root project directory.   
 
 ```shell
 make
