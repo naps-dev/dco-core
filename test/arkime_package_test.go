@@ -7,7 +7,7 @@ import (
 
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/gruntwork-io/terratest/modules/shell"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath string) {
@@ -26,7 +26,7 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 	//Test pods come up
 	opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "arkime")
 	x := 0
-	pods := k8s.ListPods(t, opts, metav1.ListOptions{
+	pods := k8s.ListPods(t, opts, v1.ListOptions{
 		LabelSelector: "app=arkime-sensor",
 	})
 	for x < 30 {
@@ -36,7 +36,7 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 			t.Errorf("Could not start Arkime pods (Timeout)")
 		}
 		time.Sleep(10 * time.Second)
-		pods = k8s.ListPods(t, opts, metav1.ListOptions{})
+		pods = k8s.ListPods(t, opts, v1.ListOptions{})
 		x += 1
 	}
 	k8s.WaitUntilPodAvailable(t, opts, pods[0].Name, 40, 30*time.Second)
@@ -116,7 +116,7 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 	// @TODO: Sensor tests
 	//-------------------------------------------------------------------------
 	t.Run("Arkime sensor is running", func(t *testing.T) {
-		pods := k8s.ListPods(t, opts, metav1.ListOptions{
+		pods := k8s.ListPods(t, opts, v1.ListOptions{
 			LabelSelector: "k8s-app=arkime-sensor",
 		})
 
