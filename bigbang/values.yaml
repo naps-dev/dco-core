@@ -25,7 +25,7 @@ istio:
     passthrough:
       ingressGateway: "passthrough-ingressgateway"
       hosts:
-        - keycloak.vp.bigbang.dev
+        - "keycloak.###ZARF_VAR_DOMAIN###"
       tls:
         mode: "PASSTHROUGH"
         key: "###ZARF_VAR_PUBLIC_KEY###"
