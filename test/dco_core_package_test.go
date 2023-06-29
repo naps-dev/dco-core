@@ -65,7 +65,7 @@ func TestZarfPackage(t *testing.T) {
 	shell.RunCommand(t, clusterTeardownCmd)
 
 	// to leave cluster up for examination after this run, comment this out:
-	//defer shell.RunCommand(t, clusterTeardownCmd)
+	defer shell.RunCommand(t, clusterTeardownCmd)
 
 	// create the cluster
 	shell.RunCommand(t, clusterSetupCmd)
