@@ -16,7 +16,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/shell"
 )
 
-func IsValidHost(host string) bool {
+func IsValidHostname(host string) bool {
   host = strings.Trim(host, " ")
   re, _ := regexp.Compile(`^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$`)
   if re.MatchString(host) {
@@ -40,8 +40,8 @@ func TestZarfPackage(t *testing.T) {
   clusterName = strings.TrimSuffix(clusterName, "-")
   logger.Log(t, "clusterName after sanitization: "+clusterName)
 
-	if ! IsValidHost(clusterName){
-		t.Error("ERROR: Sanitized clusterName is invalid hostname, exiting.." + clusterName)
+	if ! IsValidHostname(clusterName){
+		t.Error("ERROR: Sanitized clusterName '" + clusterName + "'is invalid hostname, exiting.." )
 	}
   	
   cwd, err := os.Getwd()
