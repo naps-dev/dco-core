@@ -4,6 +4,8 @@ import (
 	"context"
 	"net"
 	"os"
+  "regexp"
+  "strings"
 	"testing"
 	"time"
 
@@ -14,18 +16,35 @@ import (
 	"github.com/gruntwork-io/terratest/modules/shell"
 )
 
+func IsValidHost(host string) bool {
+  host = strings.Trim(host, " ")
+  re, _ := regexp.Compile(`^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$`)
+  if re.MatchString(host) {
+    return true
+  }
+  return false
+}
+
 func TestZarfPackage(t *testing.T) {
 	component := os.Getenv("COMPONENT")
 	refName := os.Getenv("REF_NAME")
 	clusterName := component + "-test-" + refName
+  logger.Log(t, "clusterName before sanitization: "+clusterName)
 	kubeconfigPath := "/tmp/" + component + "_test_+" + refName + "_kubeconfig"
 
 	// Truncate string if too long (k3d not happy with strings over 32 chars)
 	if len(clusterName) > 32 {
 		clusterName = clusterName[:32]
+    logger.Log(t, "Truncated clusterName to 32 chars for k3d: "+clusterName)
 	}
-	cwd, err := os.Getwd()
+  clusterName = strings.TrimSuffix(clusterName, "-")
+  logger.Log(t, "clusterName after sanitization: "+clusterName)
 
+	if ! IsValidHost(clusterName){
+		t.Error("ERROR: Sanitized clusterName is invalid hostname, exiting.." + clusterName)
+	}
+  	
+  cwd, err := os.Getwd()
 	if err != nil {
 		t.Error("ERROR: Unable to determine working directory, exiting." + err.Error())
 	} else {

@@ -18,8 +18,8 @@ jobs:
     uses: ./.github/workflows/package.yaml
     secrets: inherit
     with:
-    # The REF_NAME is referencing the tag or branch name in the arkime repo (not the dco-core repo)
-    # if you're making a change to the capability chart change the REF_NAME to the tag or branch name in the capability repo
+      # The REF_NAME is referencing the tag or branch name in the arkime repo (not the dco-core repo)
+      # if you're making a change to the capability chart change the REF_NAME to the tag or branch name in the capability repo
       REF_NAME: "30-update-to-latest-arkime-version"
       REF_TYPE: "branch"
       ZARF_PACKAGE_NAME: zarf-package-arkime-amd64.tar.zst
