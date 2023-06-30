@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Updated
-- Upgraded Suricata to v7.0.0-1 (fixes issue on T3's)
+- Upgraded Suricata to v7.0.0-2 (fixes issue on T3's)
 
 - Added toleration and node selector to Suricata DaemonSet for controlling hardware placement
 
