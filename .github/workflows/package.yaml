@@ -210,7 +210,10 @@ jobs:
 
       - name: Save Package to S3
         run: |
-          aws s3 cp --no-progress "${{ env.ZARF_PACKAGE_NAME }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE_NAME }}"
+          set -x && ls -la "${{ env.ZARF_PACKAGE_NAME }}" \
+          && echo "s3 full path = ${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE_NAME }}" \
+          && aws s3 cp --no-progress "${{ env.ZARF_PACKAGE_NAME }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE_NAME }}" \
+          || echo "aws s3 cp command exited with $?"
         working-directory: ${{ inputs.COMPONENT }}
 
       - name: Remove any license files
