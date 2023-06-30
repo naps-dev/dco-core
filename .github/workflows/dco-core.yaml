@@ -1,6 +1,7 @@
 name: Build and Deploy DCO Core Zarf Package
 run-name: ${{github.actor}} is building the DCO Core Zarf package
 on:
+  workflow_dispatch:
   push:
     paths:
       - '!**.md'
