@@ -19,9 +19,9 @@ jobs:
     secrets: inherit
     with:
     # The REF_NAME is referencing the tag or branch name in the arkime repo (not the dco-core repo)
-    # if you're making a change to the capability chart change the REF_NAME to the tag or branch name in the capability repo
-      REF_NAME: "v4.2.0-2"
+    # if you're making a change to the capability chart change the REF_NAME to the tag or branch name in the capability repo 
+      REF_NAME: "v4.2.0-3"
       REF_TYPE: "tag"
       ZARF_PACKAGE_NAME: zarf-package-arkime-amd64.tar.zst
-      IMAGE_TAG: "v4.2.0-2"
+      IMAGE_TAG: "v4.2.0-3"
       COMPONENT: "arkime"
