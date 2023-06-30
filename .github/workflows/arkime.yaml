@@ -24,3 +24,4 @@ jobs:
       REF_TYPE: "tag"
       ZARF_PACKAGE_NAME: zarf-package-arkime-amd64.tar.zst
       IMAGE_TAG: "v4.2.0-3"
+      COMPONENT: "arkime"
