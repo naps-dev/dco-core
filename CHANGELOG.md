@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Updated
+- Upgraded Polarity to v4.0.10-5 (uses vp.bigbang.dev certs)
+- Upgraded Suricata to v7.0.0-2 (fixes issue on T3's)
 
 - Added toleration and node selector to Suricata DaemonSet for controlling hardware placement
+- Makefile to replicate Github Actions
 
 ## [v2.3.0-1] - 2023-06-20
 
