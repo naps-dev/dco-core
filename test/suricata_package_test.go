@@ -1,6 +1,5 @@
 package test
 
-
 import (
 	"fmt"
 	v1 "k8s.io/api/core/v1"
