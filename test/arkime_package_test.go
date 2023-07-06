@@ -36,7 +36,9 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 			t.Errorf("Could not start Arkime pods (Timeout)")
 		}
 		time.Sleep(10 * time.Second)
-		pods = k8s.ListPods(t, opts, v1.ListOptions{})
+		pods = k8s.ListPods(t, opts, v1.ListOptions{
+			LabelSelector: "app=arkime-sensor",
+		})
 		x += 1
 	}
 	k8s.WaitUntilPodAvailable(t, opts, pods[0].Name, 40, 30*time.Second)
