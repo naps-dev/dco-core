@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dataplane-kibana
+  namespace: dataplane-ek
+spec:
+  hosts:
+  - "dataplane-kibana.###ZARF_VAR_DOMAIN###"
+  gateways:
+  - istio-system/dataplane
+  http:
+  - route:
+    - destination:
+        host: dataplane-ek-kb-http.dataplane-ek.svc.cluster.local
+        port:
+          number: 5601
