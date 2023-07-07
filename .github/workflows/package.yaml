@@ -210,7 +210,7 @@ jobs:
 
       - name: Refresh ECR Login
         uses: aws-actions/amazon-ecr-login@v1
-        id: login-ecr
+        id: refresh-login-ecr
 
       - name: Save Package to S3
         run: |
