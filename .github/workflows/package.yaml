@@ -44,7 +44,7 @@ jobs:
       - name: Install Zarf
         uses: defenseunicorns/setup-zarf@main
         with:
-          version: v0.28.1
+          version: v0.27.1
           download-init-package: true
 
       - name: Login to XSOAR registry
