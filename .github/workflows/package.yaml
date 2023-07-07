@@ -208,6 +208,10 @@ jobs:
 #          SLACK_USERNAME: GitHub
 #          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
+      - name: ECR Login
+        uses: aws-actions/amazon-ecr-login@v1
+        id: login-ecr
+
       - name: Save Package to S3
         run: |
           aws s3 cp --no-progress "${{ env.ZARF_PACKAGE_NAME }}" "${{ env.S3_PATH }}/${{ env.ZARF_PACKAGE_NAME }}"

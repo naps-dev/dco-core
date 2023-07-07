@@ -86,6 +86,29 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 	if got != true {
 		t.Errorf("tail /var/log/suricata/fast.log did not contain \"Suspicious User Agent\"")
 	}
+
+	//Test sample alert from suricata chart
+	createAlert = shell.Command{
+		Command: "kubectl",
+		Args:    []string{"--namespace", "suricata", "exec", "-i", pods[0].Name, "--", "/bin/bash", "-c", "curl www.example.com"},
+		Env:     testEnv,
+	}
+
+	shell.RunCommand(t, createAlert)
+
+	checkAlert = shell.Command{
+		Command: "kubectl",
+		Args:    []string{"--namespace", "suricata", "exec", "-i", pods[0].Name, "--", "/bin/bash", "-c", "tail /var/log/suricata/fast.log"},
+		Env:     testEnv,
+	}
+
+	output = shell.RunCommandAndGetOutput(t, checkAlert)
+
+	got = strings.Contains(output, "HTTP to example.com")
+
+	if got != true {
+		t.Errorf("tail /var/log/suricata/fast.log did not contain \"HTTP to example.com\"")
+	}
 }
 
 func isEqual(expected map[string]bool, actual map[string]bool) bool {
