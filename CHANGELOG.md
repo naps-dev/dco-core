@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Updated
+- Upgraded Kasm to v1.13.0-1 (updated upstream app version)
 - Upgraded Polarity to v4.0.10-5 (uses vp.bigbang.dev certs)
 - Upgraded Suricata to v7.0.0-2 (fixes issue on T3's)
 
