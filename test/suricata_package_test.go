@@ -101,7 +101,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 		Args:    []string{"--namespace", "suricata", "exec", "-i", pods[0].Name, "--", "/bin/bash", "-c", "tail /var/log/suricata/fast.log"},
 		Env:     testEnv,
 	}
-
+	// wait
 	output = shell.RunCommandAndGetOutput(t, checkAlert)
 
 	got = strings.Contains(output, "HTTP to example.com")
