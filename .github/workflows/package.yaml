@@ -208,7 +208,7 @@ jobs:
 #          SLACK_USERNAME: GitHub
 #          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
-      - name: ECR Login
+      - name: Refresh ECR Login
         uses: aws-actions/amazon-ecr-login@v1
         id: login-ecr
 
