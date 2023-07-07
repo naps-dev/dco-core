@@ -87,7 +87,30 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 		t.Errorf("tail /var/log/suricata/fast.log did not contain \"Suspicious User Agent\"")
 	}
 
-	//Test sample alert from suricata chart
+	//Test sample rule 1 alert from suricata chart
+	createAlert = shell.Command{
+		Command: "kubectl",
+		Args:    []string{"--namespace", "suricata", "exec", "-i", pods[0].Name, "--", "/bin/bash", "-c", "curl www.duckduckgo.com"},
+		Env:     testEnv,
+	}
+
+	shell.RunCommand(t, createAlert)
+
+	checkAlert = shell.Command{
+		Command: "kubectl",
+		Args:    []string{"--namespace", "suricata", "exec", "-i", pods[0].Name, "--", "/bin/bash", "-c", "tail /var/log/suricata/fast.log"},
+		Env:     testEnv,
+	}
+
+	output = shell.RunCommandAndGetOutput(t, checkAlert)
+
+	got = strings.Contains(output, "HTTP to duckduckgo.com")
+
+	if got != true {
+		t.Errorf("tail /var/log/suricata/fast.log did not contain \"HTTP to duckduckgo.com\"")
+	}
+
+	//Test sample rule 2 alert from suricata chart
 	createAlert = shell.Command{
 		Command: "kubectl",
 		Args:    []string{"--namespace", "suricata", "exec", "-i", pods[0].Name, "--", "/bin/bash", "-c", "curl www.example.com"},
@@ -101,7 +124,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 		Args:    []string{"--namespace", "suricata", "exec", "-i", pods[0].Name, "--", "/bin/bash", "-c", "tail /var/log/suricata/fast.log"},
 		Env:     testEnv,
 	}
-	// wai
+
 	output = shell.RunCommandAndGetOutput(t, checkAlert)
 
 	got = strings.Contains(output, "HTTP to example.com")
