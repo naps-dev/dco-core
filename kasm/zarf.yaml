@@ -30,4 +30,4 @@ components:
           - manifests/gitrepository.yaml
           - manifests/helmrelease.yaml
     images:
-      - docker.io/kasmweb/workspaces:1.11.0
+      - docker.io/kasmweb/workspaces:1.13.0
