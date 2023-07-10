@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added toleration and node selector to Suricata DaemonSet for controlling hardware placement
 - Makefile to replicate Github Actions
+- Arkime and Suricata Zarf variables for Capture Interface
 
 ## [v2.3.0-1] - 2023-06-20
 

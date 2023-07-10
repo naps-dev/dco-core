@@ -29,6 +29,6 @@ spec:
     timeout: 30m
     cleanupOnFail: false
   values:
-    interface: ###ZARF_VAR_INTERFACE###
+    capture_interface: ###ZARF_VAR_CAPTURE_INTERFACE###
     node_label: ###ZARF_VAR_NODE_LABEL###
     node_label_value: ###ZARF_VAR_NODE_LABEL_VALUE###
