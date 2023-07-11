@@ -1,19 +1,24 @@
-# Portworx Manifests
+Portworx Storage Cluster Deployment
+This repository includes all the necessary configurations to deploy a Portworx storage cluster on a Kubernetes environment.
 
-This repository contains Kubernetes (K8s) manifests needed for deploying the Portworx Operator and the Portworx StorageCluster Custom Resource Definition (CRD). These manifests are stored in the `storage` folder.
+Quick Start
+You can quickly deploy everything you need for the Portworx storage cluster by running the provided shell script. The script will execute all necessary YAML files in the appropriate order, with a one-minute pause between each file to ensure proper resource allocation and initialization.
 
-## Purpose
+Running the Deployment Script
+Use the following command to execute the script:
 
-The `storage` folder serves as a collection of YAML files, or 'manifests', which are used to create, configure and manage Kubernetes resources for deploying the Portworx Operator and the StorageCluster CRD. 
+bash <(curl -s https://raw.githubusercontent.com/naps-dev/dco-core/main/storage/manifests/t1-portworx.sh)
 
-Portworx is a cloud-native storage platform that provides high availability, data protection, data security, and data mobility. The Portworx Operator manages the lifecycle of Portworx, and the StorageCluster CRD represents a Portworx Cluster.
+The script will:
 
-The manifests are named in the numerical order they need to be deployed. This order is important and should be followed to ensure a correct setup.
+Apply the 01-px-operator.yaml file, deploying the Portworx operator.
+Pause for 1 minute to allow the operator to initialize.
+Apply the 02-px-stc.yaml file, deploying the Portworx storage cluster.
+Pause for 1 minute to allow the storage cluster to initialize.
+Apply the 03-px-sc.yaml file, setting up the default Portworx storage class.
+The total execution time is approximately 8 minutes. At the end of the process, your Portworx storage cluster and the default storage class px should be fully deployed and operational.
 
-## Future Work
 
-This is an initial setup for the Portworx deployment. As the project progresses, these manifests will be refined, tested, and tweaked to implement best security practices. 
+For more detailed information or manual deployment steps, please refer to the respective YAML files.
 
-At the moment, we are using a basic configuration to establish a baseline functionality and ensure everything is working as expected within zarf
-
-Please follow this repository to keep up with the changes and improvements over time.
+This README provides a brief explanation of the deployment process and the functionality of the deployment script. You can expand the README to include more detailed information about your project and the Portworx storage cluster.
