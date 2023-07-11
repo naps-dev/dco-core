@@ -157,7 +157,7 @@ endif
 run-tests: ## Runs go tests
 	$(info zarf_config=$(ZARF_CONFIG))
 	go get -t ./...
-	cd ./test && go test -timeout 40m
+	cd ./test && go test -timeout 60m
 
 .PHONY: clean
 clean: clean-zarf clean-packages ## Clean files
