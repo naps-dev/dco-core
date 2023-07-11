@@ -1,11 +1,10 @@
-# SOURCE: https://install.portworx.com/?operator=true&mc=false&kbver=1.26.3&b=true&j=auto&c=px-cluster-0766119b-0327-466f-97db-e74fd3ce231d&stork=true&csi=true&mon=true&tel=false&st=k8s&promop=true
-kind: StorageCluster
 apiVersion: core.libopenstorage.org/v1
+kind: StorageCluster
 metadata:
-  name: px-cluster-0766119b-0327-466f-97db-e74fd3ce231d
-  namespace: kube-system
   annotations:
-    portworx.io/install-source: "https://install.portworx.com/?operator=true&mc=false&kbver=1.26.3&b=true&j=auto&c=px-cluster-0766119b-0327-466f-97db-e74fd3ce231d&stork=true&csi=true&mon=true&tel=false&st=k8s&promop=true"
+    portworx.io/disable-storage-class: "true"
+  name: portworx
+  namespace: kube-system
 spec:
   image: portworx/oci-monitor:2.13.6
   imagePullPolicy: Always
@@ -29,5 +28,14 @@ spec:
     prometheus:
       enabled: true
       exportMetrics: true
-  tolerations:
-  - operator: "Exists"
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+  deleteStrategy:
+    type: UninstallAndWipe
+  placement:
+    tolerations:
+    - operator: "Exists"
+
+
