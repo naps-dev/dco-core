@@ -20,7 +20,7 @@ variables:
     prompt: false
 
   - name: CAPTURE_INTERFACE
-    default: "cni0"
+    default: "capture0"
     prompt: false
 
 components:
