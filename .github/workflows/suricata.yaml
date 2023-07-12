@@ -20,8 +20,8 @@ jobs:
     with:
     # The REF_NAME is referencing the tag or branch name in the suricata repo (not the dco-core repo)
     # if you're making a change to the capability chart change the REF_NAME to the tag or branch name in the capability repo
-      REF_NAME: "v7.0.0-4"
-      REF_TYPE: "tag"
+      REF_NAME: "path-mapping-bug"
+      REF_TYPE: "branch"
       ZARF_PACKAGE_NAME: zarf-package-suricata-amd64.tar.zst
       COMPONENT: "suricata"
 
