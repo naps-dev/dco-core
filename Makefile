@@ -1,6 +1,6 @@
 REQUIRED_BINS:=bash sudo curl go docker aws # jq needed for assume-role, but since that's not a required target, ignoring here.
 
-ZARF_VER?=0.27.1
+ZARF_VER?=0.28.2
 GOLANG_VER_MIN?=1.19.5
 AWS_ROLE_SESSION_NAME?=arkime-ecr
 AWS_REGION?=us-east-1
