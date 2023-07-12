@@ -30,7 +30,6 @@ components:
           - manifests/helmrelease.yaml
     images:
       - "765814079306.dkr.ecr.us-east-1.amazonaws.com/polarity-db:13.1.0-ip4r"
-      - "765814079306.dkr.ecr.us-east-1.amazonaws.com/polarity-server:4.0.10"
-      - "765814079306.dkr.ecr.us-east-1.amazonaws.com/polarity-web:4.0.2"
-      - "docker.io/bitnami/redis:7.0.5-debian-11-r15"
-      - "busybox:1.28"
+      - "765814079306.dkr.ecr.us-east-1.amazonaws.com/polarity-server:4.3.3"
+      - "765814079306.dkr.ecr.us-east-1.amazonaws.com/polarity-web:4.4.5"
+      - "docker.io/bitnami/redis:7.0.11-debian-11-r20"
