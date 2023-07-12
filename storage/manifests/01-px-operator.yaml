@@ -51,7 +51,7 @@ spec:
       containers:
       - name: portworx-operator
         imagePullPolicy: Always
-        image: portworx/px-operator:23.5.0
+        image: portworx/px-operator:23.5.1
         command:
         - /operator
         - --verbose
