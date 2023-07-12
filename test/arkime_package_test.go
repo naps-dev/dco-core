@@ -84,7 +84,7 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 	curlCmd := shell.Command{
 		Command: "curl",
 		Args: []string{"--resolve", "arkime-viewer.vp.bigbang.dev:443:" + loadbalancer_ip,
-			"--fail-with-body",
+			"--fail-with-body", "--digest", "--user", "localadmin:password",
 			"https://arkime-viewer.vp.bigbang.dev"},
 		Env: testEnv,
 	}
