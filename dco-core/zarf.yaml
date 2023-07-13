@@ -16,16 +16,8 @@ variables:
     default: "vp.bigbang.dev"
     prompt: false
 
-  - name: KIBANA_COUNT
-    default: "1"
-    prompt: false
-
-  - name: ES_MASTER_COUNT
-    default: "1"
-    prompt: false
-
-  - name: ES_DATA_COUNT
-    default: "1"
+  - name: IS_PRODUCTION
+    default: true
     prompt: false
 
   - name: METALLB_IP_ADDRESS_POOL

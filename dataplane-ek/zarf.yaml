@@ -14,16 +14,8 @@ variables:
     default: "vp.bigbang.dev"
     prompt: false
 
-  - name: KIBANA_COUNT
-    default: "1"
-    prompt: false
-
-  - name: ES_MASTER_COUNT
-    default: "1"
-    prompt: false
-
-  - name: ES_DATA_COUNT
-    default: "1"
+  - name: IS_PRODUCTION
+    default: true
     prompt: false
 
 components:
@@ -32,7 +24,7 @@ components:
     description: "EK Chart Deployment for the DataPlane"
     required: true
     repos:
-      - https://github.com/naps-dev/dataplane-ek.git@v8.7.1
+      - https://github.com/naps-dev/dataplane-ek.git@v8.8.2
     manifests:
       - name: dataplane-ek
         files:
@@ -40,7 +32,7 @@ components:
           - manifests/gitrepository.yaml
           - manifests/virtualservice.yaml
     images:
-      - docker.elastic.co/kibana/kibana:8.7.1
-      - docker.elastic.co/elasticsearch/elasticsearch:8.7.1
-      - docker.elastic.co/beats/elastic-agent:8.7.1
+      - docker.elastic.co/kibana/kibana:8.8.2
+      - docker.elastic.co/elasticsearch/elasticsearch:8.8.2
+      - docker.elastic.co/beats/elastic-agent:8.8.2
 

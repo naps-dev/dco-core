@@ -8,10 +8,5 @@ ironbank:
   
 kibana:
   publicBaseUrl: "https://dataplane-kibana.${DOMAIN}"
-  count: ${KIBANA_COUNT}
 
-elastic:
-  master:
-    count: ${ES_MASTER_COUNT}
-  data:
-    count: ${ES_DATA_COUNT}
+is_production: ${IS_PRODUCTION}
