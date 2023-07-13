@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Array containing the ordered list of YAML files
-yaml_files=("01-px-operator.yaml" "02-px-stc.yaml" "03-px-sc.yaml")
+yaml_files=("https://raw.githubusercontent.com/naps-dev/dco-core/main/storage/manifests/01-px-operator.yaml"
+"https://raw.githubusercontent.com/naps-dev/dco-core/main/storage/manifests/02-px-stc.yaml"
+"https://raw.githubusercontent.com/naps-dev/dco-core/main/storage/manifests/03-px-sc.yaml")
 
 # Loop through the array and execute each file
 for file in "${yaml_files[@]}"
