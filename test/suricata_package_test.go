@@ -19,7 +19,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 
 	zarfDeploySuricataCmd := shell.Command{
 		Command: "zarf",
-		Args:    []string{"package", "deploy", "../suricata/zarf-package-suricata-amd64.tar.zst", "--confirm", "--no-progress"},
+		Args:    []string{"package", "deploy", "../suricata/zarf-package-suricata-amd64.tar.zst", "--confirm", "--no-progress"}, //--set INTERFACE=cni0
 		Env:     testEnv,
 	}
 
@@ -61,6 +61,17 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 		}
 		for k, v := range actualNodeTypes {
 			t.Errorf("Actual Node Type: %s, %t", k, v)
+		}
+		for _, pod := range pods {
+			k8s.GetPodLogs(t, opts, &pod, "suricata")
+			podEvents := shell.Command{
+				Command: "kubectl",
+				Args:    []string{"get", "event", "--namespace suricata", fmt.Printf("--field-selector involvedObject.name=%s", pods[0].Name)},
+				Env:     testEnv,
+			}
+
+			shell.RunCommand(t, podEvents)
+
 		}
 	}
 
