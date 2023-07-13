@@ -66,7 +66,7 @@ func SuricataTestZarfPackage(t *testing.T, contextName string, kubeconfigPath st
 			k8s.GetPodLogs(t, opts, &pod, "suricata")
 			podEvents := shell.Command{
 				Command: "kubectl",
-				Args:    []string{"get", "event", "--namespace suricata", fmt.Printf("--field-selector involvedObject.name=%s", pods[0].Name)},
+				Args:    []string{"get", "event", "--namespace suricata", fmt.Sprintf("--field-selector involvedObject.name=%s", pods[0].Name)},
 				Env:     testEnv,
 			}
 
