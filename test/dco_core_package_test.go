@@ -45,8 +45,8 @@ func TestZarfPackage(t *testing.T) {
 			"--port", "0:443@loadbalancer",
 			"--port", "0:80@loadbalancer",
 			"--agents", "3",
-			"--k3s-node-label", component + "-capture=true@agent:0",
-			"--k3s-node-label", component + "-capture=true@agent:1",
+			"--k3s-node-label", "cnaps.io/" + component + "-capture=true@agent:0",
+			"--k3s-node-label", "cnaps.io/" + component + "-capture=true@agent:1",
 			"--k3s-node-label", "cnaps.io/node-type=Tier-1@agent:0",
 			"--k3s-node-label", "cnaps.io/node-type=Tier-2@agent:1",
 			"--k3s-node-label", "cnaps.io/node-type=Tier-3@agent:2",
@@ -89,9 +89,8 @@ func TestZarfPackage(t *testing.T) {
 	// Copy cert and key to the working dir as DUBBD (via the zarf-config.yaml) requires them at deploy time
 	copyCertKeyCmd := shell.Command{
 		Command: "cp",
-		Args: []string{"../bigbang/vp.bigbang.dev.cert", "../bigbang/vp.bigbang.dev.key", "./",
-		},
-		Env: testEnv,
+		Args:    []string{"../bigbang/vp.bigbang.dev.cert", "../bigbang/vp.bigbang.dev.key", "./"},
+		Env:     testEnv,
 	}
 	shell.RunCommand(t, copyCertKeyCmd)
 

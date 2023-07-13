@@ -197,7 +197,7 @@ jobs:
       - name: Run go test
         working-directory: ./test/
         run: |
-          go test -timeout 40m
+          go test -timeout 60m
 
 #        TODO: Determine why the following indefinitely hangs on our new runners and fix
 #      - name: Slack Notification

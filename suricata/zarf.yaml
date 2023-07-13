@@ -10,8 +10,8 @@ constants:
     value: "###ZARF_PKG_TMPL_GIT_REF###"
 
 variables:
-  - name: INTERFACE
-    default: "eth0"
+  - name: CAPTURE_INTERFACE
+    default: "capture0"
     prompt: false
 
   - name: NODE_LABEL

@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -22,8 +23,50 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 
 	shell.RunCommand(t, zarfDeployArkimeCmd)
 
-	// Wait for arkime service to come up before attempting to hit it
+	//Test pods come up
 	opts := k8s.NewKubectlOptions(contextName, kubeconfigPath, "arkime")
+	x := 0
+	pods := k8s.ListPods(t, opts, v1.ListOptions{
+		LabelSelector: "app=arkime-sensor",
+	})
+	for x < 30 {
+		if len(pods) > 1 {
+			break
+		} else if x == 29 {
+			t.Errorf("Could not start Arkime pods (Timeout)")
+		}
+		time.Sleep(10 * time.Second)
+		pods = k8s.ListPods(t, opts, v1.ListOptions{
+			LabelSelector: "app=arkime-sensor",
+		})
+		x += 1
+	}
+	k8s.WaitUntilPodAvailable(t, opts, pods[0].Name, 40, 30*time.Second)
+	k8s.WaitUntilPodAvailable(t, opts, pods[1].Name, 40, 30*time.Second)
+
+	// Test that the pods are running on the correct agents
+	agents := k8s.GetNodes(t, opts)
+	actualNodeTypes := map[string]bool{}
+	expectedNodeTypes := map[string]bool{"Tier-1": true, "Tier-2": true}
+	for _, pod := range pods {
+		for _, agent := range agents {
+			fmt.Printf("Agent name: [%s] \n", agent.Name)
+			if isPodRunningOnAgent(pod, &agent) {
+				actualNodeTypes[agent.Labels["cnaps.io/node-type"]] = true
+			}
+		}
+	}
+
+	if isEqual(expectedNodeTypes, actualNodeTypes) != true {
+		for k, v := range expectedNodeTypes {
+			t.Errorf("Expected Node Type: %s, %t", k, v)
+		}
+		for k, v := range actualNodeTypes {
+			t.Errorf("Actual Node Type: %s, %t", k, v)
+		}
+	}
+
+	// Wait for arkime service to come up before attempting to hit it
 	k8s.WaitUntilServiceAvailable(t, opts, "arkime-viewer", 40, 30*time.Second)
 
 	// Determine IP used by the dataplane ingressgateway
@@ -41,7 +84,7 @@ func ArkimeTestZarfPackage(t *testing.T, contextName string, kubeconfigPath stri
 	curlCmd := shell.Command{
 		Command: "curl",
 		Args: []string{"--resolve", "arkime-viewer.vp.bigbang.dev:443:" + loadbalancer_ip,
-			"--fail-with-body",
+			"--fail-with-body", "--digest", "--user", "localadmin:password",
 			"https://arkime-viewer.vp.bigbang.dev"},
 		Env: testEnv,
 	}

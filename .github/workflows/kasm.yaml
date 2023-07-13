@@ -20,7 +20,7 @@ jobs:
     with:
     # The REF_NAME is referencing the tag or branch name in the kasm repo (not the dco-core repo)
     # if you're making a change to the capability chart change the REF_NAME to the tag or branch name in the capability repo
-      REF_NAME: "v1.11.0-5"
+      REF_NAME: "v1.13.0-1"
       REF_TYPE: "tag"
       ZARF_PACKAGE_NAME: zarf-package-kasm-amd64.tar.zst
       COMPONENT: "kasm"
